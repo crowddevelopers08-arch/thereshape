@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -122,7 +121,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Merriweather", sans-serif;
+    font-family: var(--font-merriweather), "Merriweather", Georgia, serif;
   }
 }
 
@@ -238,8 +237,8 @@
   --paper: #ffffff;
   --cream: #fbf8f5;
 
-  --font-display: "Merriweather", sans-serif;
-  --font-body: "Merriweather", sans-serif;
+  --font-display: var(--font-merriweather), "Merriweather", Georgia, serif;
+  --font-body: var(--font-merriweather), "Merriweather", Georgia, serif;
 
   font-family: var(--font-body);
   background: var(--paper);
@@ -513,13 +512,15 @@
 /* staggered hero entrance */
 .reshape .rise {
   opacity: 0;
-  transform: translateY(22px);
-  animation: reshape-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform: translateY(26px);
+  filter: blur(6px);
+  animation: reshape-rise 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes reshape-rise {
   to {
     opacity: 1;
     transform: none;
+    filter: none;
   }
 }
 .reshape .d1 { animation-delay: 0.05s; }
@@ -551,12 +552,59 @@
   transform: scaleY(1);
 }
 
+/* ============================================================
+   CINEMATIC SCROLL SYSTEM
+   Applied automatically by <CinematicScroll/>. Content blocks
+   assemble as they enter the viewport — a slow blur-clearing
+   rise with directional + zoom variants and per-block stagger.
+   ============================================================ */
+.reshape {
+  --cine-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --cine-dur: 1.05s;
+}
+.reshape .cine,
+.reshape .cine-left,
+.reshape .cine-right,
+.reshape .cine-zoom {
+  opacity: 0;
+  filter: blur(9px);
+  transition: opacity var(--cine-dur) var(--cine-ease),
+    transform var(--cine-dur) var(--cine-ease),
+    filter var(--cine-dur) var(--cine-ease);
+  will-change: opacity, transform, filter;
+}
+.reshape .cine       { transform: translateY(52px) scale(0.97); }
+.reshape .cine-left  { transform: translateX(-70px); }
+.reshape .cine-right { transform: translateX(70px); }
+.reshape .cine-zoom  { transform: scale(0.88); }
+
+.reshape .cine.in,
+.reshape .cine-left.in,
+.reshape .cine-right.in,
+.reshape .cine-zoom.in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* drop will-change once settled */
+.reshape .cine.in,
+.reshape .cine-left.in,
+.reshape .cine-right.in,
+.reshape .cine-zoom.in {
+  will-change: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reshape .reveal,
   .reshape .rise,
-  .reshape .draw-line {
+  .reshape .draw-line,
+  .reshape .cine,
+  .reshape .cine-left,
+  .reshape .cine-right,
+  .reshape .cine-zoom {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
     animation: none;
   }

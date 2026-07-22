@@ -39,9 +39,9 @@ export default function ReshapeThankYou() {
               <ArrowLeft className="h-4 w-4" />
               Back to home
             </a>
-            <a href="tel:+919150010389" className="btn btn-ghost w-full sm:w-auto">
+            <a href="tel:+918608551555" className="btn btn-ghost w-full sm:w-auto">
               <Phone className="h-4 w-4" />
-              Call 91500 10389
+              Call 86085 51555
             </a>
           </div>
 

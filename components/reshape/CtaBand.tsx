@@ -31,19 +31,13 @@ export default function CtaBand() {
               </a>
             </div>
 
-            {/* RIGHT — image with a diagonal cut (desktop) */}
-            <div className="relative hidden h-full min-h-[240px] md:block">
+            {/* RIGHT — image (mobile: full-width banner; desktop: diagonal cut) */}
+            <div className="relative h-52 w-full sm:h-60 md:h-full md:min-h-[240px]">
               <img
                 src="/cta.png"
                 alt="thereshape — Advanced Hair Trinity Program"
                 loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover"
-                style={{ clipPath: "polygon(24% 0, 100% 0, 100% 100%, 0% 100%)" }}
-              />
-              {/* blend the diagonal seam into the band */}
-              <div
-                className="pointer-events-none absolute inset-y-0 left-0 w-2/5"
-                aria-hidden="true"
+                className="absolute inset-0 h-full w-full object-cover object-center md:[clip-path:polygon(24%_0,100%_0,100%_100%,0%_100%)]"
               />
             </div>
           </div>

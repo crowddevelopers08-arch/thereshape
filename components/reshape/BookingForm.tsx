@@ -64,7 +64,7 @@ export default function BookingForm() {
       window.location.href = "/thank-you"
     } catch {
       setSubmitting(false)
-      alert("That did not go through. Please call +91 91500 10389 instead.")
+      alert("That did not go through. Please call +91 86085 51555 instead.")
     }
   }
 
@@ -93,11 +93,11 @@ export default function BookingForm() {
             <p className="text-[0.9rem] text-white/80">
               Call{" "}
               <a
-                href="tel:+919150010389"
+                href="tel:+918608551555"
                 onClick={() => track("call_click", { branch: BRANCH })}
                 className="font-bold text-[#fccbb6]"
               >
-                +91 91500 10389
+                +91 86085 51555
               </a>
             </p>
           </div>

@@ -17,10 +17,10 @@ export default function ExpertInsight() {
   }
 
   return (
-    <section id="insight" className="border-b border-[#e7ecf3] bg-[#eef1f4] py-14 sm:py-16 lg:py-20">
-      <div className="mx-auto grid w-full max-w-[1300px] grid-cols-1 items-center gap-20 px-5 sm:px-8 lg:grid-cols-[5fr_4fr] lg:gap-20">
-        {/* LEFT — copy + CTAs */}
-        <Reveal className="min-w-0">
+    <section id="insight" className="border-b border-[#e7ecf3] bg-[#eef1f4] py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
+      <div className="mx-auto flex w-full max-w-[1300px] flex-col gap-10 px-5 sm:px-8 lg:grid lg:grid-cols-[5fr_4fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-20 lg:gap-y-0">
+        {/* intro — badge + heading + paragraph */}
+        <Reveal className="min-w-0 lg:col-start-1 lg:row-start-1 lg:self-end">
           <span className="inline-flex items-center rounded-full border border-[#c9d2e0] bg-white px-4 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[#3a537f]">
             Expert Insight
           </span>
@@ -33,23 +33,10 @@ export default function ExpertInsight() {
             Dr. Aneesha M explains how our evidence-based Hair Trinity Program targets the root cause of hair loss —
             for safe, natural-looking, and long-lasting results.
           </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button type="button" onClick={onPlay} className="btn btn-primary group/btn">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
-                <FaPlay className="ml-0.5 h-2.5 w-2.5" />
-              </span>
-              Watch Dr. Aneesha&apos;s insights
-            </button>
-            <a href="#why" className="btn btn-ghost group/link">
-              Learn more about our approach
-              <LuArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/link:translate-x-1" />
-            </a>
-          </div>
         </Reveal>
 
-        {/* RIGHT — video only, no text */}
-        <Reveal index={1} className="min-w-0">
+        {/* video (mobile: sits between paragraph and CTAs) */}
+        <Reveal index={1} className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
           <div className="relative overflow-hidden rounded-[26px] shadow-[0_40px_90px_-40px_rgba(34,57,95,0.55)] ring-1 ring-inset ring-white/20">
             <div className="relative aspect-[16/9]">
               {/* thumbnail — replace src with a real still of Dr. Aneesha M */}
@@ -76,6 +63,18 @@ export default function ExpertInsight() {
                 <FaPlay className="relative ml-1 h-6 w-6" />
               </button>
             </div>
+          </div>
+        </Reveal>
+
+        {/* actions — CTAs (mobile: below the video) */}
+        <Reveal index={2} className="min-w-0 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button type="button" onClick={onPlay} className="btn btn-primary group/btn">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
+                <FaPlay className="ml-0.5 h-2.5 w-2.5" />
+              </span>
+              Watch Dr. Aneesha&apos;s insights
+            </button>
           </div>
         </Reveal>
       </div>

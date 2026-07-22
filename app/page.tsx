@@ -13,6 +13,7 @@ import Faq from "@/components/reshape/Faq"
 import BookingModal from "@/components/reshape/BookingModal"
 import Footer from "@/components/reshape/Footer"
 import StickyCta from "@/components/reshape/StickyCta"
+import CinematicScroll from "@/components/reshape/CinematicScroll"
 
 export const metadata: Metadata = {
   title: "thereshape — Advanced Hair Trinity Program | Personalized Hair Restoration",
@@ -23,10 +24,12 @@ export const metadata: Metadata = {
 export default function ReshapePage() {
   return (
     <div className="reshape scroll-smooth pb-[72px] lg:pb-0">
+      <CinematicScroll />
       <Header />
       <main>
         {/* 1 · Hook + primary CTA */}
         <Hero />
+        <Results />
         {/* 2 · Problem — visitor self-identifies their hair concern */}
         <Conditions />
         {/* 3 · Early conversion nudge */}
@@ -40,7 +43,7 @@ export default function ReshapePage() {
         {/* 7 · Differentiation — why choose the clinic */}
         <WhyReshape />
         {/* 8 · Proof — before/after results at the decision point */}
-        <Results />
+      
         {/* 9 · Objection handling */}
         <Faq />
         {/* 10 · Final push — opens the booking popup */}

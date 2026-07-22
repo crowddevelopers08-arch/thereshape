@@ -1,10 +1,26 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { Merriweather, Inter } from "next/font/google"
 import "./globals.css"
 
-// The Merriweather font is loaded via the CSS @import in globals.css and applied
-// within the scoped `.reshape` design system, so no next/font fetch is needed at
-// build time.
+// Merriweather is loaded and self-hosted via next/font so it doesn't depend on a
+// runtime CSS @import (which Tailwind v4 / Lightning CSS can strip at build time).
+// The family is exposed as the CSS variable --font-merriweather, consumed in globals.css.
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-merriweather",
+  display: "swap",
+})
+
+// Inter is used for the hero headline (clean bold sans-serif) via --font-inter.
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "thereshape — Advanced Hair Trinity Program",
@@ -13,16 +29,16 @@ export const metadata: Metadata = {
   generator: "Nextjs15",
   icons: {
     icon: [
-      { url: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826", sizes: "16x16", type: "image/png" },
-      { url: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826", sizes: "32x32", type: "image/png" },
-      { url: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826", sizes: "48x48", type: "image/png" },
-      { url: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826", sizes: "192x192", type: "image/png" },
-      { url: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826", sizes: "512x512", type: "image/png" }, 
+      { url: "/favlogo.png", sizes: "16x16", type: "image/png" },
+      { url: "/favlogo.png", sizes: "32x32", type: "image/png" },
+      { url: "/favlogo.png", sizes: "48x48", type: "image/png" },
+      { url: "/favlogo.png", sizes: "192x192", type: "image/png" },
+      { url: "/favlogo.png", sizes: "512x512", type: "image/png" }, 
     ],
     apple: [
-      { url: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826", sizes: "180x180", type: "image/png" },
+      { url: "/favlogo.png", sizes: "180x180", type: "image/png" },
     ],
-    shortcut: "https://ik.imagekit.io/aegfxmf0u/public/fav.png?updatedAt=1773306127826",
+    shortcut: "/favlogo.png",
   }
 }
 
@@ -32,60 +48,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="antialiased">
+    <html lang="en" className={`antialiased ${merriweather.variable} ${inter.variable}`}>
       <head>
-        {/* Google Ads Tag */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=AW-18044684782"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-18044684782');
-            `,
-          }}
-        />
-        
-        {/* Google Tag Manager */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','GTM-WH34B7DF');
-            `,
-          }}
-        />
 
-        {/* Microsoft Clarity */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "w7wjr7yg42");
-            `,
-          }}
-        />
       </head>
       <body>
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe 
-            src="https://www.googletagmanager.com/ns.html?id=GTM-WH34B7DF"
-            height="0" 
-            width="0" 
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
+
         {children}
       </body>
     </html>

@@ -98,7 +98,7 @@ export default function BookingModal() {
       window.location.href = "/thank-you"
     } catch {
       setSubmitting(false)
-      alert("That did not go through. Please call +91 91500 10389 instead.")
+      alert("That did not go through. Please call +91 86085 51555 instead.")
     }
   }
 
@@ -215,11 +215,11 @@ export default function BookingModal() {
                 <p className="mt-3 text-center text-[0.8rem] text-[#5f6f88]">
                   Prefer to talk now? Call{" "}
                   <a
-                    href="tel:+919150010389"
+                    href="tel:+918608551555"
                     onClick={() => track("call_click", { branch: BRANCH })}
                     className="font-bold text-[#22395f]"
                   >
-                    +91 91500 10389
+                    +91 86085 51555
                   </a>
                 </p>
               </form>

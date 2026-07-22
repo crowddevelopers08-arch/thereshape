@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Phone, Shield, Lock, Eye, MapPin, Clock } from "lucide-react"
+import { Phone, Shield, Lock, Eye, MapPin, Clock, Mail } from "lucide-react"
 import Header from "@/components/reshape/Header"
 import Footer from "@/components/reshape/Footer"
 
@@ -147,14 +147,25 @@ const PrivacyPolicy: React.FC = () => {
                 <div className="rounded-full bg-[#22395f] p-2">
                   <Phone className="h-4 w-4 text-white" />
                 </div>
-                <span className="font-semibold text-black">+91 91500 10389</span>
+                <span className="font-semibold text-black">+91 86085 51555</span>
+              </div>
+
+              <div className="mb-3 flex items-center gap-3">
+                <div className="rounded-full bg-[#22395f] p-2">
+                  <Mail className="h-4 w-4 text-white" />
+                </div>
+                <a href="mailto:reshapeclinic01@gmail.com" className="text-gray-700 hover:text-[#22395f]">
+                  reshapeclinic01@gmail.com
+                </a>
               </div>
 
               <div className="mb-3 flex items-start gap-3">
                 <div className="rounded-full bg-[#22395f] p-2">
                   <MapPin className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-gray-700">thereshape Clinic — Advanced Hair Restoration &amp; Aesthetic Care</span>
+                <span className="text-gray-700">
+                  No: 149, No: 1 Luz Church Road, Bhaskarapuram, Mylapore, Chennai - 600004
+                </span>
               </div>
 
               <div className="flex items-center gap-3">

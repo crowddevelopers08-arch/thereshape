@@ -9,7 +9,7 @@ export default function StickyCta() {
       style={{ paddingBottom: "calc(10px + env(safe-area-inset-bottom))" }}
     >
       <a
-        href="tel:+919150010389"
+        href="tel:+918608551555"
         onClick={() => track("call_click", { branch: "Reshape Clinic" })}
         className="btn btn-ghost flex-1 px-3 py-3 text-[0.9rem]"
       >

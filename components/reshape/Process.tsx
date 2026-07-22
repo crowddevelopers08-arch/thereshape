@@ -35,9 +35,9 @@ export default function Process() {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.5 })
 
   return (
-    <section id="process" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20">
+    <section id="process" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
       <div ref={ref} className="mx-auto w-full max-w-[1180px] px-5 sm:px-8">
-        <div className="mb-10 text-center sm:mb-12">
+        <div className="mb-6 text-center sm:mb-6">
           <p className="kicker justify-center">How It Works</p>
           <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">Your Hair Restoration Journey</h2>
         </div>

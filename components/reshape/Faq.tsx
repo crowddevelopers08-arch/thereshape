@@ -30,17 +30,16 @@ export default function Faq() {
   const [open, setOpen] = useState<number | null>(0)
 
   return (
-    <section id="faq" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20">
-      <div className="mx-auto grid w-full max-w-[1180px] grid-cols-1 gap-12 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
-        <Reveal className="lg:sticky lg:top-24 lg:self-start">
+    <section id="faq" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
+      <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-10 px-5 sm:px-8 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:grid-rows-[auto_auto] lg:items-start lg:gap-x-16 lg:gap-y-6">
+        {/* heading (mobile: first) */}
+        <Reveal className="lg:col-start-1 lg:row-start-1 lg:sticky lg:top-24 lg:self-start">
           <p className="kicker">FAQ</p>
           <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">FAQ</h2>
-          <a href="#book" className="btn btn-primary mt-6">
-            Book Your Consultation
-          </a>
         </Reveal>
 
-        <Reveal index={1}>
+        {/* accordion */}
+        <Reveal index={1} className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <div className="divide-y divide-[#eef2f7] border-y border-[#eef2f7]">
             {FAQS.map((f, i) => {
               const isOpen = open === i
@@ -77,6 +76,13 @@ export default function Faq() {
               )
             })}
           </div>
+        </Reveal>
+
+        {/* CTA (mobile: last) */}
+        <Reveal index={2} className="lg:col-start-1 lg:row-start-2 lg:self-start">
+          <a href="#book" className="btn btn-primary">
+            Book Your Consultation
+          </a>
         </Reveal>
       </div>
     </section>

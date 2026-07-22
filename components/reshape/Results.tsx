@@ -71,7 +71,7 @@ export default function Results() {
   const next = () => setIndex((i) => (i >= maxIndex ? 0 : i + 1))
 
   return (
-    <section id="results" className="border-b border-[#e7ecf3] bg-[#fbf8f5] py-12 sm:py-14 lg:py-16">
+    <section id="results" className="border-b border-[#e7ecf3] bg-[#fbf8f5] py-12 sm:py-14 lg:py-16 max-[470px]:py-6">
       <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8">
         <Reveal className="text-center">
           <p className="kicker justify-center">Patients Results</p>
@@ -79,7 +79,7 @@ export default function Results() {
         </Reveal>
 
         <div
-          className="relative mt-12"
+          className="relative mt-12 max-[470px]:mt-6"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >

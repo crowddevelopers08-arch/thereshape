@@ -110,7 +110,7 @@ export default function Conditions() {
   const current = conditions[active]
 
   return (
-    <section id="conditions" className="relative overflow-clip bg-white py-14 sm:py-16 lg:py-24">
+    <section id="conditions" className="relative overflow-clip bg-white py-14 sm:py-16 lg:py-24 max-[470px]:py-6">
       {/* Soft light blooms for depth. */}
       <div
         className="pointer-events-none absolute -left-24 top-40 h-96 w-96 rounded-full bg-[#22395f]/10 blur-3xl"

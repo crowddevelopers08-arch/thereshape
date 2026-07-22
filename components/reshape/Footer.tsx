@@ -1,6 +1,6 @@
 "use client"
 
-import { LuPhone, LuClock, LuArrowRight } from "react-icons/lu"
+import { LuPhone, LuClock, LuArrowRight, LuMail, LuMapPin } from "react-icons/lu"
 import { FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa"
 import { track } from "./track"
 
@@ -22,7 +22,7 @@ const TREATMENTS = [
 const SOCIALS = [
   { Icon: FaInstagram, href: "#", label: "Instagram" },
   { Icon: FaFacebookF, href: "#", label: "Facebook" },
-  { Icon: FaWhatsapp, href: "https://wa.me/919150010389", label: "WhatsApp" },
+  { Icon: FaWhatsapp, href: "https://wa.me/918608551555", label: "WhatsApp" },
 ]
 
 export default function Footer() {
@@ -31,7 +31,7 @@ export default function Footer() {
 
 
       {/* main columns */}
-      <div className="relative mx-auto grid w-full max-w-[1180px] gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+      <div className="relative mx-auto grid w-full max-w-[1180px] gap-10 px-5 py-14 max-[470px]:py-6 sm:px-8 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         {/* brand */}
         <div className="max-w-[34ch]">
           <img src="/reshape-trans.png" alt="thereshape" className="h-10 w-auto" />
@@ -89,21 +89,32 @@ export default function Footer() {
           <ul className="mt-4 space-y-3.5 text-[0.9rem]">
             <li>
               <a
-                href="tel:+919150010389"
+                href="tel:+918608551555"
                 onClick={() => track("call_click", { branch: "Reshape Clinic" })}
                 className="flex items-center gap-3 font-semibold text-white transition-colors hover:text-[#fccbb6]"
               >
                 <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-[#fccbb6]">
                   <LuPhone className="h-4 w-4" />
                 </span>
-                +91 91500 10389
+                +91 86085 51555
               </a>
             </li>
-            <li className="flex items-center gap-3 text-white/60">
+            <li>
+              <a
+                href="mailto:reshapeclinic01@gmail.com"
+                className="flex items-center gap-3 text-white/70 transition-colors hover:text-[#fccbb6]"
+              >
+                <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-[#fccbb6]">
+                  <LuMail className="h-4 w-4" />
+                </span>
+                reshapeclinic01@gmail.com
+              </a>
+            </li>
+            <li className="flex items-start gap-3 text-white/60">
               <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/10 text-[#fccbb6]">
-                <LuClock className="h-4 w-4" />
+                <LuMapPin className="h-4 w-4" />
               </span>
-              Mon – Sun · 10:00 AM – 8:00 PM
+              No: 149, No: 1 Luz Church Road, Bhaskarapuram, Mylapore, Chennai - 600004
             </li>
           </ul>
         </div>

@@ -3,6 +3,7 @@
 import { LuArrowRight } from "react-icons/lu"
 import { FaAward, FaUsers } from "react-icons/fa"
 import Reveal from "./Reveal"
+import CountUp from "./CountUp"
 
 const EXPERTISE = [
   "Hair Trinity Program",
@@ -15,10 +16,24 @@ const EXPERTISE = [
 
 export default function Doctor() {
   return (
-    <section id="doctor" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20">
-      <div className="mx-auto grid w-full max-w-[1180px] grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
-        {/* LEFT — portrait seated on a soft grey blob with floating badges. */}
-        <Reveal className="relative mx-auto w-full max-w-[440px]">
+    <section id="doctor" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
+      <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-10 px-5 sm:px-8 lg:grid lg:grid-cols-[0.95fr_1.05fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-16 lg:gap-y-0">
+        {/* details — name + credentials (mobile: above the image) */}
+        <Reveal className="min-w-0 lg:col-start-2 lg:row-start-1 lg:self-end">
+          <p className="kicker">Meet Our Specialist</p>
+          <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">Dr. Aneesha M</h2>
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.95rem] font-semibold text-[#22395f]">
+            <span>Aesthetic Physician</span>
+            <span className="text-[#fccbb6]">•</span>
+            <span className="text-[#5f6f88]">B.D.S., F.D.S., F.M.C.</span>
+          </div>
+          <p className="mt-1 text-[0.9rem] font-medium text-[#5f6f88]">
+            5+ Years of Experience in Aesthetic &amp; Hair Care
+          </p>
+        </Reveal>
+
+        {/* portrait seated on a soft grey blob with floating badges. */}
+        <Reveal index={1} className="relative mx-auto w-full max-w-[440px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:self-center">
           <div className="relative aspect-square">
             {/* dotted texture behind the blob */}
             <div
@@ -60,7 +75,9 @@ export default function Doctor() {
                 <FaAward className="h-5 w-5" />
               </span>
               <div className="leading-tight">
-                <div className="display text-[1.05rem] font-bold text-[#22395f]">5+ Years</div>
+                <div className="display text-[1.05rem] font-bold text-[#22395f]">
+                  <CountUp end={5} suffix="+ Years" />
+                </div>
                 <div className="text-[0.72rem] font-semibold text-[#5f6f88]">Experience</div>
               </div>
             </div>
@@ -74,27 +91,18 @@ export default function Doctor() {
                 <FaUsers className="h-5 w-5" />
               </span>
               <div className="leading-tight">
-                <div className="display text-[1.05rem] font-bold text-[#22395f]">20000+</div>
+                <div className="display text-[1.05rem] font-bold text-[#22395f]">
+                  <CountUp end={20000} separator="," suffix="+" />
+                </div>
                 <div className="text-[0.72rem] font-semibold text-[#5f6f88]">Happy Patients</div>
               </div>
             </div>
           </div>
         </Reveal>
 
-        {/* RIGHT — heading, credentials, bio, expertise, CTA. */}
-        <Reveal index={1} className="min-w-0">
-          <p className="kicker">Meet Our Specialist</p>
-          <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">Dr. Aneesha M</h2>
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.95rem] font-semibold text-[#22395f]">
-            <span>Aesthetic Physician</span>
-            <span className="text-[#fccbb6]">•</span>
-            <span className="text-[#5f6f88]">B.D.S., F.D.S., F.M.C.</span>
-          </div>
-          <p className="mt-1 text-[0.9rem] font-medium text-[#5f6f88]">
-            5+ Years of Experience in Aesthetic &amp; Hair Care
-          </p>
-
-          <p className="mt-6 max-w-[62ch] text-[1.02rem] leading-relaxed text-[#5f6f88]">
+        {/* bio, expertise, CTA (mobile: below the image) */}
+        <Reveal index={2} className="min-w-0 lg:col-start-2 lg:row-start-2 lg:mt-6 lg:self-start">
+          <p className="max-w-[62ch] text-[1.02rem] leading-relaxed text-[#5f6f88]">
             With over 5 years of clinical experience, Dr. Aneesha M specializes in advanced hair restoration and
             aesthetic treatments. She focuses on delivering personalized, evidence-based solutions to help patients
             reduce hair fall, improve hair density, and achieve natural-looking results.
