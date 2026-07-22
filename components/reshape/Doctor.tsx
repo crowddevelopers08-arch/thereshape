@@ -57,7 +57,7 @@ export default function Doctor() {
                 image never overflows the round. Replace src with a real photo. */}
             <div className="absolute inset-[4%] overflow-hidden rounded-full bg-[#e8e9ee]">
               <img
-                src="/docaneesha.png"
+                src="https://res.cloudinary.com/n0ccg2u6/image/upload/docaneesha_gkl4ba.png"
                 alt="Dr. Aneesha M, Aesthetic Physician"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover object-top"

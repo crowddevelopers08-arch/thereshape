@@ -34,7 +34,7 @@ export default function Footer() {
       <div className="relative mx-auto grid w-full max-w-[1180px] gap-10 px-5 py-14 max-[470px]:py-6 sm:px-8 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         {/* brand */}
         <div className="max-w-[34ch]">
-          <img src="/reshape-trans.png" alt="thereshape" className="h-10 w-auto" />
+          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/reshape-trans_mufmzr.png" alt="thereshape" className="h-10 w-auto" />
           <p className="mt-4 text-[0.92rem] leading-relaxed text-white/60">
             Advanced hair restoration and aesthetic care — combining medical science, modern technology and
             personalized protocols for healthier, stronger hair.

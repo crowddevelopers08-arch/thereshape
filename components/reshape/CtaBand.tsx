@@ -34,7 +34,7 @@ export default function CtaBand() {
             {/* RIGHT — image (mobile: full-width banner; desktop: diagonal cut) */}
             <div className="relative h-52 w-full sm:h-60 md:h-full md:min-h-[240px]">
               <img
-                src="/cta.png"
+                src="https://res.cloudinary.com/n0ccg2u6/image/upload/cta_udfkkp.png"
                 alt="thereshape — Advanced Hair Trinity Program"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover object-center md:[clip-path:polygon(24%_0,100%_0,100%_100%,0%_100%)]"

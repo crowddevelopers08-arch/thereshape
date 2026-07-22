@@ -69,7 +69,7 @@ export default function WhyReshape() {
             {/* top wide image */}
             <div className="relative overflow-hidden rounded-[26px]">
               <img
-                src="/imone.webp"
+                src="https://res.cloudinary.com/n0ccg2u6/image/upload/imone_wtitus.webp"
                 alt="Reshape Clinic"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover"
@@ -81,7 +81,7 @@ export default function WhyReshape() {
               {/* image card */}
               <div className="relative overflow-hidden rounded-[26px]">
                 <img
-                  src="/imtwo.webp"
+                  src="https://res.cloudinary.com/n0ccg2u6/image/upload/imtwo_qcwozm.webp"
                   alt="Comfortable clinical environment"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
@@ -91,7 +91,7 @@ export default function WhyReshape() {
               {/* image card */}
               <div className="relative overflow-hidden rounded-[26px]">
                 <img
-                  src="/imthree.webp"
+                  src="https://res.cloudinary.com/n0ccg2u6/image/upload/imthree_hwlrpt.webp"
                   alt="Reshape Clinic"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"

@@ -64,7 +64,7 @@ export default function Hero() {
             aria-hidden
             className="absolute left-1/2 top-1/2 -z-0 h-full w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border border-[#e7ecf3] shadow-[inset_0_0_60px_-20px_rgba(34,57,95,0.35)]"
           >
-            <img src="/svg.png" alt="" className="h-full w-full object-cover" />
+            <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/svg_qlkmhu.png" alt="" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-[#fccbb6]/35" />
           </div>
 

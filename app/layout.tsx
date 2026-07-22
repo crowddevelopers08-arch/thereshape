@@ -29,16 +29,16 @@ export const metadata: Metadata = {
   generator: "Nextjs15",
   icons: {
     icon: [
-      { url: "/favlogo.png", sizes: "16x16", type: "image/png" },
-      { url: "/favlogo.png", sizes: "32x32", type: "image/png" },
-      { url: "/favlogo.png", sizes: "48x48", type: "image/png" },
-      { url: "/favlogo.png", sizes: "192x192", type: "image/png" },
-      { url: "/favlogo.png", sizes: "512x512", type: "image/png" }, 
+      { url: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png", sizes: "16x16", type: "image/png" },
+      { url: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png", sizes: "32x32", type: "image/png" },
+      { url: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png", sizes: "48x48", type: "image/png" },
+      { url: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png", sizes: "192x192", type: "image/png" },
+      { url: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png", sizes: "512x512", type: "image/png" }, 
     ],
     apple: [
-      { url: "/favlogo.png", sizes: "180x180", type: "image/png" },
+      { url: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png", sizes: "180x180", type: "image/png" },
     ],
-    shortcut: "/favlogo.png",
+    shortcut: "https://res.cloudinary.com/n0ccg2u6/image/upload/favlogo_xeajrt.png",
   }
 }
 
