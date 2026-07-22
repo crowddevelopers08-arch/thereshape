@@ -69,40 +69,52 @@ export default function Hero() {
           </div>
 
           {/* floating cards */}
-          <div className={`rise d3 absolute right-[2%] top-[1%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:right-[10%] lg:top-[0%] lg:w-[46%] ${CARD_3D}`}>
-            <span className={ICON_3D}>
-              <Activity className="h-4 w-4" />
-            </span>
-            <p className="mt-2 text-[1.05rem] sm:mt-2.5 sm:text-[1.35rem] font-extrabold leading-none text-[#22395f]" style={{ fontFamily: SANS }}>
-              <CountUp end={92} suffix="%" />
-            </p>
-            <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
-              Patients saw visible regrowth*
-            </p>
+          <div className="rise d3 absolute right-[2%] top-[1%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:right-[10%] lg:top-[0%] lg:w-[46%]">
+            <div className="float" style={{ animationDelay: "0s" }}>
+              <div className={CARD_3D}>
+                <span className={ICON_3D}>
+                  <Activity className="h-4 w-4" />
+                </span>
+                <p className="mt-2 text-[1.05rem] sm:mt-2.5 sm:text-[1.35rem] font-extrabold leading-none text-[#22395f]" style={{ fontFamily: SANS }}>
+                  <CountUp end={92} suffix="%" />
+                </p>
+                <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
+                  Patients saw visible regrowth*
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className={`rise d4 absolute right-[0%] top-[40%] hidden w-[40%] max-w-[126px] sm:block sm:max-w-[164px] lg:right-[-14%] lg:top-[32%] lg:w-[48%] ${CARD_3D}`}>
-            <span className={ICON_3D}>
-              <BadgeCheck className="h-4 w-4" />
-            </span>
-            <p className="mt-2 text-[0.8rem] sm:mt-2.5 sm:text-[0.95rem] font-bold leading-tight text-[#22395f]" style={{ fontFamily: SANS }}>
-              Certified Specialists
-            </p>
-            <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
-              Board-certified &amp; trusted by 5,000+ patients
-            </p>
+          <div className="rise d4 absolute right-[0%] top-[40%] hidden w-[40%] max-w-[126px] sm:block sm:max-w-[164px] lg:right-[-14%] lg:top-[32%] lg:w-[48%]">
+            <div className="float" style={{ animationDelay: "-1.6s" }}>
+              <div className={CARD_3D}>
+                <span className={ICON_3D}>
+                  <BadgeCheck className="h-4 w-4" />
+                </span>
+                <p className="mt-2 text-[0.8rem] sm:mt-2.5 sm:text-[0.95rem] font-bold leading-tight text-[#22395f]" style={{ fontFamily: SANS }}>
+                  Certified Specialists
+                </p>
+                <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
+                  Board-certified &amp; trusted by 500+ patients
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className={`rise d4 absolute bottom-[2%] left-[2%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:left-[62%] lg:w-[46%] ${CARD_3D}`}>
-            <span className={ICON_3D}>
-              <Star className="h-4 w-4 fill-current" />
-            </span>
-            <p className="mt-2 text-[1.05rem] sm:mt-2.5 sm:text-[1.35rem] font-extrabold leading-none text-[#22395f]" style={{ fontFamily: SANS }}>
-              <CountUp end={4.8} decimals={1} suffix="/5" />
-            </p>
-            <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
-              Patient satisfaction rating
-            </p>
+          <div className="rise d4 absolute bottom-[2%] left-[2%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:left-[62%] lg:w-[46%]">
+            <div className="float" style={{ animationDelay: "-3.2s" }}>
+              <div className={CARD_3D}>
+                <span className={ICON_3D}>
+                  <Star className="h-4 w-4 fill-current" />
+                </span>
+                <p className="mt-2 text-[1.05rem] sm:mt-2.5 sm:text-[1.35rem] font-extrabold leading-none text-[#22395f]" style={{ fontFamily: SANS }}>
+                  <CountUp end={4.8} decimals={1} suffix="/5" />
+                </p>
+                <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
+                  Patient satisfaction rating
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -143,7 +155,7 @@ export default function Hero() {
             </div>
             <div style={{ fontFamily: SANS }}>
               <p className="text-[0.95rem] font-bold text-[#22395f]">
-                <CountUp end={5000} separator="," suffix="+" /> patients
+                <CountUp end={500} suffix="+" /> patients
               </p>
               <p className="flex items-center gap-1.5 text-[0.82rem] text-[#5f6f88]">
                 <span className="flex">

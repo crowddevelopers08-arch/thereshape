@@ -1,105 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
 import { sendToTeleCRM } from '@/lib/telecrm'
+import { sendToGoogleSheet } from '@/lib/sheets'
 
 export const runtime = 'nodejs'
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const status = searchParams.get('status')
+// Leads are NOT persisted to a database. Each submission is delivered straight
+// to TeleCRM and the Google Sheet, which together act as the system of record.
 
-    const leads = await prisma.lead.findMany({
-      orderBy: { createdAt: 'desc' },
-      where: status && status !== 'all' ? { status: status as any } : undefined,
-    })
-
-    return NextResponse.json({ leads })
-  } catch (error) {
-    console.error('Error fetching leads:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
+export async function GET() {
+  // Nothing to read — leads live in Google Sheets / TeleCRM.
+  return NextResponse.json({
+    leads: [],
+    message: 'Leads are stored in Google Sheets and TeleCRM, not in a database.',
+  })
 }
 
 export async function POST(request: NextRequest) {
-  let savedLead: { id: string } | null = null
-
   try {
     const body = await request.json()
-    const {
+    const { name, phone, area, duration, branch, source, medium, campaign, pageUrl } = body
+
+    if (!name || !phone) {
+      return NextResponse.json({ error: 'Name and phone are required' }, { status: 400 })
+    }
+
+    const leadPayload = {
       name,
       phone,
       area,
       duration,
-      branch,
+      branch: branch || 'Reshape Clinic',
       source,
       medium,
       campaign,
       pageUrl,
-    } = body
-
-    if (!name || !phone) {
-      return NextResponse.json(
-        { error: 'Name and phone are required' },
-        { status: 400 }
-      )
     }
 
-    // 1) Save to the database first so no lead is ever lost.
-    savedLead = await prisma.lead.create({
-      data: {
-        name,
-        phone,
-        area: area || null,
-        duration: duration || null,
-        branch: branch || 'Reshape Clinic',
-        source: source || 'direct',
-        medium: medium || null,
-        campaign: campaign || null,
-        pageUrl: pageUrl || null,
-        status: 'NEW',
-        telecrmSynced: false,
-      },
-    })
+    // Deliver to TeleCRM + Google Sheet in parallel; independent best-effort.
+    const [telecrmOutcome, sheetOutcome] = await Promise.allSettled([
+      sendToTeleCRM(leadPayload),
+      sendToGoogleSheet(leadPayload),
+    ])
 
-    // 2) Best-effort push to TeleCRM; record the outcome on the lead.
     let telecrmSynced = false
-    let telecrmError: string | null = null
-    try {
-      const result = await sendToTeleCRM({
-        name,
-        phone,
-        area,
-        duration,
-        branch: branch || 'Reshape Clinic',
-        source,
-        medium,
-        campaign,
-        pageUrl,
-      })
-      telecrmSynced = result.synced
-      await prisma.lead.update({
-        where: { id: savedLead.id },
-        data: { telecrmSynced: result.synced, telecrmId: result.telecrmId },
-      })
-    } catch (error) {
-      telecrmError = error instanceof Error ? error.message : String(error)
-      console.error('TeleCRM sync failed:', telecrmError)
+    if (telecrmOutcome.status === 'fulfilled') {
+      telecrmSynced = telecrmOutcome.value.synced
+    } else {
+      console.error('TeleCRM sync failed:', telecrmOutcome.reason)
     }
 
-    return NextResponse.json({
-      success: true,
-      lead: savedLead,
-      telecrmSynced,
-      message: telecrmError
-        ? 'Lead saved but TeleCRM sync failed'
-        : 'Lead created successfully',
-    })
-  } catch (error) {
-    console.error('Error creating lead:', error)
+    let sheetSynced = false
+    if (sheetOutcome.status === 'fulfilled') {
+      sheetSynced = sheetOutcome.value.synced
+    } else {
+      console.error('Google Sheets sync failed:', sheetOutcome.reason)
+    }
+
+    // The lead is captured as long as it reached at least one destination.
+    const captured = telecrmSynced || sheetSynced
+
     return NextResponse.json(
-      { error: 'Internal server error', leadSaved: !!savedLead },
-      { status: 500 }
+      {
+        success: captured,
+        telecrmSynced,
+        sheetSynced,
+        message: captured
+          ? telecrmSynced && sheetSynced
+            ? 'Lead delivered to TeleCRM and Google Sheets'
+            : 'Lead captured; one integration failed'
+          : 'Lead could not be delivered to any destination',
+      },
+      { status: captured ? 200 : 502 },
     )
+  } catch (error) {
+    console.error('Error handling lead:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

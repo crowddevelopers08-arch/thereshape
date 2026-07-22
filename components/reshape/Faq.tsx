@@ -35,7 +35,7 @@ export default function Faq() {
         {/* heading (mobile: first) */}
         <Reveal className="lg:col-start-1 lg:row-start-1 lg:sticky lg:top-24 lg:self-start">
           <p className="kicker">FAQ</p>
-          <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">FAQ</h2>
+          <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">Frequently Asked Questions</h2>
         </Reveal>
 
         {/* accordion */}
@@ -76,13 +76,6 @@ export default function Faq() {
               )
             })}
           </div>
-        </Reveal>
-
-        {/* CTA (mobile: last) */}
-        <Reveal index={2} className="lg:col-start-1 lg:row-start-2 lg:self-start">
-          <a href="#book" className="btn btn-primary">
-            Book Your Consultation
-          </a>
         </Reveal>
       </div>
     </section>

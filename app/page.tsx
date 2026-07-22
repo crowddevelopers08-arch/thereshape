@@ -14,6 +14,7 @@ import BookingModal from "@/components/reshape/BookingModal"
 import Footer from "@/components/reshape/Footer"
 import StickyCta from "@/components/reshape/StickyCta"
 import CinematicScroll from "@/components/reshape/CinematicScroll"
+import CtaPopup from "@/components/reshape/CtaPopup"
 
 export const metadata: Metadata = {
   title: "thereshape — Advanced Hair Trinity Program | Personalized Hair Restoration",
@@ -53,6 +54,8 @@ export default function ReshapePage() {
       <StickyCta />
       {/* Booking form as a popup — opened by any "Book" CTA */}
       <BookingModal />
+      {/* Promo popup with video — auto-opens every 30s */}
+      <CtaPopup />
     </div>
   )
 }

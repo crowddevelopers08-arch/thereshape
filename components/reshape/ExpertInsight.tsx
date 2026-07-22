@@ -1,19 +1,25 @@
 "use client"
 
+import { useRef } from "react"
 import { FaPlay } from "react-icons/fa"
-import { LuArrowRight } from "react-icons/lu"
 import Reveal from "./Reveal"
 
 /**
- * Expert Insight — a two-column video feature: copy + CTAs on the left, a video
- * thumbnail (with play button, caption and stat badges) on the right.
+ * Expert Insight — a two-column video feature: copy + CTA on the left, a real
+ * video on the right (native controls).
  *
- * The play button is a placeholder — wire it to your real video (a modal, a
- * YouTube/Vimeo embed, etc.) via the `onPlay` handler below.
+ * Drop your clip at /public/expert-insight.mp4 (or change the <video src>).
  */
 export default function ExpertInsight() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
   const onPlay = () => {
-    // TODO: open your video (modal / embed). No video source is wired yet.
+    const v = videoRef.current
+    if (!v) return
+    v.scrollIntoView({ behavior: "smooth", block: "center" })
+    v.play().catch(() => {
+      /* user gesture / autoplay policy — ignore */
+    })
   }
 
   return (
@@ -35,38 +41,23 @@ export default function ExpertInsight() {
           </p>
         </Reveal>
 
-        {/* video (mobile: sits between paragraph and CTAs) */}
+        {/* video (mobile: sits between paragraph and CTA) */}
         <Reveal index={1} className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
           <div className="relative overflow-hidden rounded-[26px] shadow-[0_40px_90px_-40px_rgba(34,57,95,0.55)] ring-1 ring-inset ring-white/20">
-            <div className="relative aspect-[16/9]">
-              {/* thumbnail — replace src with a real still of Dr. Aneesha M */}
-              <img
-                src="/docaneesha.png"
-                alt="Dr. Aneesha M, Aesthetic Physician"
-                loading="lazy"
+            <div className="relative aspect-[16/9] bg-[#16263f]">
+              <video
+                ref={videoRef}
+                src="/video.mp4"
+                controls
+                playsInline
+                preload="metadata"
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              {/* subtle depth wash */}
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#16263f]/35 to-transparent"
-                aria-hidden="true"
-              />
-
-              {/* play button */}
-              <button
-                type="button"
-                onClick={onPlay}
-                aria-label="Play video"
-                className="group absolute left-1/2 top-1/2 flex h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#22395f] shadow-xl backdrop-blur transition-transform duration-200 hover:scale-110"
-              >
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/40" aria-hidden="true" />
-                <FaPlay className="relative ml-1 h-6 w-6" />
-              </button>
             </div>
           </div>
         </Reveal>
 
-        {/* actions — CTAs (mobile: below the video) */}
+        {/* actions — CTA (mobile: below the video) */}
         <Reveal index={2} className="min-w-0 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <button type="button" onClick={onPlay} className="btn btn-primary group/btn">
