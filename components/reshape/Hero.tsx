@@ -166,7 +166,7 @@ export default function Hero() {
                     <Star key={i} className="h-3.5 w-3.5 fill-[#f0a94a] text-[#f0a94a]" />
                   ))}
                 </span>
-                <CountUp end={4.8} decimals={1} suffix="/5" /> patient satisfaction
+                <CountUp end={4.8} decimals={1} suffix="/5" />
               </p>
             </div>
           </div>
