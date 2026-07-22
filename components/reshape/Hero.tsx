@@ -3,6 +3,7 @@
 import { track } from "./track"
 import { Activity, BadgeCheck, Star, ShieldCheck, Lock, Users, CalendarCheck } from "lucide-react"
 import CountUp from "./CountUp"
+import { FcGoogle } from "react-icons/fc"
 
 const SANS = "var(--font-inter), ui-sans-serif, system-ui, sans-serif"
 const SERIF = "var(--font-merriweather), Georgia, serif"
@@ -22,7 +23,6 @@ const ICON_3D =
 
 
 const AVATARS = [
-  { initials: "SR", bg: "#22395f" },
   { initials: "AK", bg: "#3a537f" },
   { initials: "MP", bg: "#c07a54" },
   { initials: "RV", bg: "#5f6f88" },
@@ -142,6 +142,9 @@ export default function Hero() {
           {/* social proof */}
           <div className="rise d4 mt-9 flex items-center gap-4">
             <div className="flex -space-x-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#fbf8f5] bg-white shadow-sm">
+                <FcGoogle className="h-5 w-5" />
+              </span>
               {AVATARS.map(({ initials, bg }) => (
                 <span
                   key={initials}
