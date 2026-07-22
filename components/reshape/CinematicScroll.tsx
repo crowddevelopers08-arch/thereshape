@@ -35,7 +35,8 @@ export default function CinematicScroll() {
     const targets: HTMLElement[] = []
 
     roots.forEach((root, rootIndex) => {
-      if (isDecor(root) || alreadyAnimated(root)) return
+      // sections that animate themselves (e.g. framer-motion) opt out via data-no-cine
+      if (isDecor(root) || alreadyAnimated(root) || root.hasAttribute("data-no-cine")) return
 
       // the primary content wrapper (skip decorative aurora/grid wrappers)
       const container =
