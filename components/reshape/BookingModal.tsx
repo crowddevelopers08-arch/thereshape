@@ -124,105 +124,120 @@ export default function BookingModal() {
             role="dialog"
             aria-modal="true"
             aria-label="Book your consultation"
-            className="relative z-10 flex max-h-[92vh] w-full max-w-[520px] flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.6)]"
+            className="relative z-10 flex max-h-[92vh] w-full max-w-[1100px] flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.6)] md:flex-row"
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* header */}
-            <div className="relative flex-none bg-[#22395f] px-6 py-6 text-white">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-              >
-                <LuX className="h-5 w-5" />
-              </button>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-[#fccbb6]">
-                New Advanced Hair Trinity Program
-              </span>
-              <h3 className="mt-3 display text-[1.5rem] font-bold text-white">Book Your Consultation</h3>
-              <p className="mt-1.5 flex flex-wrap gap-x-2 gap-y-0.5 text-[0.82rem] text-white/70">
-                <span>Personalized</span>
-                <span className="text-[#fccbb6]">•</span>
-                <span>Effective Treatment</span>
-                <span className="text-[#fccbb6]">•</span>
-                <span>Advanced Hair Regrowth</span>
-              </p>
+            {/* LEFT - Form */}
+            <div className="flex flex-1 flex-col overflow-hidden">
+              {/* header */}
+              <div className="relative flex-none bg-[#22395f] px-6 py-6 text-white">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close"
+                  className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                >
+                  <LuX className="h-5 w-5" />
+                </button>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-[#fccbb6]">
+                  New Advanced Hair Trinity Program
+                </span>
+                <p className="mt-4 flex flex-wrap gap-x-2 gap-y-0.5 text-[0.82rem] text-white/70">
+                  <span>Personalized</span>
+                  <span className="text-[#fccbb6]">•</span>
+                  <span>Effective Treatment</span>
+                  <span className="text-[#fccbb6]">•</span>
+                  <span>Advanced Hair Regrowth</span>
+                </p>
+              </div>
+
+              {/* form */}
+              <div className="overflow-y-auto px-6 py-6">
+                <form ref={formRef} onSubmit={onSubmit} noValidate>
+                  <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+                    <Field label="Full name" htmlFor="m-name">
+                      <input id="m-name" name="name" type="text" required autoComplete="name" placeholder="Your name" className={inputCls} />
+                    </Field>
+                    <Field label="Mobile number" htmlFor="m-phone">
+                      <input
+                        id="m-phone"
+                        name="phone"
+                        type="tel"
+                        required
+                        inputMode="numeric"
+                        pattern="[6-9][0-9]{9}"
+                        autoComplete="tel"
+                        placeholder="10-digit number"
+                        className={inputCls}
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+                    <Field label="Your hair concern" htmlFor="m-concern">
+                      <select id="m-concern" name="concern" required className={inputCls} defaultValue="">
+                        <option value="">Select a concern</option>
+                        <option>Hair Regrowth</option>
+                        <option>Hair Loss / Hair Fall</option>
+                        <option>Baldness / Receding Hairline</option>
+                        <option>Hair Thinning</option>
+                        <option>Scalp Health</option>
+                        <option>Not sure — need advice</option>
+                      </select>
+                    </Field>
+                    <Field label="How long has it been?" htmlFor="m-since">
+                      <select id="m-since" name="since" required className={inputCls} defaultValue="">
+                        <option value="">Select duration</option>
+                        <option>Under 3 months</option>
+                        <option>3 to 12 months</option>
+                        <option>Over a year</option>
+                      </select>
+                    </Field>
+                  </div>
+
+                  {/* campaign attribution — filled automatically */}
+                  <input type="hidden" name="utm_source" />
+                  <input type="hidden" name="utm_medium" />
+                  <input type="hidden" name="utm_campaign" />
+                  <input type="hidden" name="utm_content" />
+                  <input type="hidden" name="utm_term" />
+                  <input type="hidden" name="fbclid" />
+                  <input type="hidden" name="gclid" />
+                  <input type="hidden" name="branch" defaultValue={BRANCH} />
+                  <input type="hidden" name="page_url" />
+
+                  <button type="submit" disabled={submitting} className="btn btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-70">
+                    {submitting ? "Booking…" : "Book Your Consultation"}
+                  </button>
+
+                  <p className="mt-3 text-center text-[0.8rem] text-[#5f6f88]">
+                    Prefer to talk now? Call{" "}
+                    <a
+                      href="tel:+918608551555"
+                      onClick={() => track("call_click", { branch: BRANCH })}
+                      className="font-bold text-[#22395f]"
+                    >
+                      +91 86085 51555
+                    </a>
+                  </p>
+                </form>
+              </div>
             </div>
 
-            {/* form */}
-            <div className="overflow-y-auto px-6 py-6">
-              <form ref={formRef} onSubmit={onSubmit} noValidate>
-                <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
-                  <Field label="Full name" htmlFor="m-name">
-                    <input id="m-name" name="name" type="text" required autoComplete="name" placeholder="Your name" className={inputCls} />
-                  </Field>
-                  <Field label="Mobile number" htmlFor="m-phone">
-                    <input
-                      id="m-phone"
-                      name="phone"
-                      type="tel"
-                      required
-                      inputMode="numeric"
-                      pattern="[6-9][0-9]{9}"
-                      autoComplete="tel"
-                      placeholder="10-digit number"
-                      className={inputCls}
-                    />
-                  </Field>
-                </div>
-
-                <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
-                  <Field label="Your hair concern" htmlFor="m-concern">
-                    <select id="m-concern" name="concern" required className={inputCls} defaultValue="">
-                      <option value="">Select a concern</option>
-                      <option>Hair Regrowth</option>
-                      <option>Hair Loss / Hair Fall</option>
-                      <option>Baldness / Receding Hairline</option>
-                      <option>Hair Thinning</option>
-                      <option>Scalp Health</option>
-                      <option>Not sure — need advice</option>
-                    </select>
-                  </Field>
-                  <Field label="How long has it been?" htmlFor="m-since">
-                    <select id="m-since" name="since" required className={inputCls} defaultValue="">
-                      <option value="">Select duration</option>
-                      <option>Under 3 months</option>
-                      <option>3 to 12 months</option>
-                      <option>Over a year</option>
-                    </select>
-                  </Field>
-                </div>
-
-                {/* campaign attribution — filled automatically */}
-                <input type="hidden" name="utm_source" />
-                <input type="hidden" name="utm_medium" />
-                <input type="hidden" name="utm_campaign" />
-                <input type="hidden" name="utm_content" />
-                <input type="hidden" name="utm_term" />
-                <input type="hidden" name="fbclid" />
-                <input type="hidden" name="gclid" />
-                <input type="hidden" name="branch" defaultValue={BRANCH} />
-                <input type="hidden" name="page_url" />
-
-                <button type="submit" disabled={submitting} className="btn btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-70">
-                  {submitting ? "Booking…" : "Book Your Consultation"}
-                </button>
-
-                <p className="mt-3 text-center text-[0.8rem] text-[#5f6f88]">
-                  Prefer to talk now? Call{" "}
-                  <a
-                    href="tel:+918608551555"
-                    onClick={() => track("call_click", { branch: BRANCH })}
-                    className="font-bold text-[#22395f]"
-                  >
-                    +91 86085 51555
-                  </a>
-                </p>
-              </form>
+            {/* RIGHT - Video */}
+            <div className="relative hidden w-full md:block md:w-[340px] lg:w-[400px] flex-shrink-0">
+              <video
+                src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_v1jsnd.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+                poster="https://your-poster-image-url.jpg"
+              />
             </div>
           </motion.div>
         </motion.div>

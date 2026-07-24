@@ -48,7 +48,7 @@ export default function ReshapePage() {
         {/* 9 · Objection handling */}
         <Faq />
         {/* 10 · Final push — opens the booking popup */}
-        <CtaBand />
+        {/* <CtaBand /> */}
       </main>
       <Footer />
       <StickyCta />
