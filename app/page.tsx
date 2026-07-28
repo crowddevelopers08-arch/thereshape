@@ -6,6 +6,7 @@ import Results from "@/components/reshape/Results"
 import CtaBand from "@/components/reshape/CtaBand"
 import Doctor from "@/components/reshape/Doctor"
 import ExpertInsight from "@/components/reshape/ExpertInsight"
+import Program from "@/components/reshape/Program"
 import WhyReshape from "@/components/reshape/WhyReshape"
 import Process from "@/components/reshape/Process"
 import Conditions from "@/components/reshape/Conditions"
@@ -41,7 +42,9 @@ export default function ReshapePage() {
         <Doctor />
         {/* 6 · Deeper trust — the specialist's video */}
         <ExpertInsight />
-        {/* 7 · Differentiation — why choose the clinic */}
+        {/* 7 · Program overview — what the Hair Trinity Program is */}
+        <Program />
+        {/* 8 · Differentiation — why choose the clinic */}
         <WhyReshape />
         {/* 8 · Proof — before/after results at the decision point */}
       

@@ -18,9 +18,9 @@ export default function StickyCta() {
       <a
         href="#book"
         onClick={() => track("book_click", { branch: "Reshape Clinic" })}
-        className="btn btn-primary flex-1 px-3 py-3 text-[0.9rem]"
+        className="btn btn-primary btn-wave flex-1 px-3 py-3 text-[0.9rem]"
       >
-        Book now
+        <span className="relative z-10">Book now</span>
       </a>
     </div>
   )

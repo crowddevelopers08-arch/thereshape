@@ -174,8 +174,12 @@ export default function BookingForm() {
                 <input type="hidden" name="branch" defaultValue={BRANCH} />
                 <input type="hidden" name="page_url" />
 
-                <button type="submit" disabled={submitting} className="btn btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-70">
-                  {submitting ? "Booking…" : "Book Your Consultation"}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn btn-primary btn-wave mt-2 w-full disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  <span className="relative z-10">{submitting ? "Booking…" : "Book Your Consultation"}</span>
                 </button>
                 <p className="mt-4 text-[0.75rem] leading-relaxed text-[#5f6f88]">
                   By submitting, you agree to be contacted by thereshape about your appointment. We never share your

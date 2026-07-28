@@ -495,6 +495,33 @@
   }
 }
 
+/* continuous white shimmer sweeping back and forth inside a CTA button */
+.reshape .btn-wave {
+  position: relative;
+  overflow: hidden;
+}
+.reshape .btn-wave::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-20deg);
+  animation: reshape-btn-wave 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes reshape-btn-wave {
+  0%,
+  100% {
+    left: -60%;
+  }
+  50% {
+    left: 120%;
+  }
+}
+
 /* gentle float for accent chips / badges */
 .reshape .float {
   animation: reshape-float 5s ease-in-out infinite;

@@ -12,22 +12,27 @@ export default function CtaBand() {
             {/* LEFT — copy + button */}
             <div className="relative z-10 px-6 py-8 sm:px-10 sm:py-10 lg:px-12">
               <h2 className="text-[clamp(1.5rem,3.4vw,2.5rem)] font-bold leading-[1.1] text-[#22395f]">
-                New Advanced Hair Trinity Program
+                Start With the Right Assessment
               </h2>
-              <p className="mt-3 flex flex-wrap gap-x-2.5 gap-y-1 text-[0.95rem] font-medium text-[#22395f]/75">
-                <span>Personalized</span>
-                <span className="text-[#22395f]/40">•</span>
-                <span>Effective Treatment</span>
-                <span className="text-[#22395f]/40">•</span>
-                <span>Advanced Hair Regrowth</span>
+              <p className="mt-3 max-w-[46ch] text-[0.95rem] leading-relaxed text-[#22395f]/80">
+                Hair fall, thinning, changes in density and scalp concerns can differ from person to person.
+              </p>
+              <p className="mt-2 max-w-[46ch] text-[0.95rem] leading-relaxed text-[#22395f]/80">
+                At Reshape, your journey begins with a professional hair and scalp consultation. Based on the
+                assessment, the clinical team discusses suitable options and develops an individual care plan.
               </p>
               <a
                 href="#book"
                 onClick={() => track("book_click", { branch: "Reshape Clinic" })}
-                className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#22395f] px-7 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
+                className="btn-wave group/btn mt-7 inline-flex items-center gap-2 rounded-full bg-[#22395f] px-7 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
               >
-                Book Your Consultation
-                <span aria-hidden>→</span>
+                <span className="relative z-10">Schedule Your Consultation</span>
+                <span
+                  aria-hidden
+                  className="relative z-10 inline-block transition-transform duration-200 group-hover/btn:translate-x-1"
+                >
+                  →
+                </span>
               </a>
             </div>
 

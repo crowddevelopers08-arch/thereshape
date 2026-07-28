@@ -278,9 +278,11 @@ function TextBlock({
 
         {condition.list.length > 0 && <MetaList label={condition.listLabel} items={condition.list} />}
 
-        <a href="#book" className="btn btn-primary group/btn mt-8">
-          Book Your Consultation
-          <LuArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
+        <a href="#book" className="btn btn-primary btn-wave group/btn mt-8">
+          <span className="relative z-10 inline-flex items-center gap-2">
+            Book Your Consultation
+            <LuArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
+          </span>
         </a>
 
         {/* Mobile visual — the sticky frame is desktop-only. */}

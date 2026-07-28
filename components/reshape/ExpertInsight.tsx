@@ -60,11 +60,13 @@ export default function ExpertInsight() {
         {/* actions — CTA (mobile: below the video) */}
         <Reveal index={2} className="min-w-0 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button type="button" onClick={onPlay} className="btn btn-primary group/btn">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
-                <FaPlay className="ml-0.5 h-2.5 w-2.5" />
+            <button type="button" onClick={onPlay} className="btn btn-primary btn-wave group/btn">
+              <span className="relative z-10 inline-flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
+                  <FaPlay className="ml-0.5 h-2.5 w-2.5" />
+                </span>
+                Watch Dr. Aneesha&apos;s insights
               </span>
-              Watch Dr. Aneesha&apos;s insights
             </button>
           </div>
         </Reveal>

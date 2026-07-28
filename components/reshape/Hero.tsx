@@ -125,9 +125,9 @@ export default function Hero() {
               href="#book"
               onClick={() => track("book_click", { branch: "Reshape Clinic" })}
               style={{ fontFamily: SANS }}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#22395f] px-7 py-3.5 text-[0.95rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
+              className="btn-wave inline-flex items-center justify-center gap-2 rounded-full bg-[#22395f] px-7 py-3.5 text-[0.95rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
             >
-              Book Your Consultation
+              <span className="relative z-10">Book Your Consultation</span>
             </a>
             <a
               href="tel:+918608551555"

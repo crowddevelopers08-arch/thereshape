@@ -81,10 +81,10 @@ export default function Header() {
           </a>
           <a
             href="#book"
-            className="inline-flex items-center justify-center rounded-full bg-[#22395f] px-4 py-2.5 text-[0.82rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] sm:px-6 sm:text-[0.88rem]"
+            className="btn-wave inline-flex items-center justify-center rounded-full bg-[#22395f] px-4 py-2.5 text-[0.82rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] sm:px-6 sm:text-[0.88rem]"
           >
-            <span className="sm:hidden">Book</span>
-            <span className="hidden sm:inline">Book Consultation</span>
+            <span className="relative z-10 sm:hidden">Book</span>
+            <span className="relative z-10 hidden sm:inline">Book Consultation</span>
           </a>
         </div>
       </div>
