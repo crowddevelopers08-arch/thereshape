@@ -31,8 +31,10 @@ export default function ReshapePage() {
       <main>
         {/* 1 · Hook + primary CTA */}
         <Hero />
-        <Results />
+        {/* <Results /> */}
         {/* 2 · Problem — visitor self-identifies their hair concern */}
+        {/* 7 · Program overview — what the Hair Trinity Program is */}
+        <Program />
         <Conditions />
         {/* 3 · Early conversion nudge */}
         <CtaBand />
@@ -42,8 +44,7 @@ export default function ReshapePage() {
         <Doctor />
         {/* 6 · Deeper trust — the specialist's video */}
         <ExpertInsight />
-        {/* 7 · Program overview — what the Hair Trinity Program is */}
-        <Program />
+        
         {/* 8 · Differentiation — why choose the clinic */}
         <WhyReshape />
         {/* 8 · Proof — before/after results at the decision point */}
