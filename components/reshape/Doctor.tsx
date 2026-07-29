@@ -104,8 +104,8 @@ export default function Doctor() {
         <Reveal index={2} className="min-w-0 lg:col-start-2 lg:row-start-2 lg:mt-6 lg:self-start">
           <p className="max-w-[62ch] text-[1.02rem] leading-relaxed text-[#5f6f88]">
             With over 5 years of clinical experience, Dr. Aneesha M specializes in advanced hair restoration and
-            aesthetic treatments. She focuses on delivering personalized, evidence-based solutions to help patients
-            reduce hair fall, improve hair density, and achieve natural-looking results.
+            aesthetic treatments. She focuses on delivering personalized, evidence based solutions to help patients
+            reduce hair fall, improve hair density, and achieve natural looking results.
           </p>
           <p className="mt-4 max-w-[62ch] text-[1.02rem] leading-relaxed text-[#5f6f88]">
             Using advanced diagnostic techniques and customized treatment plans, she ensures every patient receives

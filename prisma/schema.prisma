@@ -12,6 +12,7 @@ model Lead {
   id            String     @id @default(cuid())
   name          String
   phone         String
+  email         String?
   area          String? // where it hurts (Knee, Back / spine, ...)
   duration      String? // how long it has been (Under 3 months, ...)
   branch        String?    @default("T. Nagar")

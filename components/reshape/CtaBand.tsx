@@ -74,6 +74,7 @@ export default function CtaBand() {
 
       track("lead_submit", { branch: BRANCH, concern: raw.concern });
       setDone(true);
+      window.location.href = "/thank-you";
     } catch {
       setSubmitting(false);
       alert("That did not go through. Please call +91 86085 51555 instead.");

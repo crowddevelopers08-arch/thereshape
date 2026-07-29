@@ -19,10 +19,10 @@
 
 var LEADS_TAB = 'thereshape Leads';
 var HEADERS = [
-  'Timestamp', 'Name', 'Phone', 'Hair Concern', 'Duration',
+  'Timestamp', 'Name', 'Phone', 'Email', 'Hair Concern', 'Duration',
   'Branch', 'Source', 'Medium', 'Campaign', 'Page URL'
 ];
-var COL_WIDTHS = [175, 160, 130, 200, 140, 150, 150, 140, 170, 300];
+var COL_WIDTHS = [175, 160, 130, 200, 200, 140, 150, 150, 140, 170, 300];
 var BRAND = '#22395f'; // thereshape navy
 
 function authorize() {
@@ -73,7 +73,18 @@ function createLeadSheet(ss) {
 }
 
 function getOrCreateLeadSheet(ss) {
-  return ss.getSheetByName(LEADS_TAB) || createLeadSheet(ss);
+  var sheet = ss.getSheetByName(LEADS_TAB);
+  if (!sheet) return createLeadSheet(ss);
+
+  // Add Email to an existing tab without deleting or replacing old leads.
+  if (sheet.getRange(1, 4).getValue() !== 'Email') {
+    sheet.insertColumnAfter(3);
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sheet.setColumnWidth(4, COL_WIDTHS[3]);
+    _styleHeader(sheet, HEADERS.length);
+  }
+
+  return sheet;
 }
 
 function appendLeadRow(sheet, data, ts) {
@@ -82,6 +93,7 @@ function appendLeadRow(sheet, data, ts) {
     ts,
     data.name || '',
     data.phone || '',
+    data.email || '',
     data.area || '',
     data.duration || '',
     data.branch || 'Reshape Clinic',
@@ -118,6 +130,7 @@ function setupSheets() {
     createLeadSheet(ss);
     Logger.log('Created: ' + LEADS_TAB);
   } else {
+    getOrCreateLeadSheet(ss);
     Logger.log('OK: ' + LEADS_TAB);
   }
   Logger.log('setupSheets complete.');
@@ -132,6 +145,7 @@ function testLead() {
       contents: JSON.stringify({
         name: 'Test Lead',
         phone: '9876543210',
+        email: 'test@example.com',
         area: 'Hair Loss / Hair Fall',
         duration: '3 to 12 months',
         branch: 'Reshape Clinic',

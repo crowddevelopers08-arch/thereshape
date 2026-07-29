@@ -9,19 +9,19 @@ const FEATURES = [
   {
     icon: LuSyringe,
     title: "Targeted Scalp Care",
-    desc: "Intradermal and meso-based scalp applications using selected ingredients according to the protocol.",
+    desc: "Intradermal and meso based scalp applications using selected ingredients according to the protocol.",
     image: "/images-2.jpg",
   },
   {
     icon: LuDroplet,
     title: "Nutritional Support",
-    desc: "Doctor-guided IV nutrient support may be considered depending on individual requirements and suitability.",
+    desc: "Doctor guided IV nutrient support may be considered depending on individual requirements and suitability.",
     image: "/images-3.jpg",
   },
   {
     icon: LuZap,
     title: "Scalp Care + LLLT",
-    desc: "Clinical scalp care combined with Low-Level Laser Therapy (LLLT) as part of a personalised program.",
+    desc: "Clinical scalp care combined with Low Level Laser Therapy (LLLT) as part of a personalised program.",
     image: "/images-1.jpg",
   },
 ]

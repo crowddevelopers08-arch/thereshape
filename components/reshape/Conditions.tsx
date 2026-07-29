@@ -55,14 +55,14 @@ const conditions: Condition[] = [
     description:
       "Reduce excessive hair fall with personalized treatments that strengthen the scalp and promote healthier, stronger hair.",
     listLabel: "Common Causes We Treat",
-    list: ["Stress-Induced Hair Loss", "Hormonal Hair Loss", "Nutritional Hair Loss", "Seasonal Hair Fall"],
+    list: ["Stress Induced Hair Loss", "Hormonal Hair Loss", "Nutritional Hair Loss", "Seasonal Hair Fall"],
     image: "https://res.cloudinary.com/n0ccg2u6/image/upload/loss_klayc9.png",
   },
   {
     name: "Baldness Treatment",
     icon: LuUserCheck,
     description:
-      "Advanced non-surgical solutions for early-stage baldness and receding hairlines, designed to improve hair density and support natural-looking regrowth.",
+      "Advanced non surgical solutions for early stage baldness and receding hairlines, designed to improve hair density and support natural looking regrowth.",
     listLabel: "Suitable For",
     list: ["Male Pattern Baldness", "Female Pattern Hair Loss", "Receding Hairline", "Crown Hair Thinning"],
     image: "https://res.cloudinary.com/n0ccg2u6/image/upload/bald_nlcko6.png",
@@ -89,11 +89,11 @@ const conditions: Condition[] = [
     name: "Personalized Hair Trinity Program",
     icon: LuSparkles,
     description:
-      "Every patient receives a customized treatment plan based on a detailed hair and scalp analysis, ensuring the most suitable approach for long-lasting results.",
+      "Every patient receives a customized treatment plan based on a detailed hair and scalp analysis, ensuring the most suitable approach for long lasting results.",
     list: [
       "Advanced Hair Analysis",
       "Personalized Treatment Plan",
-      "Evidence-Based Hair Restoration",
+      "Evidence Based Hair Restoration",
       "Safe & Minimally Invasive Procedures",
       "Natural-Looking Results",
     ],

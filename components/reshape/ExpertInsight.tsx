@@ -36,8 +36,8 @@ export default function ExpertInsight() {
           </h2>
 
           <p className="mt-5 max-w-[48ch] text-[1.02rem] leading-relaxed text-[#5f6f88]">
-            Dr. Aneesha M explains how our evidence-based Hair Trinity Program targets the root cause of hair loss —
-            for safe, natural-looking, and long-lasting results.
+            Dr. Aneesha M explains how our evidence based Hair Trinity Program targets the root cause of hair loss
+            for safe, natural looking, and long lasting results.
           </p>
         </Reveal>
 

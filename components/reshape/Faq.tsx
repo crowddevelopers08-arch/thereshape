@@ -18,7 +18,7 @@ const FAQS = [
   },
   {
     q: "Is the procedure safe?",
-    a: "Yes. Treatments are performed by certified aesthetic doctors using FDA-approved technology and internationally accepted safety protocols.",
+    a: "Yes. Treatments are performed by certified aesthetic doctors using FDA approved technology and internationally accepted safety protocols.",
   },
   {
     q: "When will I start seeing results?",

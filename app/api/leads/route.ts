@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendToTeleCRM } from '@/lib/telecrm'
 import { sendToGoogleSheet } from '@/lib/sheets'
+import prisma from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 
-// Leads are NOT persisted to a database. Each submission is delivered straight
-// to TeleCRM and the Google Sheet, which together act as the system of record.
+// Every submission is delivered to TeleCRM and the Google Sheet (system of
+// record for the CRM team), and also saved to our own database for the
+// admin dashboard.
 
 export async function GET() {
-  // Nothing to read — leads live in Google Sheets / TeleCRM.
-  return NextResponse.json({
-    leads: [],
-    message: 'Leads are stored in Google Sheets and TeleCRM, not in a database.',
-  })
+  try {
+    const leads = await prisma.lead.findMany({ orderBy: { createdAt: 'desc' } })
+    return NextResponse.json({ leads })
+  } catch (error) {
+    console.error('Error fetching leads:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -37,15 +41,24 @@ export async function POST(request: NextRequest) {
       pageUrl,
     }
 
-    // Deliver to TeleCRM + Google Sheet in parallel; independent best-effort.
-    const [telecrmOutcome, sheetOutcome] = await Promise.allSettled([
+    // Deliver to TeleCRM + Google Sheet + our own database in parallel; independent best-effort.
+    const [telecrmOutcome, sheetOutcome, dbOutcome] = await Promise.allSettled([
       sendToTeleCRM(leadPayload),
       sendToGoogleSheet(leadPayload),
+      prisma.lead.create({ data: leadPayload }),
     ])
 
     let telecrmSynced = false
     if (telecrmOutcome.status === 'fulfilled') {
       telecrmSynced = telecrmOutcome.value.synced
+      if (dbOutcome.status === 'fulfilled' && telecrmOutcome.value.telecrmId) {
+        await prisma.lead
+          .update({
+            where: { id: dbOutcome.value.id },
+            data: { telecrmSynced: true, telecrmId: telecrmOutcome.value.telecrmId },
+          })
+          .catch((err) => console.error('Failed to record telecrmId on lead:', err))
+      }
     } else {
       console.error('TeleCRM sync failed:', telecrmOutcome.reason)
     }
@@ -55,6 +68,10 @@ export async function POST(request: NextRequest) {
       sheetSynced = sheetOutcome.value.synced
     } else {
       console.error('Google Sheets sync failed:', sheetOutcome.reason)
+    }
+
+    if (dbOutcome.status === 'rejected') {
+      console.error('Database save failed:', dbOutcome.reason)
     }
 
     // The lead is captured as long as it reached at least one destination.

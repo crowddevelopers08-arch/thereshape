@@ -7,9 +7,9 @@ const REASONS = [
   "Certified Hair Specialists",
   "Personalized Treatment Plans",
   "FDA-Approved Technology",
-  "Premium Medical-Grade Products",
+  "Premium Medical Grade Products",
   "International Treatment Protocols",
-  "Patient-First Approach",
+  "Patient First Approach",
   "Comfortable Clinical Environment",
 ]
 
@@ -43,8 +43,8 @@ export default function WhyReshape() {
 
             <p className="mt-4 text-[0.95rem] leading-relaxed text-[#5f6f88]">
               At Reshape Clinic, we combine advanced medical science, modern hair restoration technology, and
-              personalized care to help you achieve healthier, stronger hair with confidence — designed by certified
-              aesthetic doctors using evidence-based protocols.
+              personalized care to help you achieve healthier, stronger hair with confidence designed by certified
+              aesthetic doctors using evidence based protocols.
             </p>
 
             <ul className="mt-6 grid flex-1 auto-rows-fr grid-cols-2 gap-2.5">

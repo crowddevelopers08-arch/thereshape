@@ -32,6 +32,7 @@ interface Lead {
   id: string
   name: string
   phone: string
+  email: string | null
   area: string | null
   duration: string | null
   branch: string | null
@@ -195,6 +196,7 @@ export default function LeadsDashboard() {
     const headers = [
       "Name",
       "Phone",
+      "Email",
       "Area",
       "Duration",
       "Branch",
@@ -209,6 +211,7 @@ export default function LeadsDashboard() {
     const csvData = filteredLeads.map((lead) => [
       lead.name || "",
       lead.phone || "",
+      lead.email || "",
       lead.area || "",
       lead.duration || "",
       lead.branch || "",
@@ -289,11 +292,16 @@ export default function LeadsDashboard() {
         <CardHeader className="border-b border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-2xl font-bold text-gray-900">Leads Management</CardTitle>
+              <CardTitle className="text-2xl font-bold text-gray-900 uppercase">Reshape Leads Management</CardTitle>
               <CardDescription className="text-gray-600">
-                Consultation requests from the thereshape booking form
+                Consultation requests from the the reshape booking form
               </CardDescription>
             </div>
+            <img
+              src="https://res.cloudinary.com/n0ccg2u6/image/upload/logo_ns4pys.png"
+              alt="thereshape"
+              className="h-13 w-auto"
+            />
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -530,6 +538,9 @@ export default function LeadsDashboard() {
                                     <div className="space-y-2 text-gray-700">
                                       <div>
                                         <span className="font-medium">Branch:</span> {lead.branch || "Reshape Clinic"}
+                                      </div>
+                                      <div>
+                                        <span className="font-medium">Email:</span> {lead.email || "Not provided"}
                                       </div>
                                       <div>
                                         <span className="font-medium">Area of pain:</span> {lead.area || "Not specified"}

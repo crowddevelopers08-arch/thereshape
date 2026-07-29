@@ -15,7 +15,7 @@ const STEPS = [
   { n: "Step 1", title: "Hair & Scalp Analysis" },
   { n: "Step 2", title: "Personalized Hair Trinity Treatment Plan" },
   { n: "Step 3", title: "Advanced Hair Restoration Sessions" },
-  { n: "Step 4", title: "Regular Follow-up & Hair Maintenance" },
+  { n: "Step 4", title: "Regular Follow up & Hair Maintenance" },
 ]
 
 /* A serpentine path in a 0..100 square. `preserveAspectRatio="none"` stretches
