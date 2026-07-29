@@ -87,9 +87,9 @@ export default function CtaBand() {
     >
       <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8">
         <Reveal className="relative overflow-hidden rounded-[22px] bg-gradient-to-r from-[#fccbb6] to-[#fef1ea] shadow-[0_30px_70px_-40px_rgba(34,57,95,0.4)]">
-          <div className="grid grid-cols-1 md:grid-cols-[1.55fr_1fr]">
+          <div className="grid grid-cols-1 items-stretch md:grid-cols-[1.55fr_1fr]">
             {/* LEFT — copy + inline booking form (shown by default, no popup/click needed) */}
-            <div className="relative z-10 px-6 py-8 sm:px-10 sm:py-10 lg:px-12">
+            <div className="relative z-10 flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-10 lg:px-12">
               <h2 className="text-[clamp(1.5rem,3.4vw,2.5rem)] font-bold leading-[1.1] text-[#22395f]">
                 New Advanced Hair Trinity Program{" "}
               </h2>
@@ -101,7 +101,7 @@ export default function CtaBand() {
                 ref={formRef}
                 onSubmit={onSubmit}
                 noValidate
-                className="mt-6 max-w-[46ch]"
+                className="mt-6 max-w-[52ch]"
               >
                 {!done ? (
                   <div>
@@ -191,7 +191,7 @@ export default function CtaBand() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="btn btn-primary btn-wave mt-1 w-full disabled:cursor-not-allowed disabled:opacity-70"
+                      className="btn btn-primary mt-1 w-full disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       <span className="relative z-10">
                         {submitting ? "Booking…" : "Schedule Your Consultation"}

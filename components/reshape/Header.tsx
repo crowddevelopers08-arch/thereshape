@@ -45,7 +45,7 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
+    <header className="sticky top-0 z-50 px-3 pt-0 sm:px-5 sm:pt-0">
       {/* announcement strip — full-bleed normally, becomes the nav pill's exact contained/rounded shape once scrolled */}
       <div
         className={`relative mb-2 overflow-hidden transition-all duration-300 ${

@@ -20,8 +20,8 @@ const TREATMENTS = [
 ]
 
 const SOCIALS = [
-  { Icon: FaInstagram, href: "#", label: "Instagram" },
-  { Icon: FaFacebookF, href: "#", label: "Facebook" },
+  { Icon: FaInstagram, href: "https://www.instagram.com/the_reshape_clinic/", label: "Instagram" },
+  { Icon: FaFacebookF, href: "https://www.facebook.com/profile.php?id=61581875403848&sk=about", label: "Facebook" },
   { Icon: FaWhatsapp, href: "https://wa.me/918608551555", label: "WhatsApp" },
 ]
 
