@@ -4,11 +4,12 @@ import React from "react"
 import { Phone, Shield, Lock, Eye, MapPin, Clock, Mail } from "lucide-react"
 import Header from "@/components/reshape/Header"
 import Footer from "@/components/reshape/Footer"
+import Headers from "@/components/reshape/thank-header"
 
 const PrivacyPolicy: React.FC = () => {
   return (
     <div className="reshape flex min-h-screen flex-col">
-      <Header />
+      <Headers />
 
       <main className="flex-1 bg-[#fbf8f5] py-8 sm:py-12">
         <section className="mx-auto w-full max-w-4xl rounded-lg bg-white px-4 py-8 leading-relaxed text-gray-800 shadow-md sm:px-6 md:px-8">

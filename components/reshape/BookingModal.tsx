@@ -8,11 +8,12 @@ import { track } from "./track"
 /* Leads are saved to our database and pushed to TeleCRM via this API route. */
 const LEAD_ENDPOINT = "/api/leads"
 const BRANCH = "Reshape Clinic"
+const INTERVAL_MS = 30_000
 
 /**
  * Booking form as a global popup. Any `<a href="#book">` CTA anywhere on the
  * page opens it (clicks are intercepted document-wide), so the inline booking
- * section is no longer needed.
+ * section is no longer needed. It also re-opens itself every 30s as a promo nudge.
  */
 export default function BookingModal() {
   const [open, setOpen] = useState(false)
@@ -31,6 +32,12 @@ export default function BookingModal() {
     }
     document.addEventListener("click", onClick)
     return () => document.removeEventListener("click", onClick)
+  }, [])
+
+  // re-open every 30 seconds
+  useEffect(() => {
+    const id = setInterval(() => setOpen(true), INTERVAL_MS)
+    return () => clearInterval(id)
   }, [])
 
   // esc to close + lock background scroll while open
@@ -77,6 +84,7 @@ export default function BookingModal() {
     const payload = {
       name: raw.name,
       phone: raw.phone,
+      email: raw.email,
       area: raw.concern,
       duration: raw.since,
       branch: raw.branch || BRANCH,
@@ -175,6 +183,17 @@ export default function BookingModal() {
                       />
                     </Field>
                   </div>
+
+                  <Field label="Email address" htmlFor="m-email">
+                    <input
+                      id="m-email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      className={inputCls}
+                    />
+                  </Field>
 
                   <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
                     <Field label="Your hair concern" htmlFor="m-concern">

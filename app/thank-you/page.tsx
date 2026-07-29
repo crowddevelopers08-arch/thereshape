@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { CheckCircle2, Phone, ArrowLeft } from "lucide-react"
 import Header from "@/components/reshape/Header"
 import Footer from "@/components/reshape/Footer"
+import Headers from "@/components/reshape/thank-header"
 
 export default function ReshapeThankYou() {
   useEffect(() => {
@@ -14,7 +15,7 @@ export default function ReshapeThankYou() {
 
   return (
     <div className="reshape flex min-h-screen flex-col">
-      <Header />
+      <Headers />
 
       <main className="relative flex flex-1 items-center justify-center overflow-hidden px-5 py-16 sm:py-24">
         <div className="aurora" aria-hidden>

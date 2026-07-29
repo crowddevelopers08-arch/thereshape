@@ -42,6 +42,7 @@ export default function BookingForm() {
     const payload = {
       name: raw.name,
       phone: raw.phone,
+      email: raw.email,
       area: raw.concern,
       duration: raw.since,
       branch: raw.branch || BRANCH,
@@ -140,6 +141,17 @@ export default function BookingForm() {
                     />
                   </Field>
                 </div>
+
+                <Field label="Email address" htmlFor="f-email">
+                  <input
+                    id="f-email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    className={inputCls}
+                  />
+                </Field>
 
                 <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
                   <Field label="Your hair concern" htmlFor="f-concern">

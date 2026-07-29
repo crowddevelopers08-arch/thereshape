@@ -97,7 +97,7 @@ const conditions: Condition[] = [
       "Safe & Minimally Invasive Procedures",
       "Natural-Looking Results",
     ],
-    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/personalized_c2wjdv.png",
+    image: "/hair-trinity.jpeg",
     featured: true,
   },
 ]

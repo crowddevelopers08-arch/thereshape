@@ -39,7 +39,7 @@ export default function Program() {
   }, [])
 
   return (
-    <section id="program" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
+    <section id="trinity" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
       <div className="mx-auto flex w-full max-w-[1180px] flex-col px-5 sm:px-8 lg:grid lg:grid-cols-[1fr_1fr] lg:grid-rows-[auto_auto_auto_auto_auto] lg:items-start lg:gap-x-16">
         {/* 1. label */}
         <Reveal className="lg:col-start-1 lg:row-start-1">

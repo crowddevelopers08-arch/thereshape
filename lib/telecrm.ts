@@ -5,6 +5,7 @@
 export interface TeleCRMLead {
   name: string
   phone: string
+  email?: string | null
   area?: string | null // hair concern
   duration?: string | null // how long it has been
   branch?: string | null
@@ -39,6 +40,7 @@ export async function sendToTeleCRM(lead: TeleCRMLead): Promise<TeleCRMResult> {
       Id: "",
       name: lead.name,
       phone: lead.phone.replace(/\D/g, ""),
+      Email: lead.email || "",
       Country: "",
       LeadID: "",
       CreatedOn: new Date().toLocaleString("en-US", {

@@ -6,6 +6,7 @@
 export interface SheetLead {
   name: string
   phone: string
+  email?: string | null
   area?: string | null // hair concern
   duration?: string | null // how long it has been
   branch?: string | null
@@ -33,6 +34,7 @@ export async function sendToGoogleSheet(lead: SheetLead): Promise<SheetResult> {
     timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
     name: lead.name,
     phone: lead.phone.replace(/\D/g, ""),
+    email: lead.email || "",
     area: lead.area || "",
     duration: lead.duration || "",
     branch: lead.branch || "Reshape Clinic",
