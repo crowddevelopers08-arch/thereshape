@@ -47,7 +47,7 @@ const conditions: Condition[] = [
       "Stimulate natural hair growth with advanced regenerative therapies that nourish hair follicles and improve hair density.",
     listLabel: "Best For",
     list: ["Slow Hair Growth", "Thin Hair", "Weak Hair Follicles"],
-    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/regrow_tw5oqs.png",
+    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/regrow_hx1biq.png",
   },
   {
     name: "Hair Loss Treatment",
@@ -56,7 +56,7 @@ const conditions: Condition[] = [
       "Reduce excessive hair fall with personalized treatments that strengthen the scalp and promote healthier, stronger hair.",
     listLabel: "Common Causes We Treat",
     list: ["Stress Induced Hair Loss", "Hormonal Hair Loss", "Nutritional Hair Loss", "Seasonal Hair Fall"],
-    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/loss_klayc9.png",
+    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/loss_nrv9dx.png",
   },
   {
     name: "Baldness Treatment",
@@ -65,7 +65,7 @@ const conditions: Condition[] = [
       "Advanced non surgical solutions for early stage baldness and receding hairlines, designed to improve hair density and support natural looking regrowth.",
     listLabel: "Suitable For",
     list: ["Male Pattern Baldness", "Female Pattern Hair Loss", "Receding Hairline", "Crown Hair Thinning"],
-    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/bald_nlcko6.png",
+    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/bald_i39yp8.png",
   },
   {
     name: "Hair Thinning",
@@ -74,7 +74,7 @@ const conditions: Condition[] = [
       "Restore volume and thickness by revitalizing weakened hair follicles with customized hair restoration treatments.",
     listLabel: "Ideal For",
     list: ["Reduced Hair Density", "Fine Hair", "Diffuse Hair Thinning"],
-    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/hairthinning_bhpjh7.png",
+    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/hairthinning_urxqij.png",
   },
   {
     name: "Scalp Rejuvenation",
@@ -83,7 +83,7 @@ const conditions: Condition[] = [
       "A healthy scalp is the foundation of healthy hair. Our treatments help improve scalp health, nourish follicles, and create the ideal environment for hair growth.",
     listLabel: "Benefits",
     list: ["Improved Scalp Health", "Stronger Hair Roots", "Better Follicle Nutrition"],
-    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/scalp_fmttgn.png",
+    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/scalp_dvynfh.png",
   },
   {
     name: "Personalized Hair Trinity Program",
@@ -97,7 +97,7 @@ const conditions: Condition[] = [
       "Safe & Minimally Invasive Procedures",
       "Natural-Looking Results",
     ],
-    image: "/hair-trinity.jpeg",
+    image: "https://res.cloudinary.com/n0ccg2u6/image/upload/hair-trinity_yud9gy.jpg",
     featured: true,
   },
 ]

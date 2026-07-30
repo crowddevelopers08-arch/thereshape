@@ -9,7 +9,7 @@ import { track } from "./track"
  * image. It renders nothing inline; a timer opens it as a modal every 30s.
  * Mount it once (see page.tsx) alongside BookingModal.
  *
- * Drop your promo clip at /public/promo.mp4 (poster falls back to https://res.cloudinary.com/n0ccg2u6/image/upload/cta_udfkkp.png).
+ * Drop your promo clip at /public/promo.mp4 (poster falls back to https://res.cloudinary.com/n0ccg2u6/image/upload/cta_zin5cu.png).
  */
 const INTERVAL_MS = 30_000
 
@@ -97,8 +97,8 @@ export default function CtaPopup() {
           {/* RIGHT — looping video (mobile: full-width banner; desktop: diagonal cut) */}
           <div className="relative h-52 w-full sm:h-60 md:h-full md:min-h-[240px]">
             <video
-              src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_v1jsnd.mp4"
-              poster="https://res.cloudinary.com/n0ccg2u6/image/upload/cta_udfkkp.png"
+              src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_lo1eqb.mp4"
+              poster="https://res.cloudinary.com/n0ccg2u6/image/upload/cta_zin5cu.png"
               autoPlay
               muted
               loop

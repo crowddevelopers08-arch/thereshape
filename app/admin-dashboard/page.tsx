@@ -298,7 +298,7 @@ export default function LeadsDashboard() {
               </CardDescription>
             </div>
             <img
-              src="https://res.cloudinary.com/n0ccg2u6/image/upload/logo_ns4pys.png"
+              src="https://res.cloudinary.com/n0ccg2u6/image/upload/reshape-logo-removebg-preview_vv7uc4.png"
               alt="thereshape"
               className="h-13 w-auto"
             />

@@ -83,7 +83,7 @@ export default function Header() {
       >
         {/* left — logo */}
         <a href="#top" className="flex flex-none items-center">
-          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/logo_ns4pys.png" alt="thereshape" className="h-8 w-auto sm:h-9" />
+          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/reshape-logo-removebg-preview_vv7uc4.png" alt="thereshape" className="h-8 w-auto sm:h-9" />
         </a>
 
         {/* center — pill nav group */}

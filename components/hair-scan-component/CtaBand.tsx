@@ -219,7 +219,7 @@ export default function CtaBand() {
             {/* RIGHT — video (full height, no gaps) */}
             <div className="relative h-full w-full min-h-[200px] md:min-h-full">
               <video
-                src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_v1jsnd.mp4"
+                src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_lo1eqb.mp4"
                 autoPlay
                 loop
                 muted

@@ -47,7 +47,7 @@ export default function ExpertInsight() {
             <div className="relative aspect-[16/9] bg-[#16263f]">
               <video
                 ref={videoRef}
-                src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_v1jsnd.mp4"
+                src="https://res.cloudinary.com/n0ccg2u6/video/upload/video_lo1eqb.mp4"
                 controls
                 playsInline
                 preload="metadata"
