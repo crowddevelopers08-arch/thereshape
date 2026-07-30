@@ -24,8 +24,8 @@ const BRANCH = "Reshape Clinic"
 const WHATSAPP_NUMBER = "918608551555"
 
 const BEFORE_AFTER = [
-  { src: "/bf1.png", label: "Before" },
-  { src: "/bf2.png", label: "After" },
+  { src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392873/bf2_kvopn9.png", label: "Before" },
+  { src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392872/bf1_t5ienb.png", label: "After" },
 ]
 
 const REVIEW_USPS = [

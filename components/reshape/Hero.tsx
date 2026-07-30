@@ -40,7 +40,7 @@ export default function Hero() {
           className="hidden h-auto w-full sm:block"
         />
         <Image
-          src="https://res.cloudinary.com/n0ccg2u6/image/upload/mbile-banner_fydpyp.png"
+          src="https://res.cloudinary.com/n0ccg2u6/image/upload/v1785393251/0c892b7b-fdd7-493f-b8aa-45b8db7db1bd_y1c04b.png"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={864}
           height={1821}
