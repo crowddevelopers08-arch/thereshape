@@ -1,0 +1,21 @@
+
+> my-v0-project@0.1.0 dev
+> next dev --port 3001
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://10.193.72.158:3001
+- Environments: .env
+
+✓ Starting...
+Creating turbopack project { dir: 'D:\\CrowMedi\\thereshape', testMode: true }
+✓ Ready in 1975ms
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://10.193.72.158:3001
+- Environments: .env
+
+✓ Starting...
+Creating turbopack project { dir: 'D:\\CrowMedi\\thereshape', testMode: true }
+✓ Ready in 1894ms
+[?25h
