@@ -63,6 +63,54 @@ export default function RootLayout({
           }}
         />
         {/* End Google Tag Manager */}
+
+        {/* Google tag (gtag.js) — Google Ads */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18327451312" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'AW-18327451312');
+            `
+          }}
+        />
+
+        {/* Event snippet for Click to call conversion — call gtag_report_conversion on tel: clicks */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              function gtag_report_conversion(url) {
+                var callback = function () {
+                  if (typeof(url) != 'undefined') {
+                    window.location = url;
+                  }
+                };
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-18327451312/yvEJCNeCydkcELDtmqNE',
+                    'value': 1.0,
+                    'currency': 'INR',
+                    'event_callback': callback
+                });
+                return false;
+              }
+            `
+          }}
+        />
+
+        {/* Call tracking — swaps the displayed phone number for a Google forwarding number */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              gtag('config', 'AW-18327451312/FBHhCNqCydkcELDtmqNE', {
+                'phone_conversion_number': '+91 86085 51555'
+              });
+            `
+          }}
+        />
+        {/* End Google Ads tags */}
       </head>
       <body>
         {/* Google Tag Manager (noscript) */}

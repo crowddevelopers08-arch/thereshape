@@ -5,6 +5,7 @@ import { CheckCircle2, Phone, ArrowLeft } from "lucide-react"
 import Header from "@/components/reshape/Header"
 import Footer from "@/components/reshape/Footer"
 import Headers from "@/components/reshape/thank-header"
+import { track } from "@/components/reshape/track"
 
 export default function ReshapeThankYou() {
   useEffect(() => {
@@ -40,7 +41,11 @@ export default function ReshapeThankYou() {
               <ArrowLeft className="h-4 w-4" />
               Back to home
             </a>
-            <a href="tel:+918608551555" className="btn btn-ghost w-full sm:w-auto">
+            <a
+              href="tel:+918608551555"
+              onClick={() => track("call_click", { branch: "Reshape Clinic" })}
+              className="btn btn-ghost w-full sm:w-auto"
+            >
               <Phone className="h-4 w-4" />
               Call 86085 51555
             </a>
