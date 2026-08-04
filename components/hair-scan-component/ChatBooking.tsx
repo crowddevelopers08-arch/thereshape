@@ -366,6 +366,8 @@ export default function ChatBooking() {
       location: answers.location,
       area: answers.primaryConcern,
       duration: answers.hairLossDuration,
+      hairLossArea: answers.hairLossArea,
+      familyHistory: answers.familyHistory,
       photoData,
       branch: BRANCH,
       source: attrs.utm_source || "direct",

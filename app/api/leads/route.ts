@@ -22,7 +22,23 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, phone, email, location, area, duration, photoData, branch, source, medium, campaign, pageUrl, formSource } = body
+    const {
+      name,
+      phone,
+      email,
+      location,
+      area,
+      duration,
+      photoData,
+      branch,
+      source,
+      medium,
+      campaign,
+      pageUrl,
+      formSource,
+      hairLossArea,
+      familyHistory,
+    } = body
 
     if (!name || !phone) {
       return NextResponse.json({ error: 'Name and phone are required' }, { status: 400 })
@@ -44,9 +60,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Deliver to TeleCRM + Google Sheet + our own database in parallel; independent best-effort.
+    // hairLossArea/familyHistory are hair-scan-chat-only fields that go to the Sheet
+    // (its own tab) but aren't part of the Lead DB schema, so they're kept out of
+    // leadPayload and passed to sendToGoogleSheet alone.
     const [telecrmOutcome, sheetOutcome, dbOutcome] = await Promise.allSettled([
       sendToTeleCRM(leadPayload),
-      sendToGoogleSheet(leadPayload),
+      sendToGoogleSheet({ ...leadPayload, hairLossArea, familyHistory }),
       prisma.lead.create({ data: { ...leadPayload, photoData } }),
     ])
 

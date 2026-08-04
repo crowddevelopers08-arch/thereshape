@@ -9,18 +9,26 @@
 /** Tab names — these must match the ones in thereshape-apps-script.gs. */
 export const LEADS_TAB = "thereshape Leads"
 export const FEEDBACK_TAB = "thereshape Feedback"
+export const HAIR_SCAN_TAB = "thereshape Hair Scan"
+
+/** Matches formSource sent by components/hair-scan-component/ChatBooking.tsx. */
+const HAIR_SCAN_FORM_SOURCE = "Hair Scan Chat"
 
 export interface SheetLead {
   name: string
   phone: string
   email?: string | null
+  location?: string | null // city / location — hair-scan chat flow only
   area?: string | null // hair concern
   duration?: string | null // how long it has been
+  hairLossArea?: string | null // most noticeable area — hair-scan chat flow only
+  familyHistory?: string | null // hair-scan chat flow only
   branch?: string | null
   source?: string | null // utm_source or "direct"
   medium?: string | null
   campaign?: string | null
   pageUrl?: string | null
+  formSource?: string | null // which form captured the lead — routes to the Hair Scan tab
 }
 
 export interface SheetFeedback {
@@ -78,20 +86,40 @@ async function postToAppsScript(payload: Record<string, unknown>): Promise<Sheet
 }
 
 export async function sendToGoogleSheet(lead: SheetLead): Promise<SheetResult> {
-  return postToAppsScript({
-    formType: "lead",
-    sheetTab: LEADS_TAB,
+  const shared = {
     timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
     name: lead.name,
     phone: lead.phone.replace(/\D/g, ""),
     email: lead.email || "",
-    area: lead.area || "",
-    duration: lead.duration || "",
     branch: lead.branch || "Reshape Clinic",
     source: lead.source || "direct",
     medium: lead.medium || "",
     campaign: lead.campaign || "",
     pageUrl: lead.pageUrl || "",
+  }
+
+  // The hair-scan chat widget collects extra fields (location, most-noticeable
+  // area, family history) that the homepage forms don't — those land in their
+  // own sheet tab instead of being squeezed into the shared Leads columns.
+  if (lead.formSource === HAIR_SCAN_FORM_SOURCE) {
+    return postToAppsScript({
+      ...shared,
+      formType: "hairscan",
+      sheetTab: HAIR_SCAN_TAB,
+      location: lead.location || "",
+      primaryConcern: lead.area || "",
+      hairLossDuration: lead.duration || "",
+      hairLossArea: lead.hairLossArea || "",
+      familyHistory: lead.familyHistory || "",
+    })
+  }
+
+  return postToAppsScript({
+    ...shared,
+    formType: "lead",
+    sheetTab: LEADS_TAB,
+    area: lead.area || "",
+    duration: lead.duration || "",
   })
 }
 

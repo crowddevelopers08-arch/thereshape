@@ -1,10 +1,15 @@
 /* ============================================================
-   thereshape — Google Apps Script (TWO FORMS, TWO TABS)
+   thereshape — Google Apps Script (THREE FORMS, THREE TABS)
 
    Routes:
      /api/leads     -> { formType:'lead', sheetTab, timestamp, name, phone,
                          email, area (hair concern), duration, branch,
                          source, medium, campaign, pageUrl }
+                       Hair-scan chat submissions (ChatBooking.tsx) instead send
+                       { formType:'hairscan', sheetTab, timestamp, name, phone,
+                         email, location, primaryConcern, hairLossDuration,
+                         hairLossArea, familyHistory, branch, source, medium,
+                         campaign, pageUrl } and land in their own tab.
      /api/feedback  -> { formType:'feedback', sheetTab, timestamp, name, email,
                          phone, rating, suggestions, source, pageUrl }
 
@@ -12,12 +17,13 @@
    /client-feedback?rating=N, which is why Feedback rows carry a Rating column.
 
    Routing is on `formType`. If it is missing the script sniffs the payload
-   (`suggestions` is unique to the feedback form) and otherwise falls back to
-   Leads — so an older deploy of the site still lands in the right tab.
+   (`suggestions` is unique to the feedback form, `hairLossArea` to the
+   hair-scan form) and otherwise falls back to Leads — so an older deploy of
+   the site still lands in the right tab.
 
    SETUP
      1. Extensions → Apps Script, paste this file, Save.
-     2. Run setupSheets() once (authorize when prompted) to create both tabs.
+     2. Run setupSheets() once (authorize when prompted) to create all tabs.
      3. Deploy → New deployment → type "Web app"
           Execute as: Me
           Who has access: Anyone
@@ -28,9 +34,10 @@
      edit the existing one → New version. The /exec URL stays the same.
    ============================================================ */
 
-/* ── Tab names — must match LEADS_TAB / FEEDBACK_TAB in lib/sheets.ts ────── */
-var LEADS_TAB    = 'thereshape Leads';
-var FEEDBACK_TAB = 'thereshape Feedback';
+/* ── Tab names — must match LEADS_TAB / FEEDBACK_TAB / HAIR_SCAN_TAB in lib/sheets.ts ── */
+var LEADS_TAB     = 'thereshape Leads';
+var FEEDBACK_TAB  = 'thereshape Feedback';
+var HAIR_SCAN_TAB = 'thereshape Hair Scan';
 
 var LEADS_HEADERS = [
   'Timestamp', 'Name', 'Phone', 'Email', 'Hair Concern', 'Duration',
@@ -43,8 +50,18 @@ var FEEDBACK_HEADERS = [
 ];
 var FEEDBACK_WIDTHS = [175, 160, 130, 210, 80, 440, 210, 300];
 
+// Every field the ChatBooking.tsx chat flow collects — including the two
+// (Most Noticeable Area, Family History) that used to be dropped entirely.
+var HAIR_SCAN_HEADERS = [
+  'Timestamp', 'Name', 'Phone', 'Email', 'Location', 'Primary Concern',
+  'Hair Loss Duration', 'Most Noticeable Area', 'Family History',
+  'Branch', 'Source', 'Medium', 'Campaign', 'Page URL'
+];
+var HAIR_SCAN_WIDTHS = [175, 160, 130, 200, 160, 190, 160, 180, 130, 150, 150, 140, 170, 300];
+
 var BRAND = '#22395f'; // thereshape navy — Leads header
 var PEACH = '#b4632f'; // deepened peach, readable behind white text — Feedback header
+var TEAL  = '#0f766e'; // hair-scan teal — Hair Scan header
 
 function authorize() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -52,7 +69,7 @@ function authorize() {
 }
 
 function doGet() {
-  return _json({ status: 'thereshape API is live', tabs: [LEADS_TAB, FEEDBACK_TAB] });
+  return _json({ status: 'thereshape API is live', tabs: [LEADS_TAB, FEEDBACK_TAB, HAIR_SCAN_TAB] });
 }
 
 function _json(obj) {
@@ -129,6 +146,21 @@ function getOrCreateFeedbackSheet(ss) {
   return ss.getSheetByName(FEEDBACK_TAB) || createFeedbackSheet(ss);
 }
 
+function createHairScanSheet(ss) {
+  var s = ss.insertSheet(HAIR_SCAN_TAB);
+  s.appendRow(HAIR_SCAN_HEADERS);
+  _styleHeader(s, HAIR_SCAN_HEADERS.length, TEAL);
+  _applyWidths(s, HAIR_SCAN_WIDTHS);
+  s.setRowHeight(1, 42);
+  s.setFrozenRows(1);
+  s.getRange(1, 1, 1, HAIR_SCAN_HEADERS.length).createFilter();
+  return s;
+}
+
+function getOrCreateHairScanSheet(ss) {
+  return ss.getSheetByName(HAIR_SCAN_TAB) || createHairScanSheet(ss);
+}
+
 /* ── Row appenders ──────────────────────────────────────────────────────── */
 
 function appendLeadRow(sheet, data, ts) {
@@ -147,6 +179,29 @@ function appendLeadRow(sheet, data, ts) {
     data.pageUrl || ''
   ]);
   styleRow(sheet, nextRow, LEADS_HEADERS.length);
+  sheet.getRange(nextRow, 3).setHorizontalAlignment('center'); // Phone
+  return nextRow;
+}
+
+function appendHairScanRow(sheet, data, ts) {
+  var nextRow = sheet.getLastRow() + 1;
+  sheet.appendRow([
+    ts,
+    data.name || '',
+    data.phone || '',
+    data.email || '',
+    data.location || '',
+    data.primaryConcern || data.area || '',
+    data.hairLossDuration || data.duration || '',
+    data.hairLossArea || '',
+    data.familyHistory || '',
+    data.branch || 'Reshape Clinic',
+    data.source || 'direct',
+    data.medium || '',
+    data.campaign || '',
+    data.pageUrl || ''
+  ]);
+  styleRow(sheet, nextRow, HAIR_SCAN_HEADERS.length);
   sheet.getRange(nextRow, 3).setHorizontalAlignment('center'); // Phone
   return nextRow;
 }
@@ -179,12 +234,25 @@ function doPost(e) {
     var ts = data.timestamp || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
     // `formType` is authoritative. The fallbacks below cover a POST made
-    // without it: `suggestions` is unique to the feedback form.
+    // without it: `suggestions` is unique to the feedback form, `hairLossArea`
+    // to the hair-scan chat form.
+    var isHairScan =
+      String(data.formType || '').toLowerCase() === 'hairscan' ||
+      !!data.hairLossArea ||
+      (data.sheetTab && String(data.sheetTab).toLowerCase().indexOf('hair scan') !== -1);
+
     var isFeedback =
-      String(data.formType || '').toLowerCase() === 'feedback' ||
-      !!data.suggestions ||
-      (data.sheetTab && String(data.sheetTab).toLowerCase().indexOf('feedback') !== -1) ||
-      (data.source && String(data.source).toLowerCase().indexOf('feedback') !== -1);
+      !isHairScan &&
+      (String(data.formType || '').toLowerCase() === 'feedback' ||
+        !!data.suggestions ||
+        (data.sheetTab && String(data.sheetTab).toLowerCase().indexOf('feedback') !== -1) ||
+        (data.source && String(data.source).toLowerCase().indexOf('feedback') !== -1));
+
+    if (isHairScan) {
+      var hsSheet = getOrCreateHairScanSheet(ss);
+      var hsRow = appendHairScanRow(hsSheet, data, ts);
+      return _json({ success: true, tab: HAIR_SCAN_TAB, row: hsRow });
+    }
 
     if (isFeedback) {
       var fbSheet = getOrCreateFeedbackSheet(ss);
@@ -222,6 +290,13 @@ function setupSheets() {
     Logger.log('OK: ' + FEEDBACK_TAB);
   }
 
+  if (!ss.getSheetByName(HAIR_SCAN_TAB)) {
+    createHairScanSheet(ss);
+    Logger.log('Created: ' + HAIR_SCAN_TAB);
+  } else {
+    Logger.log('OK: ' + HAIR_SCAN_TAB);
+  }
+
   Logger.log('setupSheets complete.');
 }
 
@@ -244,6 +319,32 @@ function testLead() {
         medium: 'cpc',
         campaign: 'hair-trinity',
         pageUrl: 'https://thereshape.in/',
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      })
+    }
+  });
+  Logger.log(result.getContent());
+}
+
+function testHairScanLead() {
+  var result = doPost({
+    postData: {
+      contents: JSON.stringify({
+        formType: 'hairscan',
+        sheetTab: HAIR_SCAN_TAB,
+        name: 'Test Hair Scan Lead',
+        phone: '9876543210',
+        email: 'test.hairscan@example.com',
+        location: 'Chennai',
+        primaryConcern: 'Hair thinning',
+        hairLossDuration: '3–6 months',
+        hairLossArea: 'Crown area',
+        familyHistory: 'Yes',
+        branch: 'Reshape Clinic',
+        source: 'direct',
+        medium: '',
+        campaign: '',
+        pageUrl: 'https://thereshape.in/hair-scan',
         timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
       })
     }
