@@ -20,7 +20,6 @@ import {
   ChevronDown,
   ChevronUp,
   MapPin,
-  Tag,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -53,13 +52,17 @@ interface Lead {
 
 const STATUS_OPTIONS: Lead["status"][] = ["NEW", "CONTACTED", "SCHEDULED", "CONVERTED", "LOST"]
 
+// the "hair-scan" bucket is exactly the ChatBooking widget on /hair-scan; every
+// other formSource (Home CTA Form, Home Popup, or missing on older leads) is "landing"
+const HAIR_SCAN_FORM_SOURCE = "Hair Scan Chat"
+
 export default function LeadsDashboard() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [areaFilter, setAreaFilter] = useState<string>("all")
-  const [formFilter, setFormFilter] = useState<string>("all")
+  const [pageView, setPageView] = useState<"landing" | "hairscan">("landing")
   const [dateFilter, setDateFilter] = useState<string>("all")
   const [expandedLead, setExpandedLead] = useState<string | null>(null)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
@@ -95,7 +98,11 @@ export default function LeadsDashboard() {
     return String(value).toLowerCase()
   }
 
-  const sortedLeads = [...leads].sort((a, b) => {
+  const pageLeads = leads.filter((l) =>
+    pageView === "hairscan" ? l.formSource === HAIR_SCAN_FORM_SOURCE : l.formSource !== HAIR_SCAN_FORM_SOURCE,
+  )
+
+  const sortedLeads = [...pageLeads].sort((a, b) => {
     if (!sortConfig) return 0
     const { key, direction } = sortConfig
 
@@ -149,20 +156,18 @@ export default function LeadsDashboard() {
 
     const matchesStatus = statusFilter === "all" || lead.status === statusFilter
     const matchesArea = areaFilter === "all" || lead.area === areaFilter
-    const matchesForm = formFilter === "all" || lead.formSource === formFilter
     const matchesDate = dateFilter === "all" || isWithinDateRange(lead.createdAt, dateFilter)
 
-    return matchesSearch && matchesStatus && matchesArea && matchesForm && matchesDate
+    return matchesSearch && matchesStatus && matchesArea && matchesDate
   })
 
-  const uniqueAreas = Array.from(new Set(leads.map((l) => l.area).filter(Boolean))) as string[]
-  const uniqueForms = Array.from(new Set(leads.map((l) => l.formSource).filter(Boolean))) as string[]
+  const uniqueAreas = Array.from(new Set(pageLeads.map((l) => l.area).filter(Boolean))) as string[]
 
   const stats = {
-    total: leads.length,
-    new: leads.filter((l) => l.status === "NEW").length,
-    converted: leads.filter((l) => l.status === "CONVERTED").length,
-    synced: leads.filter((l) => l.telecrmSynced).length,
+    total: pageLeads.length,
+    new: pageLeads.filter((l) => l.status === "NEW").length,
+    converted: pageLeads.filter((l) => l.status === "CONVERTED").length,
+    synced: pageLeads.filter((l) => l.telecrmSynced).length,
   }
 
   const getStatusBadge = (status: Lead["status"]) => {
@@ -334,6 +339,28 @@ export default function LeadsDashboard() {
         </CardHeader>
 
         <CardContent className="p-6">
+          {/* Landing page vs Hair Scan leads switch */}
+          <div className="mb-6 inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
+            <button
+              type="button"
+              onClick={() => setPageView("landing")}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                pageView === "landing" ? "bg-blue-600 text-white shadow-sm" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Landing Page Leads
+            </button>
+            <button
+              type="button"
+              onClick={() => setPageView("hairscan")}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                pageView === "hairscan" ? "bg-blue-600 text-white shadow-sm" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Hair Scan Leads
+            </button>
+          </div>
+
           {/* KPI cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {statCards.map(({ label, value, icon: Icon, color, ring }) => (
@@ -352,7 +379,7 @@ export default function LeadsDashboard() {
           </div>
 
           {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="md:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
@@ -390,21 +417,6 @@ export default function LeadsDashboard() {
                 {uniqueAreas.map((area) => (
                   <SelectItem key={area} value={area}>
                     {area}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={formFilter} onValueChange={setFormFilter}>
-              <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-                <Tag className="h-4 w-4 mr-2 text-gray-500" />
-                <SelectValue placeholder="Form" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border-gray-300 text-gray-900">
-                <SelectItem value="all">All Forms</SelectItem>
-                {uniqueForms.map((form) => (
-                  <SelectItem key={form} value={form}>
-                    {form}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -666,10 +678,9 @@ export default function LeadsDashboard() {
           {/* Summary */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 text-sm text-gray-600 gap-2">
             <div>
-              Showing {filteredLeads.length} of {leads.length} leads
+              Showing {filteredLeads.length} of {pageLeads.length} {pageView === "hairscan" ? "Hair Scan" : "Landing Page"} leads
               {searchTerm && ` • Filtered by: "${searchTerm}"`}
               {areaFilter !== "all" && ` • Area: ${areaFilter}`}
-              {formFilter !== "all" && ` • Form: ${formFilter}`}
             </div>
             <div className="flex gap-4">
               <div className="flex items-center gap-1">
