@@ -57,7 +57,8 @@ export default function Headers() {
       >
         {/* left — logo */}
         <a href="#top" className="flex flex-none items-center">
-          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/reshape-logo-removebg-preview_vv7uc4.png" alt="thereshape" className="h-8 w-auto sm:h-9" />
+          {/* navy lockup — this pill is white/70, so the white logo vanishes on it */}
+          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/v1785391578/26696b2b-7228-4b02-afae-af43ef094d7d_fs8cq8.jpg" alt="thereshape" className="h-11 w-auto sm:h-14" />
         </a>
 
         {/* right — text link + button */}
