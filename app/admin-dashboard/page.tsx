@@ -33,8 +33,10 @@ interface Lead {
   name: string
   phone: string
   email: string | null
+  location: string | null
   area: string | null
   duration: string | null
+  photoData: string | null
   branch: string | null
   source: string | null
   medium: string | null
@@ -135,6 +137,7 @@ export default function LeadsDashboard() {
     const matchesSearch =
       safeString(lead.name).includes(safeString(searchTerm)) ||
       safeString(lead.phone).includes(safeString(searchTerm)) ||
+      safeString(lead.location).includes(safeString(searchTerm)) ||
       safeString(lead.area).includes(safeString(searchTerm)) ||
       safeString(lead.duration).includes(safeString(searchTerm)) ||
       safeString(lead.source).includes(safeString(searchTerm)) ||
@@ -197,6 +200,7 @@ export default function LeadsDashboard() {
       "Name",
       "Phone",
       "Email",
+      "Location",
       "Area",
       "Duration",
       "Branch",
@@ -212,6 +216,7 @@ export default function LeadsDashboard() {
       lead.name || "",
       lead.phone || "",
       lead.email || "",
+      lead.location || "",
       lead.area || "",
       lead.duration || "",
       lead.branch || "",
@@ -402,6 +407,7 @@ export default function LeadsDashboard() {
               <table className="w-full caption-bottom text-sm">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Photo</th>
                     <th
                       className="h-12 px-4 text-left align-middle font-medium text-gray-700 cursor-pointer hover:bg-gray-100 transition-colors"
                       onClick={() => handleSort("name")}
@@ -417,8 +423,9 @@ export default function LeadsDashboard() {
                       </div>
                     </th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Phone</th>
-                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Area</th>
-                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Duration</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Location</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Concern 1</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Concern 2</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Source</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Status</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Sync</th>
@@ -442,7 +449,7 @@ export default function LeadsDashboard() {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={9} className="p-8 text-center text-gray-500">
+                      <td colSpan={11} className="p-8 text-center text-gray-500">
                         <div className="flex items-center justify-center gap-2">
                           <RefreshCw className="h-4 w-4 animate-spin" />
                           Loading leads...
@@ -451,7 +458,7 @@ export default function LeadsDashboard() {
                     </tr>
                   ) : filteredLeads.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="p-8 text-center text-gray-500">
+                      <td colSpan={11} className="p-8 text-center text-gray-500">
                         No leads found matching your criteria
                       </td>
                     </tr>
@@ -464,6 +471,20 @@ export default function LeadsDashboard() {
                             className="border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
                             onClick={() => toggleLeadExpansion(lead.id)}
                           >
+                            <td className="p-4 align-middle">
+                              {lead.photoData ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={lead.photoData}
+                                  alt={`${lead.name || "Lead"}'s photo`}
+                                  className="h-10 w-10 rounded-full border border-gray-200 object-cover"
+                                />
+                              ) : (
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-400">
+                                  {lead.name ? lead.name.charAt(0).toUpperCase() : "?"}
+                                </div>
+                              )}
+                            </td>
                             <td className="p-4 align-middle font-medium text-gray-900">
                               <div className="flex items-center gap-2">
                                 <div className={`w-2 h-2 rounded-full ${getStatusDot(lead.status)}`} />
@@ -475,6 +496,9 @@ export default function LeadsDashboard() {
                                 <Phone className="h-3 w-3 text-blue-600" />
                                 <span className="text-sm text-gray-700">{lead.phone || "No phone"}</span>
                               </div>
+                            </td>
+                            <td className="p-4 align-middle">
+                              <span className="text-sm text-gray-700">{lead.location || "Not specified"}</span>
                             </td>
                             <td className="p-4 align-middle">
                               <span className="text-sm font-medium text-gray-900">{lead.area || "Not specified"}</span>
@@ -531,7 +555,7 @@ export default function LeadsDashboard() {
                           </tr>
                           {expandedLead === lead.id && (
                             <tr className="bg-gray-50 border-b border-gray-200">
-                              <td colSpan={9} className="p-4">
+                              <td colSpan={11} className="p-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                   <div>
                                     <h4 className="font-medium text-gray-900 mb-2">Lead Details</h4>
@@ -543,11 +567,25 @@ export default function LeadsDashboard() {
                                         <span className="font-medium">Email:</span> {lead.email || "Not provided"}
                                       </div>
                                       <div>
-                                        <span className="font-medium">Area of pain:</span> {lead.area || "Not specified"}
+                                        <span className="font-medium">Location:</span> {lead.location || "Not specified"}
                                       </div>
                                       <div>
-                                        <span className="font-medium">Duration:</span> {lead.duration || "Not specified"}
+                                        <span className="font-medium">Primary hair concern:</span> {lead.area || "Not specified"}
                                       </div>
+                                      <div>
+                                        <span className="font-medium">Hair loss duration:</span> {lead.duration || "Not specified"}
+                                      </div>
+                                      {lead.photoData && (
+                                        <div className="pt-2">
+                                          <div className="mb-2 font-medium">Hair/scalp photo:</div>
+                                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                                          <img
+                                            src={lead.photoData}
+                                            alt={`${lead.name}'s hair or scalp assessment`}
+                                            className="max-h-[420px] w-full max-w-sm rounded-lg border border-gray-200 bg-gray-100 object-contain"
+                                          />
+                                        </div>
+                                      )}
                                       {lead.telecrmId && (
                                         <div>
                                           <span className="font-medium">TeleCRM ID:</span> {lead.telecrmId}

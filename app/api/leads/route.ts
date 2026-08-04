@@ -22,7 +22,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, phone, email, area, duration, branch, source, medium, campaign, pageUrl } = body
+    const { name, phone, email, location, area, duration, photoData, branch, source, medium, campaign, pageUrl } = body
 
     if (!name || !phone) {
       return NextResponse.json({ error: 'Name and phone are required' }, { status: 400 })
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
       name,
       phone,
       email,
+      location,
       area,
       duration,
       branch: branch || 'Reshape Clinic',
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
     const [telecrmOutcome, sheetOutcome, dbOutcome] = await Promise.allSettled([
       sendToTeleCRM(leadPayload),
       sendToGoogleSheet(leadPayload),
-      prisma.lead.create({ data: leadPayload }),
+      prisma.lead.create({ data: { ...leadPayload, photoData } }),
     ])
 
     let telecrmSynced = false
@@ -70,23 +71,29 @@ export async function POST(request: NextRequest) {
       console.error('Google Sheets sync failed:', sheetOutcome.reason)
     }
 
+    const dbSaved = dbOutcome.status === 'fulfilled'
     if (dbOutcome.status === 'rejected') {
       console.error('Database save failed:', dbOutcome.reason)
     }
 
-    // The lead is captured as long as it reached at least one destination.
-    const captured = telecrmSynced || sheetSynced
+    // Our own database is the system of record for the admin dashboard and the
+    // booking flow (it's what lets the user continue to WhatsApp); TeleCRM and
+    // Google Sheets are best-effort integrations layered on top.
+    const captured = dbSaved || telecrmSynced || sheetSynced
+
+    const failedIntegrations = [!telecrmSynced && 'TeleCRM', !sheetSynced && 'Google Sheets'].filter(Boolean)
 
     return NextResponse.json(
       {
         success: captured,
         telecrmSynced,
         sheetSynced,
-        message: captured
-          ? telecrmSynced && sheetSynced
-            ? 'Lead delivered to TeleCRM and Google Sheets'
-            : 'Lead captured; one integration failed'
-          : 'Lead could not be delivered to any destination',
+        dbSaved,
+        message: !captured
+          ? 'Lead could not be saved or delivered to any destination'
+          : failedIntegrations.length
+            ? `Lead saved; ${failedIntegrations.join(' and ')} sync failed`
+            : 'Lead saved and delivered to TeleCRM and Google Sheets',
       },
       { status: captured ? 200 : 502 },
     )

@@ -13,8 +13,10 @@ model Lead {
   name          String
   phone         String
   email         String?
+  location      String?
   area          String? // where it hurts (Knee, Back / spine, ...)
   duration      String? // how long it has been (Under 3 months, ...)
+  photoData     String?
   branch        String?    @default("T. Nagar")
   source        String? // utm_source or "direct"
   medium        String? // utm_medium

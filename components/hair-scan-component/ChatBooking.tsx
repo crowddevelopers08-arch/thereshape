@@ -35,13 +35,13 @@ const REVIEW_USPS = [
   "Second-opinion support",
 ]
 
-type QaKey = "name" | "phone" | "email" | "location" | "symptom" | "surgeryAdvice" | "consultedBefore"
+type QaKey = "name" | "phone" | "email" | "location" | "primaryConcern" | "hairLossDuration" | "hairLossArea" | "familyHistory"
 
 interface QaStep {
   key: QaKey
   label: string
   question: string
-  type: "text" | "tel" | "email" | "select"
+  type: "text" | "tel" | "email" | "options"
   placeholder: string
   options?: string[]
   /** defaults to true — set false to let this step be skipped */
@@ -63,7 +63,6 @@ const QA_STEPS: QaStep[] = [
     question: "What's your email address?",
     type: "email",
     placeholder: "Type your email…",
-    required: false,
   },
   {
     key: "location",
@@ -73,38 +72,36 @@ const QA_STEPS: QaStep[] = [
     placeholder: "Type your city / location…",
   },
   {
-    key: "symptom",
-    label: "Hernia symptom",
-    question: "What type of hernia symptom do you have?",
-    type: "select",
-    placeholder: "Choose a symptom…",
-    options: [
-      "Abdominal bulge or lump",
-      "Groin pain or swelling",
-      "Post-pregnancy bulge (diastasis recti)",
-      "Post-surgery concern",
-      "Not sure — need evaluation",
-    ],
+    key: "primaryConcern",
+    label: "Primary hair concern",
+    question: "What is your primary hair concern?",
+    type: "options",
+    placeholder: "Choose your primary concern",
+    options: ["Hair fall", "Hair thinning", "Receding hairline", "Bald patches", "Excessive hair shedding", "Slow hair growth"],
   },
   {
-    key: "surgeryAdvice",
-    label: "Advised surgery before",
-    question: "Have you been advised surgery before?",
-    type: "select",
-    placeholder: "Choose an option…",
-    options: ["Yes — I want a second opinion", "No — this is my first consultation", "Currently evaluating options"],
+    key: "hairLossDuration",
+    label: "Hair loss duration",
+    question: "How long have you been experiencing hair loss?",
+    type: "options",
+    placeholder: "Choose a duration",
+    options: ["Less than 3 months", "3–6 months", "6–12 months", "More than 1 year"],
   },
   {
-    key: "consultedBefore",
-    label: "Consulted another doctor",
-    question: "Have you consulted another doctor for this before?",
-    type: "select",
-    placeholder: "Choose an option…",
-    options: [
-      "Yes — looking for specialist opinion",
-      "No — this is my first consultation",
-      "Yes — but reports were inconclusive",
-    ],
+    key: "hairLossArea",
+    label: "Most noticeable area",
+    question: "Where is your hair loss most noticeable?",
+    type: "options",
+    placeholder: "Choose an area",
+    options: ["Front hairline", "Crown area", "Entire scalp", "Side temples", "Beard/Eyebrows"],
+  },
+  {
+    key: "familyHistory",
+    label: "Family history",
+    question: "Do you have a family history of hair loss?",
+    type: "options",
+    placeholder: "Choose an option",
+    options: ["Yes", "No", "Not sure"],
   },
 ]
 
@@ -115,14 +112,16 @@ export default function ChatBooking() {
 
   const [stage, setStage] = useState<Stage>("qa")
   const [qaIndex, setQaIndex] = useState(0)
+  const [editingReview, setEditingReview] = useState(false)
   const [answers, setAnswers] = useState<Record<QaKey, string>>({
     name: "",
     phone: "",
     email: "",
     location: "",
-    symptom: "",
-    surgeryAdvice: "",
-    consultedBefore: "",
+    primaryConcern: "",
+    hairLossDuration: "",
+    hairLossArea: "",
+    familyHistory: "",
   })
 
   const [photo, setPhoto] = useState<File | null>(null)
@@ -137,6 +136,9 @@ export default function ChatBooking() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const attrRef = useRef<Record<string, string>>({})
+  // synchronous re-entrancy guard — `submitting` state only blocks the button after
+  // the next render, so a second click/Enter fired in that gap would still get through
+  const sendingRef = useRef(false)
 
   // auto-advance the before/after slideshow
   useEffect(() => {
@@ -169,6 +171,35 @@ export default function ChatBooking() {
 
   const current = QA_STEPS[qaIndex]
 
+  const resetFlow = () => {
+    sendingRef.current = false
+    if (photoUrl) URL.revokeObjectURL(photoUrl)
+    setStage("qa")
+    setQaIndex(0)
+    setEditingReview(false)
+    setAnswers({
+      name: "",
+      phone: "",
+      email: "",
+      location: "",
+      primaryConcern: "",
+      hairLossDuration: "",
+      hairLossArea: "",
+      familyHistory: "",
+    })
+    setPhoto(null)
+    setPhotoUrl(null)
+    setWaLink("")
+  }
+
+  // 15s after WhatsApp opens, return to a blank form so it's ready for the next visitor
+  useEffect(() => {
+    if (stage !== "sent") return
+    const id = setTimeout(resetFlow, 15000)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage])
+
   const advanceQa = (rawValue: string) => {
     const value = rawValue.trim()
     if (!value && current.required === false) {
@@ -178,6 +209,11 @@ export default function ChatBooking() {
       if (current.key === "phone" && !/^[6-9][0-9]{9}$/.test(value)) return
       if (current.key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return
       setAnswers((prev) => ({ ...prev, [current.key]: value }))
+    }
+    if (editingReview) {
+      setEditingReview(false)
+      setStage("review")
+      return
     }
     if (qaIndex + 1 < QA_STEPS.length) {
       setQaIndex((i) => i + 1)
@@ -255,22 +291,82 @@ export default function ChatBooking() {
     )
   }
 
+  const preparePhoto = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const image = document.createElement("img")
+      const objectUrl = URL.createObjectURL(file)
+      image.onload = () => {
+        const maxSide = 1200
+        const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight))
+        const canvas = document.createElement("canvas")
+        canvas.width = Math.round(image.naturalWidth * scale)
+        canvas.height = Math.round(image.naturalHeight * scale)
+        const context = canvas.getContext("2d")
+        if (!context) {
+          URL.revokeObjectURL(objectUrl)
+          reject(new Error("Could not process image"))
+          return
+        }
+        context.drawImage(image, 0, 0, canvas.width, canvas.height)
+        URL.revokeObjectURL(objectUrl)
+        resolve(canvas.toDataURL("image/jpeg", 0.72))
+      }
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl)
+        reject(new Error("Could not read image"))
+      }
+      image.src = objectUrl
+    })
+
   const handleWhatsApp = async () => {
+    if (sendingRef.current) return
+    sendingRef.current = true
+
     const name = answers.name.trim()
     const phone = answers.phone.trim()
-    if (!name || !/^[6-9][0-9]{9}$/.test(phone)) {
-      alert("Please go back and fill in your name and mobile number.")
-      setStage("review")
+    const missingIndex = QA_STEPS.findIndex((step) => !answers[step.key].trim())
+
+    if (missingIndex !== -1) {
+      sendingRef.current = false
+      alert(`Please answer ${QA_STEPS[missingIndex].label} before continuing.`)
+      setQaIndex(missingIndex)
+      setStage("qa")
+      return
+    }
+    if (!/^[6-9][0-9]{9}$/.test(phone) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email.trim())) {
+      sendingRef.current = false
+      alert("Please enter a valid mobile number and email address before continuing.")
+      setQaIndex(!/^[6-9][0-9]{9}$/.test(phone) ? 1 : 2)
+      setStage("qa")
+      return
+    }
+    if (!photo) {
+      sendingRef.current = false
+      alert("Please add a clear photo of the affected hair or scalp area before continuing.")
       return
     }
 
     setSubmitting(true)
     const attrs = attrRef.current
+    let photoData: string | undefined
+    if (photo) {
+      try {
+        photoData = await preparePhoto(photo)
+      } catch {
+        sendingRef.current = false
+        setSubmitting(false)
+        alert("We couldn't process the selected photo. Please choose another image and try again.")
+        return
+      }
+    }
     const payload = {
       name,
       phone,
-      area: answers.symptom,
-      duration: answers.surgeryAdvice,
+      email: answers.email.trim(),
+      location: answers.location,
+      area: answers.primaryConcern,
+      duration: answers.hairLossDuration,
+      photoData,
       branch: BRANCH,
       source: attrs.utm_source || "direct",
       medium: attrs.utm_medium || "",
@@ -278,29 +374,29 @@ export default function ChatBooking() {
       pageUrl: attrs.page_url || (typeof window !== "undefined" ? window.location.href : ""),
     }
 
-    // best-effort — still continue to WhatsApp even if the CRM sync fails
     try {
-      await fetch(LEAD_ENDPOINT, {
+      const response = await fetch(LEAD_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
+      if (!response.ok) throw new Error("Lead submission failed")
     } catch {
-      /* ignore — WhatsApp handoff below is the primary path */
+      sendingRef.current = false
+      setSubmitting(false)
+      alert("We couldn't save your booking details. Please try again before continuing to WhatsApp.")
+      return
     }
 
-    track("whatsapp_click", { branch: BRANCH, concern: answers.symptom, source: "chat_booking" })
+    track("whatsapp_click", { branch: BRANCH, concern: answers.primaryConcern, source: "chat_booking" })
 
     const message = [
-      "Hi, I'd like to book a hernia consultation.",
+      "Hi, I'd like to book a hair consultation.",
       `Name: ${name}`,
       `Phone: ${phone}`,
-      answers.email ? `Email: ${answers.email}` : null,
-      answers.location ? `Location: ${answers.location}` : null,
-      `Hernia symptom: ${answers.symptom}`,
-      `Advised surgery before: ${answers.surgeryAdvice}`,
-      `Consulted another doctor: ${answers.consultedBefore}`,
-      photo ? "(I have a photo to share — attaching it here.)" : null,
+      `Location: ${answers.location}`,
+      `Primary hair concern: ${answers.primaryConcern}`,
+      `Hair loss duration: ${answers.hairLossDuration}`,
     ]
       .filter(Boolean)
       .join("\n")
@@ -317,14 +413,14 @@ export default function ChatBooking() {
       <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8">
         <div className="mx-auto mb-9 max-w-[720px] text-center sm:mb-11">
           <p className="kicker justify-center">
-            Private Hernia Consultation
+           Start Your Hair Assessment Now
           </p>
           <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">
-            Tell Us About Your Hernia Concern
+            Your answers will help our hair specialist prepare for your consultation 
           </h2>
-          <p className="mx-auto mt-4 max-w-[600px] text-[0.95rem] leading-relaxed text-[#5f6f88] sm:text-[1rem]">
+          {/* <p className="mx-auto mt-4 max-w-[600px] text-[0.95rem] leading-relaxed text-[#5f6f88] sm:text-[1rem]">
             Share a few details about your symptoms and connect privately with our specialist team.
-          </p>
+          </p> */}
         </div>
 
         <Reveal className="grid grid-cols-1 gap-5 md:grid-cols-[1.2fr_1fr] md:items-stretch">
@@ -353,9 +449,9 @@ export default function ChatBooking() {
                     <span className="font-bold text-[#22395f]">Let&apos;s Understand Your Concern</span>
                   </BotBubble>
                   <BotBubble>
-                    Tell us what you&apos;ve noticed and whether you&apos;ve already received medical advice.
+                    Tell us what you&apos;ve noticed about your hair and scalp.
                   </BotBubble>
-                  <BotBubble>Your answers will help our hernia specialist prepare for your consultation 👇</BotBubble>
+                  <BotBubble>Your answers will help our hair specialist prepare for your consultation 👇</BotBubble>
                 </div>
               )}
 
@@ -373,21 +469,19 @@ export default function ChatBooking() {
                   <BotBubble>{current.question}</BotBubble>
 
                   <div className="pt-2">
-                    {current.type === "select" ? (
-                      <select
-                        key={current.key}
-                        autoFocus
-                        defaultValue={answers[current.key] || ""}
-                        onChange={(e) => advanceQa(e.target.value)}
-                        className={chatTyperCls}
-                      >
-                        <option value="" disabled>
-                          {current.placeholder}
-                        </option>
-                        {current.options?.map((o) => (
-                          <option key={o}>{o}</option>
+                    {current.type === "options" ? (
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="group" aria-label={current.question}>
+                        {current.options?.map((option) => (
+                          <button
+                            key={option}
+                            type="button"
+                            onClick={() => advanceQa(option)}
+                            className="rounded-2xl border border-[#dce4ef] bg-white px-4 py-3 text-left text-[0.88rem] font-semibold text-[#22395f] transition-all duration-150 hover:-translate-y-0.5 hover:border-[#22395f] hover:bg-[#fef5ef] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]"
+                          >
+                            {option}
+                          </button>
                         ))}
-                      </select>
+                      </div>
                     ) : (
                       <div className="flex items-center gap-3">
                         <input
@@ -429,7 +523,7 @@ export default function ChatBooking() {
 
               {stage === "review" && (
                 <div className="rise space-y-4">
-                  <BotBubble>Please confirm that your contact and hernia details are correct.</BotBubble>
+                  <BotBubble>Please confirm that your contact and hair assessment details are correct.</BotBubble>
 
                   <div className="grid grid-cols-2 gap-3">
                     {QA_STEPS.map((s, i) => (
@@ -449,6 +543,7 @@ export default function ChatBooking() {
                           type="button"
                           onClick={() => {
                             setQaIndex(i)
+                            setEditingReview(true)
                             setStage("qa")
                           }}
                           aria-label={`Edit ${s.label}`}
@@ -498,13 +593,12 @@ export default function ChatBooking() {
                   <div className="flex gap-3 rounded-2xl border border-[#a8c8ff] bg-[#f0f6ff] px-4 py-4 text-[0.88rem] leading-relaxed text-[#1f2f47]">
                     <LuActivity className="mt-0.5 h-5 w-5 flex-none text-[#3485f5]" />
                     <p>
-                      A clinical examination can help identify the type of hernia and whether monitoring, treatment or
-                      a surgical opinion is the most suitable next step.
+                      A clinical examination can help identify the type of hair loss and whether monitoring, treatment or a surgical opinion is the most suitable next step.
                     </p>
                   </div>
 
                   <p className="rounded-2xl bg-[#eef2f6] px-4 py-3 text-[0.78rem] leading-relaxed text-[#5f6f88]">
-                    This guidance is not a diagnosis. Your specialist will assess your symptoms and medical history.
+                    This guidance is not a diagnosis. Your specialist will assess your hair, scalp and medical history.
                   </p>
 
                   <div className="w-full min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]">
@@ -546,7 +640,7 @@ export default function ChatBooking() {
               {stage === "final" && (
                 <div className="rise space-y-4">
                   <BotBubble>
-                    Almost done! If the bulge or swelling is visible, you may add a photo before continuing to WhatsApp.
+                    Almost done! Please add a clear photo of the affected hair or scalp area to continue to WhatsApp.
                   </BotBubble>
 
                   {/* photo upload / camera capture */}
@@ -669,11 +763,11 @@ export default function ChatBooking() {
                   <button
                     type="button"
                     onClick={handleWhatsApp}
-                    disabled={submitting}
+                    disabled={submitting || !photo}
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1fb959] disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     <FaWhatsapp className="h-5 w-5" />
-                    {submitting ? "Please wait…" : "Continue with WhatsApp"}
+                    {submitting ? "Please wait…" : !photo ? "Add a photo to continue" : "Continue with WhatsApp"}
                   </button>
                   <p className="text-center text-[0.75rem] leading-relaxed text-[#5f6f88]">
                     By continuing, you agree to be contacted by thereshape about your appointment.
