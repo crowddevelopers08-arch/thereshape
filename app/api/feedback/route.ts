@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { sendFeedbackToTeleCRM } from "@/lib/telecrm"
 import { sendFeedbackToGoogleSheet } from "@/lib/sheets"
+import prisma from "@/lib/prisma"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-// Client feedback from /client-feedback. Unlike /api/leads nothing is persisted
-// locally — TeleCRM and the Google Sheet are the system of record.
+// Client feedback from /client-feedback. Delivered to TeleCRM and the Google
+// Sheet (the CRM team's system of record) and saved to our own database, the
+// same three-destination pattern /api/leads uses.
+
+/** Feedback source label, kept in step with the one lib/sheets.ts sends. */
+const SOURCE = "thereshape — Client Feedback"
 
 /** Same rule the booking form enforces client-side, applied again server-side. */
 function isValidIndianPhone(raw: string) {
@@ -47,15 +52,28 @@ export async function POST(request: NextRequest) {
 
   const feedback = { name, email, phone, suggestions, pageUrl, rating }
 
-  // Both destinations in parallel; each is independently best-effort.
-  const [crmOutcome, sheetOutcome] = await Promise.allSettled([
+  // All three destinations in parallel; each is independently best-effort.
+  const [crmOutcome, sheetOutcome, dbOutcome] = await Promise.allSettled([
     sendFeedbackToTeleCRM(feedback),
     sendFeedbackToGoogleSheet(feedback),
+    prisma.feedback.create({
+      data: {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.replace(/\D/g, ""),
+        rating,
+        suggestions: suggestions.trim(),
+        source: SOURCE,
+        pageUrl: pageUrl || null,
+      },
+    }),
   ])
 
   let telecrmSynced = false
+  let telecrmId: string | null = null
   if (crmOutcome.status === "fulfilled") {
     telecrmSynced = crmOutcome.value.synced
+    telecrmId = crmOutcome.value.telecrmId
   } else {
     console.error("TeleCRM feedback sync failed:", crmOutcome.reason)
   }
@@ -67,20 +85,48 @@ export async function POST(request: NextRequest) {
     console.error("Google Sheets feedback sync failed:", sheetOutcome.reason)
   }
 
-  // Captured as long as it reached at least one destination.
-  const captured = telecrmSynced || sheetSynced
+  const saved = dbOutcome.status === "fulfilled"
+  if (!saved) {
+    console.error("Database save failed:", dbOutcome.reason)
+  } else if (telecrmSynced || sheetSynced) {
+    // Record which integrations actually took it, so a failed delivery can be
+    // spotted and replayed from the row itself.
+    await prisma.feedback
+      .update({
+        where: { id: dbOutcome.value.id },
+        data: { telecrmSynced, telecrmId, sheetSynced },
+      })
+      .catch((err) => console.error("Failed to record sync flags on feedback:", err))
+  }
+
+  // Captured as long as it reached at least one destination. The database
+  // counts: if the row is safely stored, telling the visitor to resubmit would
+  // only duplicate it.
+  const captured = telecrmSynced || sheetSynced || saved
 
   return NextResponse.json(
     {
       success: captured,
       telecrmSynced,
       sheetSynced,
+      saved,
       message: captured
-        ? telecrmSynced && sheetSynced
-          ? "Feedback delivered to TeleCRM and Google Sheets"
-          : "Feedback captured; one integration failed"
+        ? telecrmSynced && sheetSynced && saved
+          ? "Feedback delivered to TeleCRM, Google Sheets and the database"
+          : "Feedback captured; one or more integrations failed"
         : "Feedback could not be delivered to any destination",
     },
     { status: captured ? 201 : 502 },
   )
+}
+
+/** Feedback for the admin dashboard, newest first — mirrors GET /api/leads. */
+export async function GET() {
+  try {
+    const feedback = await prisma.feedback.findMany({ orderBy: { createdAt: "desc" } })
+    return NextResponse.json({ feedback })
+  } catch (error) {
+    console.error("Error fetching feedback:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
 }

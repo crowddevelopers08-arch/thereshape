@@ -39,11 +39,10 @@ export const IMAGES = {
 } as const
 
 /* ── Review funnel (/review → Google or /client-feedback) ──────────────────
-   REPLACE GOOGLE_REVIEW_URL before launch: Google Business Profile →
-   "Ask for reviews" → copy the g.page link. Until it is replaced the review
-   page falls back to a Maps search for the clinic, so 4★+ still lands
-   somewhere useful instead of 404-ing.                                      */
-export const GOOGLE_REVIEW_URL = "REPLACE_WITH_GOOGLE_REVIEW_LINK"
+   The clinic's Google Business Profile "Ask for reviews" link — 4★ and above
+   go straight here, landing on the review composer with the star picker open.
+   The fallback below only takes over if this is ever reset to a placeholder. */
+export const GOOGLE_REVIEW_URL = "https://g.page/r/CcxiMz1AV5jyEBM/review"
 
 /** Google Maps query — the clinic's registered address. */
 export const MAP_QUERY = "Reshape Clinic, Luz Church Road, Mylapore, Chennai 600004"
