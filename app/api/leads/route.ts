@@ -22,7 +22,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, phone, email, location, area, duration, photoData, branch, source, medium, campaign, pageUrl } = body
+    const { name, phone, email, location, area, duration, photoData, branch, source, medium, campaign, pageUrl, formSource } = body
 
     if (!name || !phone) {
       return NextResponse.json({ error: 'Name and phone are required' }, { status: 400 })
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
       medium,
       campaign,
       pageUrl,
+      formSource,
     }
 
     // Deliver to TeleCRM + Google Sheet + our own database in parallel; independent best-effort.

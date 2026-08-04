@@ -20,6 +20,7 @@ import {
   ChevronDown,
   ChevronUp,
   MapPin,
+  Tag,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -42,6 +43,7 @@ interface Lead {
   medium: string | null
   campaign: string | null
   pageUrl: string | null
+  formSource: string | null
   status: "NEW" | "CONTACTED" | "SCHEDULED" | "CONVERTED" | "LOST"
   telecrmSynced: boolean
   telecrmId: string | null
@@ -57,6 +59,7 @@ export default function LeadsDashboard() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [areaFilter, setAreaFilter] = useState<string>("all")
+  const [formFilter, setFormFilter] = useState<string>("all")
   const [dateFilter, setDateFilter] = useState<string>("all")
   const [expandedLead, setExpandedLead] = useState<string | null>(null)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
@@ -141,16 +144,19 @@ export default function LeadsDashboard() {
       safeString(lead.area).includes(safeString(searchTerm)) ||
       safeString(lead.duration).includes(safeString(searchTerm)) ||
       safeString(lead.source).includes(safeString(searchTerm)) ||
+      safeString(lead.formSource).includes(safeString(searchTerm)) ||
       safeString(lead.campaign).includes(safeString(searchTerm))
 
     const matchesStatus = statusFilter === "all" || lead.status === statusFilter
     const matchesArea = areaFilter === "all" || lead.area === areaFilter
+    const matchesForm = formFilter === "all" || lead.formSource === formFilter
     const matchesDate = dateFilter === "all" || isWithinDateRange(lead.createdAt, dateFilter)
 
-    return matchesSearch && matchesStatus && matchesArea && matchesDate
+    return matchesSearch && matchesStatus && matchesArea && matchesForm && matchesDate
   })
 
   const uniqueAreas = Array.from(new Set(leads.map((l) => l.area).filter(Boolean))) as string[]
+  const uniqueForms = Array.from(new Set(leads.map((l) => l.formSource).filter(Boolean))) as string[]
 
   const stats = {
     total: leads.length,
@@ -205,6 +211,7 @@ export default function LeadsDashboard() {
       "Duration",
       "Branch",
       "Source",
+      "Form",
       "Medium",
       "Campaign",
       "Status",
@@ -221,6 +228,7 @@ export default function LeadsDashboard() {
       lead.duration || "",
       lead.branch || "",
       lead.source || "",
+      lead.formSource || "",
       lead.medium || "",
       lead.campaign || "",
       lead.status || "",
@@ -344,7 +352,7 @@ export default function LeadsDashboard() {
           </div>
 
           {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="md:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
@@ -382,6 +390,21 @@ export default function LeadsDashboard() {
                 {uniqueAreas.map((area) => (
                   <SelectItem key={area} value={area}>
                     {area}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={formFilter} onValueChange={setFormFilter}>
+              <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                <Tag className="h-4 w-4 mr-2 text-gray-500" />
+                <SelectValue placeholder="Form" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border-gray-300 text-gray-900">
+                <SelectItem value="all">All Forms</SelectItem>
+                {uniqueForms.map((form) => (
+                  <SelectItem key={form} value={form}>
+                    {form}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -427,6 +450,7 @@ export default function LeadsDashboard() {
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Concern 1</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Concern 2</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Source</th>
+                    <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Form</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Status</th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">Sync</th>
                     <th
@@ -449,7 +473,7 @@ export default function LeadsDashboard() {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={11} className="p-8 text-center text-gray-500">
+                      <td colSpan={12} className="p-8 text-center text-gray-500">
                         <div className="flex items-center justify-center gap-2">
                           <RefreshCw className="h-4 w-4 animate-spin" />
                           Loading leads...
@@ -458,7 +482,7 @@ export default function LeadsDashboard() {
                     </tr>
                   ) : filteredLeads.length === 0 ? (
                     <tr>
-                      <td colSpan={11} className="p-8 text-center text-gray-500">
+                      <td colSpan={12} className="p-8 text-center text-gray-500">
                         No leads found matching your criteria
                       </td>
                     </tr>
@@ -510,6 +534,9 @@ export default function LeadsDashboard() {
                               <span className="text-sm text-gray-700 capitalize">{lead.source || "direct"}</span>
                             </td>
                             <td className="p-4 align-middle">
+                              <span className="text-sm text-gray-700">{lead.formSource || "Not specified"}</span>
+                            </td>
+                            <td className="p-4 align-middle">
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <div className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
@@ -555,7 +582,7 @@ export default function LeadsDashboard() {
                           </tr>
                           {expandedLead === lead.id && (
                             <tr className="bg-gray-50 border-b border-gray-200">
-                              <td colSpan={11} className="p-4">
+                              <td colSpan={12} className="p-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                   <div>
                                     <h4 className="font-medium text-gray-900 mb-2">Lead Details</h4>
@@ -596,6 +623,9 @@ export default function LeadsDashboard() {
                                   <div>
                                     <h4 className="font-medium text-gray-900 mb-2">Campaign Attribution</h4>
                                     <div className="space-y-2 text-gray-700">
+                                      <div>
+                                        <span className="font-medium">Form:</span> {lead.formSource || "Not specified"}
+                                      </div>
                                       <div>
                                         <span className="font-medium">Source:</span> {lead.source || "direct"}
                                       </div>
@@ -639,6 +669,7 @@ export default function LeadsDashboard() {
               Showing {filteredLeads.length} of {leads.length} leads
               {searchTerm && ` • Filtered by: "${searchTerm}"`}
               {areaFilter !== "all" && ` • Area: ${areaFilter}`}
+              {formFilter !== "all" && ` • Form: ${formFilter}`}
             </div>
             <div className="flex gap-4">
               <div className="flex items-center gap-1">

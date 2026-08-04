@@ -92,6 +92,7 @@ export default function BookingModal() {
       medium: raw.utm_medium || "",
       campaign: raw.utm_campaign || "",
       pageUrl: raw.page_url || (typeof window !== "undefined" ? window.location.href : ""),
+      formSource: "Home Popup",
     }
 
     try {

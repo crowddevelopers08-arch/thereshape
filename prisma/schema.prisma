@@ -22,11 +22,7 @@ model Lead {
   medium        String? // utm_medium
   campaign      String? // utm_campaign
   pageUrl       String? // full landing-page URL the lead came from
-  // Present in the live database but absent from this schema until now, so any
-  // `prisma db push` would have dropped them (one row holds data). Nothing
-  // currently writes them — they predate the current /api/leads payload.
-  location      String? // city / location, from the hair-scan chat flow
-  photoData     String? // uploaded scalp photo, stored as a data URL
+  formSource    String? // which form captured the lead: "Hair Scan Chat", "Home CTA Form", "Home Popup"
   status        LeadStatus @default(NEW)
   telecrmSynced Boolean    @default(false)
   telecrmId     String?
