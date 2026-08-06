@@ -39,7 +39,7 @@ const PrivacyPolicy: React.FC = () => {
               <div className="rounded-full bg-[#22395f] p-2">
                 <Eye className="h-5 w-5 text-white" />
               </div>
-              <h2 className="text-lg font-semibold text-[#22395f] sm:text-xl">1. Information We Collect</h2>
+              <h2 className="text-lg font-semibold text-[#22395f] sm:text-xl">1. Informations We Collect</h2>
             </div>
             <p className="mb-3 text-gray-700">
               When you fill out a form on our website, book an appointment, or contact us, we collect the following details:
