@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react"
 
-const NAV = [
-  { label: "Journey", href: "#process", id: "process" },
-  { label: "Specialist", href: "#doctor", id: "doctor" },
-  { label: "Insight", href: "#insight", id: "insight" },
-  { label: "Why Us", href: "#why", id: "why" },
-]
+// const NAV = [
+//   { label: "Journey", href: "#process", id: "process" },
+//   { label: "Specialist", href: "#doctor", id: "doctor" },
+//   { label: "Insight", href: "#insight", id: "insight" },
+//   { label: "Why Us", href: "#why", id: "why" },
+// ]
 
 const ANNOUNCEMENTS = ["Hair & Scalp Assessment", "Doctor-Led Hair Care", "Personalised Treatment Plan"]
 // repeated enough times that one set alone is always wider than the bar,
@@ -26,20 +26,20 @@ export default function Header() {
   }, [])
 
   // scroll-spy — highlight the nav item whose section is in view
-  useEffect(() => {
-    const sections = NAV.map((n) => document.getElementById(n.id)).filter(Boolean) as HTMLElement[]
-    if (!sections.length) return
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id)
-        })
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
-    )
-    sections.forEach((s) => io.observe(s))
-    return () => io.disconnect()
-  }, [])
+  // useEffect(() => {
+  //   const sections = NAV.map((n) => document.getElementById(n.id)).filter(Boolean) as HTMLElement[]
+  //   if (!sections.length) return
+  //   const io = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((e) => {
+  //         if (e.isIntersecting) setActive(e.target.id)
+  //       })
+  //     },
+  //     { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
+  //   )
+  //   sections.forEach((s) => io.observe(s))
+  //   return () => io.disconnect()
+  // }, [])
 
   return (
     <header className="sticky top-0 z-50 px-3 pt-0 sm:px-5 sm:pt-0">
@@ -90,7 +90,7 @@ export default function Header() {
         </a>
 
         {/* center — pill nav group */}
-        <nav className="hidden items-center gap-1 rounded-full bg-[#f4f5f7] p-1 lg:flex">
+        {/* <nav className="hidden items-center gap-1 rounded-full bg-[#f4f5f7] p-1 lg:flex">
           {NAV.map((n) => (
             <a
               key={n.href}
@@ -104,7 +104,7 @@ export default function Header() {
               {n.label}
             </a>
           ))}
-        </nav>
+        </nav> */}
 
         {/* right — single assessment CTA */}
         <div className="flex flex-none items-center gap-2 sm:gap-3">
@@ -112,7 +112,7 @@ export default function Header() {
             href="#book"
             className="btn-wave inline-flex items-center justify-center rounded-full bg-[#22395f] px-4 py-2.5 text-[0.82rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] sm:px-6 sm:text-[0.88rem]"
           >
-            <span className="relative z-10 sm:hidden">Assessment</span>
+            <span className="relative z-10 sm:hidden">Start Your Assessment</span>
             <span className="relative z-10 hidden sm:inline">Start Your Assessment</span>
           </a>
         </div>

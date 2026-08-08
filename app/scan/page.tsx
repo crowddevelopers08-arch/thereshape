@@ -28,11 +28,11 @@ export default function ScanPage() {
         {/* 2 · How it works — the journey, lowers friction */}
         <Process />
         {/* 3 · Authority — meet the specialist */}
-        <Doctor />
+        {/* <Doctor /> */}
         {/* 4 · Deeper trust — the specialist's video */}
-        <ExpertInsight />
+        {/* <ExpertInsight /> */}
         {/* 5 · Differentiation — why choose the clinic */}
-        <WhyReshape />
+        {/* <WhyReshape /> */}
       </main>
       {/* single-line legal / contact bar */}
       <Footer />
