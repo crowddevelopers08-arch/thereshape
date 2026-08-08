@@ -20,7 +20,7 @@ export default function Hero() {
     // the negative top margin pulls the hero under the sticky header, so the navy runs edge-to-edge behind it
     <section
       id="top"
-      className="relative isolate -mt-[96px] overflow-hidden bg-[#16263f] pb-16 pt-[132px] sm:-mt-[106px] sm:pb-20 sm:pt-[150px] lg:pb-24 lg:pt-[168px]"
+      className="relative isolate -mt-[96px] overflow-hidden bg-[#16263f] pb-16 pt-[122px] sm:-mt-[106px] sm:pb-20 sm:pt-[130px] lg:pb-24 lg:pt-[148px]"
     >
       {/* layered brand light — peach warmth top-right, cool slate bottom-left */}
       <div
