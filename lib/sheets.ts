@@ -10,17 +10,20 @@
 export const LEADS_TAB = "thereshape Leads"
 export const FEEDBACK_TAB = "thereshape Feedback"
 export const HAIR_SCAN_TAB = "thereshape Hair Scan"
+export const SCAN_TAB = "thereshape Scan"
 
 /**
- * Form sources whose submissions carry the full guided-assessment field set
- * (location, most-noticeable area, family history) and so belong in the Hair
- * Scan tab. Anything not listed here lands in the generic Leads tab, whose
- * columns cannot hold those three fields.
+ * The guided assessment flows collect a field set (location, most-noticeable
+ * area, family history) that the generic Leads columns cannot hold, so each
+ * gets its own identically-shaped tab. A form source missing from this map
+ * falls through to the Leads tab and those three fields are dropped.
  */
-const ASSESSMENT_FORM_SOURCES = new Set([
-  "Hair Scan Chat", // components/hair-scan-component/ChatBooking.tsx
-  "Scan Popup", // components/scan/BookingModal.tsx
-])
+const ASSESSMENT_ROUTES: Record<string, { formType: string; sheetTab: string }> = {
+  // components/hair-scan-component/ChatBooking.tsx
+  "Hair Scan Chat": { formType: "hairscan", sheetTab: HAIR_SCAN_TAB },
+  // components/scan/BookingModal.tsx
+  "Scan Popup": { formType: "scan", sheetTab: SCAN_TAB },
+}
 
 export interface SheetLead {
   name: string
@@ -107,19 +110,22 @@ export async function sendToGoogleSheet(lead: SheetLead): Promise<SheetResult> {
   }
 
   // The guided assessment flows collect extra fields (location, most-noticeable
-  // area, family history) that the homepage forms don't — those land in their
-  // own sheet tab instead of being squeezed into the shared Leads columns.
-  // Rows from /scan and /hair-scan share the tab; the Page URL column tells them apart.
-  if (lead.formSource && ASSESSMENT_FORM_SOURCES.has(lead.formSource)) {
+  // area, family history) that the homepage forms don't — those go to their own
+  // tab instead of being squeezed into the shared Leads columns.
+  const route = lead.formSource ? ASSESSMENT_ROUTES[lead.formSource] : undefined
+  if (route) {
     return postToAppsScript({
       ...shared,
-      formType: "hairscan",
-      sheetTab: HAIR_SCAN_TAB,
+      formType: route.formType,
+      sheetTab: route.sheetTab,
       location: lead.location || "",
       primaryConcern: lead.area || "",
       hairLossDuration: lead.duration || "",
       hairLossArea: lead.hairLossArea || "",
       familyHistory: lead.familyHistory || "",
+      // recorded in the tab too, so a row that landed via doPost's sniffing
+      // fallback can still be traced to the form that captured it
+      formSource: lead.formSource || "",
     })
   }
 
