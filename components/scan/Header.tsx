@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { track } from "./track"
 
 const NAV = [
   { label: "Journey", href: "#process", id: "process" },
@@ -10,7 +9,7 @@ const NAV = [
   { label: "Why Us", href: "#why", id: "why" },
 ]
 
-const ANNOUNCEMENTS = ["Free Hair & Scalp Scan", "Doctor-Led Hair Care", "Personalised Treatment Plan"]
+const ANNOUNCEMENTS = ["Hair & Scalp Assessment", "Doctor-Led Hair Care", "Personalised Treatment Plan"]
 // repeated enough times that one set alone is always wider than the bar,
 // so the seamless -50% loop never runs out of content on wide screens
 const ANNOUNCEMENTS_SET = Array.from({ length: 4 }, () => ANNOUNCEMENTS).flat()
@@ -81,7 +80,13 @@ export default function Header() {
       >
         {/* left — logo */}
         <a href="#top" className="flex flex-none items-center">
-          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/v1785391578/26696b2b-7228-4b02-afae-af43ef094d7d_fs8cq8.jpg" alt="thereshape" className="h-10 w-auto sm:h-14" />
+          {/* the source asset is a JPEG, which cannot hold alpha — `e_make_transparent`
+              knocks its white backing out and `f_png` delivers it with a real alpha channel */}
+          <img
+            src="https://res.cloudinary.com/n0ccg2u6/image/upload/e_make_transparent:25/w_320/f_png/v1785391578/26696b2b-7228-4b02-afae-af43ef094d7d_fs8cq8.png"
+            alt="thereshape"
+            className="h-10 w-auto sm:h-14"
+          />
         </a>
 
         {/* center — pill nav group */}
@@ -101,21 +106,14 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* right — text link + button */}
+        {/* right — single assessment CTA */}
         <div className="flex flex-none items-center gap-2 sm:gap-3">
-          <a
-            href="tel:+918608551555"
-            onClick={() => track("call_click", { branch: "Reshape Clinic" })}
-            className="hidden text-[0.85rem] font-semibold text-[#22395f] sm:inline-block"
-          >
-            +91 86085 51555
-          </a>
           <a
             href="#book"
             className="btn-wave inline-flex items-center justify-center rounded-full bg-[#22395f] px-4 py-2.5 text-[0.82rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] sm:px-6 sm:text-[0.88rem]"
           >
-            <span className="relative z-10 sm:hidden">Let&apos;s Talk</span>
-            <span className="relative z-10 hidden sm:inline">Let&apos;s Talk</span>
+            <span className="relative z-10 sm:hidden">Assessment</span>
+            <span className="relative z-10 hidden sm:inline">Start Your Assessment</span>
           </a>
         </div>
       </div>

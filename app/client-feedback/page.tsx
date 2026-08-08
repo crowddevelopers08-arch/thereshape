@@ -157,6 +157,7 @@ export default function ClientFeedbackPage() {
               required
               inputMode="numeric"
               pattern="[6-9][0-9]{9}"
+              title="Enter a 10-digit mobile number starting with 6, 7, 8 or 9."
               autoComplete="tel"
               value={form.phone}
               onChange={onChange}

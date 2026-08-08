@@ -12,9 +12,9 @@ import StickyCta from "@/components/scan/StickyCta"
 import WhyReshape from "@/components/scan/WhyReshape"
 
 export const metadata: Metadata = {
-  title: "thereshape — Free Hair & Scalp Scan | Specialist-Reviewed Assessment",
+  title: "thereshape — Hair & Scalp Assessment | Specialist-Reviewed",
   description:
-    "Take a guided hair and scalp scan in under three minutes. Share your concern and one photo, and a thereshape specialist reviews your case before your consultation.",
+    "Take a guided hair and scalp assessment in under three minutes. Share your concern and one photo, and a thereshape specialist reviews your case before your consultation.",
 }
 
 export default function ScanPage() {

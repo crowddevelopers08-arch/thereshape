@@ -11,8 +11,16 @@ export const LEADS_TAB = "thereshape Leads"
 export const FEEDBACK_TAB = "thereshape Feedback"
 export const HAIR_SCAN_TAB = "thereshape Hair Scan"
 
-/** Matches formSource sent by components/hair-scan-component/ChatBooking.tsx. */
-const HAIR_SCAN_FORM_SOURCE = "Hair Scan Chat"
+/**
+ * Form sources whose submissions carry the full guided-assessment field set
+ * (location, most-noticeable area, family history) and so belong in the Hair
+ * Scan tab. Anything not listed here lands in the generic Leads tab, whose
+ * columns cannot hold those three fields.
+ */
+const ASSESSMENT_FORM_SOURCES = new Set([
+  "Hair Scan Chat", // components/hair-scan-component/ChatBooking.tsx
+  "Scan Popup", // components/scan/BookingModal.tsx
+])
 
 export interface SheetLead {
   name: string
@@ -28,7 +36,7 @@ export interface SheetLead {
   medium?: string | null
   campaign?: string | null
   pageUrl?: string | null
-  formSource?: string | null // which form captured the lead — routes to the Hair Scan tab
+  formSource?: string | null // which form captured the lead — see ASSESSMENT_FORM_SOURCES
 }
 
 export interface SheetFeedback {
@@ -98,10 +106,11 @@ export async function sendToGoogleSheet(lead: SheetLead): Promise<SheetResult> {
     pageUrl: lead.pageUrl || "",
   }
 
-  // The hair-scan chat widget collects extra fields (location, most-noticeable
+  // The guided assessment flows collect extra fields (location, most-noticeable
   // area, family history) that the homepage forms don't — those land in their
   // own sheet tab instead of being squeezed into the shared Leads columns.
-  if (lead.formSource === HAIR_SCAN_FORM_SOURCE) {
+  // Rows from /scan and /hair-scan share the tab; the Page URL column tells them apart.
+  if (lead.formSource && ASSESSMENT_FORM_SOURCES.has(lead.formSource)) {
     return postToAppsScript({
       ...shared,
       formType: "hairscan",

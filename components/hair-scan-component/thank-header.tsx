@@ -57,7 +57,13 @@ export default function Headers() {
       >
         {/* left — logo */}
         <a href="#top" className="flex flex-none items-center">
-          <img src="https://res.cloudinary.com/n0ccg2u6/image/upload/v1785391578/26696b2b-7228-4b02-afae-af43ef094d7d_fs8cq8.jpg" alt="thereshape" className="h-8 w-auto sm:h-9" />
+          {/* the source asset is a JPEG, which cannot hold alpha — `e_make_transparent`
+              knocks its white backing out and `f_png` delivers it with a real alpha channel */}
+          <img
+            src="https://res.cloudinary.com/n0ccg2u6/image/upload/e_make_transparent:25/w_320/f_png/v1785391578/26696b2b-7228-4b02-afae-af43ef094d7d_fs8cq8.png"
+            alt="thereshape"
+            className="h-8 w-auto sm:h-9"
+          />
         </a>
 
         {/* right — text link + button */}

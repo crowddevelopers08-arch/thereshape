@@ -13,6 +13,7 @@ import {
   LuCircle,
   LuStethoscope,
   LuActivity,
+  LuCircleAlert,
 } from "react-icons/lu"
 import { FaWhatsapp } from "react-icons/fa"
 import Reveal from "./Reveal"
@@ -105,6 +106,32 @@ const QA_STEPS: QaStep[] = [
   },
 ]
 
+/* ── Validation ────────────────────────────────────────────────────────────
+   Indian mobiles are 10 digits opening with 6–9. The email test is deliberately
+   loose — it rejects obvious typos without turning away unusual but valid
+   addresses, which a stricter pattern would. */
+const PHONE_RE = /^[6-9][0-9]{9}$/
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/** Returns a message explaining why an answer is unacceptable, or "" if it's fine. */
+function validateAnswer(step: QaStep, rawValue: string): string {
+  const value = rawValue.trim()
+
+  if (!value) {
+    if (step.required === false) return ""
+    return step.type === "options"
+      ? "Please choose an option to continue."
+      : `Please enter your ${step.label.toLowerCase()}.`
+  }
+  if (step.key === "phone" && !PHONE_RE.test(value)) {
+    return "Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9."
+  }
+  if (step.key === "email" && !EMAIL_RE.test(value)) {
+    return "Enter a valid email address, like you@example.com."
+  }
+  return ""
+}
+
 type Stage = "qa" | "review" | "insight" | "final" | "sent"
 
 export default function ChatBooking() {
@@ -131,6 +158,8 @@ export default function ChatBooking() {
 
   const [submitting, setSubmitting] = useState(false)
   const [waLink, setWaLink] = useState("")
+  /** Validation message for the step on screen; cleared on every stage/step move. */
+  const [error, setError] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -190,6 +219,7 @@ export default function ChatBooking() {
     setPhoto(null)
     setPhotoUrl(null)
     setWaLink("")
+    setError("")
   }
 
   // 15s after WhatsApp opens, return to a blank form so it's ready for the next visitor
@@ -202,14 +232,15 @@ export default function ChatBooking() {
 
   const advanceQa = (rawValue: string) => {
     const value = rawValue.trim()
-    if (!value && current.required === false) {
-      setAnswers((prev) => ({ ...prev, [current.key]: "" }))
-    } else {
-      if (!value) return
-      if (current.key === "phone" && !/^[6-9][0-9]{9}$/.test(value)) return
-      if (current.key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return
-      setAnswers((prev) => ({ ...prev, [current.key]: value }))
+
+    const message = validateAnswer(current, value)
+    if (message) {
+      setError(message)
+      return
     }
+    setError("")
+    setAnswers((prev) => ({ ...prev, [current.key]: value }))
+
     if (editingReview) {
       setEditingReview(false)
       setStage("review")
@@ -226,6 +257,7 @@ export default function ChatBooking() {
     if (photoUrl) URL.revokeObjectURL(photoUrl)
     setPhoto(file)
     setPhotoUrl(file ? URL.createObjectURL(file) : null)
+    if (file) setError("")
   }
 
   const isMobileDevice = () =>
@@ -324,27 +356,23 @@ export default function ChatBooking() {
 
     const name = answers.name.trim()
     const phone = answers.phone.trim()
-    const missingIndex = QA_STEPS.findIndex((step) => !answers[step.key].trim())
-
-    if (missingIndex !== -1) {
+    // Re-check every answer at the point of submission — the visitor can edit any
+    // step from the review screen, so an earlier pass is not proof it is still valid.
+    const invalidIndex = QA_STEPS.findIndex((step) => validateAnswer(step, answers[step.key]))
+    if (invalidIndex !== -1) {
       sendingRef.current = false
-      alert(`Please answer ${QA_STEPS[missingIndex].label} before continuing.`)
-      setQaIndex(missingIndex)
+      const step = QA_STEPS[invalidIndex]
+      setQaIndex(invalidIndex)
       setStage("qa")
-      return
-    }
-    if (!/^[6-9][0-9]{9}$/.test(phone) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email.trim())) {
-      sendingRef.current = false
-      alert("Please enter a valid mobile number and email address before continuing.")
-      setQaIndex(!/^[6-9][0-9]{9}$/.test(phone) ? 1 : 2)
-      setStage("qa")
+      setError(validateAnswer(step, answers[step.key]))
       return
     }
     if (!photo) {
       sendingRef.current = false
-      alert("Please add a clear photo of the affected hair or scalp area before continuing.")
+      setError("Please add a clear photo of the affected hair or scalp area to continue.")
       return
     }
+    setError("")
 
     setSubmitting(true)
     const attrs = attrRef.current
@@ -355,7 +383,7 @@ export default function ChatBooking() {
       } catch {
         sendingRef.current = false
         setSubmitting(false)
-        alert("We couldn't process the selected photo. Please choose another image and try again.")
+        setError("We couldn't process that photo. Please choose another image and try again.")
         return
       }
     }
@@ -387,7 +415,7 @@ export default function ChatBooking() {
     } catch {
       sendingRef.current = false
       setSubmitting(false)
-      alert("We couldn't save your booking details. Please try again before continuing to WhatsApp.")
+      setError("We couldn't save your details. Please try again before continuing to WhatsApp.")
       return
     }
 
@@ -498,7 +526,11 @@ export default function ChatBooking() {
                           onKeyDown={(e) => {
                             if (e.key === "Enter") advanceQa(textInputRef.current?.value ?? "")
                           }}
-                          className={chatTyperCls}
+                          // clear the complaint as soon as they start correcting it
+                          onInput={() => error && setError("")}
+                          aria-invalid={!!error}
+                          aria-describedby={error ? "hairscan-qa-error" : undefined}
+                          className={`${chatTyperCls} ${error ? "border-[#c2410c] focus:border-[#c2410c] focus:ring-[#f5c4a8]" : ""}`}
                         />
                         <button
                           type="button"
@@ -510,6 +542,8 @@ export default function ChatBooking() {
                         </button>
                       </div>
                     )}
+
+                    <FieldError id="hairscan-qa-error" message={error} />
 
                     {current.required === false && (
                       <button
@@ -545,6 +579,7 @@ export default function ChatBooking() {
                         <button
                           type="button"
                           onClick={() => {
+                            setError("")
                             setQaIndex(i)
                             setEditingReview(true)
                             setStage("qa")
@@ -562,6 +597,7 @@ export default function ChatBooking() {
                     <button
                       type="button"
                       onClick={() => {
+                        setError("")
                         setQaIndex(QA_STEPS.length - 1)
                         setStage("qa")
                       }}
@@ -763,6 +799,8 @@ export default function ChatBooking() {
                     </label>
                   </div>
 
+                  <FieldError id="hairscan-final-error" message={error} />
+
                   <button
                     type="button"
                     onClick={handleWhatsApp}
@@ -841,6 +879,21 @@ const chatInputCls =
 /* the active "typer" field for the current chat question — pill-shaped to match the round send button */
 const chatTyperCls =
   "w-full rounded-full border border-[#e7ecf3] bg-white px-5 py-3.5 text-[0.95rem] text-[#1f2f47] transition-all duration-150 focus:border-[#22395f] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]"
+
+/** Inline validation message. `role="alert"` so screen readers announce it on appearance. */
+function FieldError({ id, message }: { id: string; message: string }) {
+  if (!message) return null
+  return (
+    <p
+      id={id}
+      role="alert"
+      className="mt-2.5 flex items-start gap-1.5 text-[0.78rem] font-semibold leading-snug text-[#c2410c]"
+    >
+      <LuCircleAlert className="mt-[2px] h-3.5 w-3.5 flex-none" />
+      {message}
+    </p>
+  )
+}
 
 function BotBubble({ children }: { children: ReactNode }) {
   return (
