@@ -11,7 +11,6 @@ import WhyReshape from "@/components/reshape/WhyReshape"
 import Process from "@/components/reshape/Process"
 import Conditions from "@/components/reshape/Conditions"
 import Faq from "@/components/reshape/Faq"
-import BookingModal from "@/components/reshape/BookingModal"
 import Footer from "@/components/reshape/Footer"
 import StickyCta from "@/components/reshape/StickyCta"
 import CinematicScroll from "@/components/reshape/CinematicScroll"
@@ -55,8 +54,6 @@ export default function ReshapePage() {
       </main>
       <Footer />
       <StickyCta />
-      {/* Booking form as a popup — opened by any "Book" CTA, and auto-opens every 30s */}
-      <BookingModal />
     </div>
   )
 }

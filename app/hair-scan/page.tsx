@@ -1,4 +1,3 @@
-import BookingModal from "@/components/hair-scan-component/BookingModal"
 import ChatBooking from "@/components/hair-scan-component/ChatBooking"
 import CinematicScroll from "@/components/hair-scan-component/CinematicScroll"
 import Conditions from "@/components/hair-scan-component/Conditions"
@@ -54,10 +53,6 @@ export default function ReshapePage() {
       </main>
       <Footer />
       <StickyCta />
-      {/* Booking form as a popup — opened by any "Book" CTA */}
-      {/* <BookingModal /> */}
-      {/* Promo popup with video — auto-opens every 30s */}
-      {/* <CtaPopup /> */}
     </div>
   )
 }

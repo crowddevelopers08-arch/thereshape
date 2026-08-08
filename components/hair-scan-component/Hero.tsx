@@ -21,7 +21,7 @@ const ICON_3D =
 
 export default function Hero() {
   const scrollToForm = () => {
-    document.getElementById("assessment-form")?.scrollIntoView({ behavior: "smooth", block: "start" })
+    document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
   return (

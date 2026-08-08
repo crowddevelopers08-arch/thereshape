@@ -16,11 +16,11 @@ export default function StickyCta() {
         Call now
       </a>
       <a
-        href="#assessment-form"
+        href="#book"
         onClick={() => track("book_click", { branch: "Reshape Clinic" })}
         className="btn btn-primary btn-wave flex-1 px-3 py-3 text-[0.9rem]"
       >
-        <span className="relative z-10">Book now</span>
+        <span className="relative z-10">Let&apos;s Talk</span>
       </a>
     </div>
   )

@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import Image from "next/image"
+import { AnimatePresence, motion } from "framer-motion"
 import {
   LuSend,
   LuMessageCircle,
@@ -13,20 +14,16 @@ import {
   LuCircle,
   LuStethoscope,
   LuActivity,
+  LuLock,
 } from "react-icons/lu"
 import { FaWhatsapp } from "react-icons/fa"
-import Reveal from "./Reveal"
+import { OPEN_BOOKING_EVENT } from "./booking-bus"
 import { track } from "./track"
 
 /* Leads are saved to our database and pushed to TeleCRM via this API route. */
 const LEAD_ENDPOINT = "/api/leads"
 const BRANCH = "Reshape Clinic"
 const WHATSAPP_NUMBER = "918608551555"
-
-const BEFORE_AFTER = [
-  { src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392873/bf2_kvopn9.png", label: "Before" },
-  { src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392872/bf1_t5ienb.png", label: "After" },
-]
 
 const REVIEW_USPS = [
   "Private & confidential",
@@ -35,7 +32,15 @@ const REVIEW_USPS = [
   "Second-opinion support",
 ]
 
-type QaKey = "name" | "phone" | "email" | "location" | "primaryConcern" | "hairLossDuration" | "hairLossArea" | "familyHistory"
+type QaKey =
+  | "name"
+  | "phone"
+  | "email"
+  | "location"
+  | "primaryConcern"
+  | "hairLossDuration"
+  | "hairLossArea"
+  | "familyHistory"
 
 interface QaStep {
   key: QaKey
@@ -77,7 +82,14 @@ const QA_STEPS: QaStep[] = [
     question: "What is your primary hair concern?",
     type: "options",
     placeholder: "Choose your primary concern",
-    options: ["Hair fall", "Hair thinning", "Receding hairline", "Bald patches", "Excessive hair shedding", "Slow hair growth"],
+    options: [
+      "Hair fall",
+      "Hair thinning",
+      "Receding hairline",
+      "Bald patches",
+      "Excessive hair shedding",
+      "Slow hair growth",
+    ],
   },
   {
     key: "hairLossDuration",
@@ -105,24 +117,34 @@ const QA_STEPS: QaStep[] = [
   },
 ]
 
+const EMPTY_ANSWERS: Record<QaKey, string> = {
+  name: "",
+  phone: "",
+  email: "",
+  location: "",
+  primaryConcern: "",
+  hairLossDuration: "",
+  hairLossArea: "",
+  familyHistory: "",
+}
+
 type Stage = "qa" | "review" | "insight" | "final" | "sent"
 
-export default function ChatBooking() {
-  const [bfIndex, setBfIndex] = useState(0)
+/**
+ * The hair-scan assessment, delivered as a popup instead of an inline section.
+ *
+ * It opens on the hero's "Let's Talk" button (via the `scan:open-booking`
+ * event) and on any `<a href="#book">` CTA on the page — header, sticky bar,
+ * doctor section — so every call to action lands in the same flow. It never
+ * opens on its own.
+ */
+export default function BookingModal() {
+  const [open, setOpen] = useState(false)
 
   const [stage, setStage] = useState<Stage>("qa")
   const [qaIndex, setQaIndex] = useState(0)
   const [editingReview, setEditingReview] = useState(false)
-  const [answers, setAnswers] = useState<Record<QaKey, string>>({
-    name: "",
-    phone: "",
-    email: "",
-    location: "",
-    primaryConcern: "",
-    hairLossDuration: "",
-    hairLossArea: "",
-    familyHistory: "",
-  })
+  const [answers, setAnswers] = useState<Record<QaKey, string>>(EMPTY_ANSWERS)
 
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
@@ -140,23 +162,60 @@ export default function ChatBooking() {
   // the next render, so a second click/Enter fired in that gap would still get through
   const sendingRef = useRef(false)
 
-  // auto-advance the before/after slideshow
+  /* ---------------------------------------------------------------- */
+  /*  Opening / closing                                                */
+  /* ---------------------------------------------------------------- */
+
+  // the hero button dispatches this; any "#book" CTA is intercepted below
   useEffect(() => {
-    const id = setInterval(() => setBfIndex((i) => (i + 1) % BEFORE_AFTER.length), 3000)
-    return () => clearInterval(id)
+    const onOpen = () => setOpen(true)
+    window.addEventListener(OPEN_BOOKING_EVENT, onOpen)
+
+    const onClick = (e: MouseEvent) => {
+      const link = (e.target as HTMLElement | null)?.closest?.('a[href="#book"]')
+      if (link) {
+        e.preventDefault()
+        setOpen(true)
+      }
+    }
+    document.addEventListener("click", onClick)
+
+    return () => {
+      window.removeEventListener(OPEN_BOOKING_EVENT, onOpen)
+      document.removeEventListener("click", onClick)
+    }
   }, [])
+
+  // esc to close + lock background scroll while open
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    document.addEventListener("keydown", onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
+  /* ---------------------------------------------------------------- */
+  /*  Assessment flow                                                  */
+  /* ---------------------------------------------------------------- */
 
   // release the camera if the component unmounts while it's open
   useEffect(() => () => streamRef.current?.getTracks().forEach((t) => t.stop()), [])
 
-  // release the camera if the user navigates away from the final step while it's open
+  // release the camera whenever we leave the photo step or close the popup
   useEffect(() => {
-    if (stage !== "final") {
+    if (stage !== "final" || !open) {
       streamRef.current?.getTracks().forEach((t) => t.stop())
       streamRef.current = null
       setCameraOpen(false)
     }
-  }, [stage])
+  }, [stage, open])
 
   // campaign attribution — captured once from the URL
   useEffect(() => {
@@ -171,34 +230,29 @@ export default function ChatBooking() {
 
   const current = QA_STEPS[qaIndex]
 
-  const resetFlow = () => {
+  const resetFlow = useCallback(() => {
     sendingRef.current = false
-    if (photoUrl) URL.revokeObjectURL(photoUrl)
+    setPhotoUrl((url) => {
+      if (url) URL.revokeObjectURL(url)
+      return null
+    })
     setStage("qa")
     setQaIndex(0)
     setEditingReview(false)
-    setAnswers({
-      name: "",
-      phone: "",
-      email: "",
-      location: "",
-      primaryConcern: "",
-      hairLossDuration: "",
-      hairLossArea: "",
-      familyHistory: "",
-    })
+    setAnswers(EMPTY_ANSWERS)
     setPhoto(null)
-    setPhotoUrl(null)
     setWaLink("")
-  }
+  }, [])
 
-  // 15s after WhatsApp opens, return to a blank form so it's ready for the next visitor
+  // 15s after WhatsApp opens, close and blank the form so it's ready for the next visitor
   useEffect(() => {
     if (stage !== "sent") return
-    const id = setTimeout(resetFlow, 15000)
+    const id = setTimeout(() => {
+      setOpen(false)
+      resetFlow()
+    }, 15000)
     return () => clearTimeout(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage])
+  }, [stage, resetFlow])
 
   const advanceQa = (rawValue: string) => {
     const value = rawValue.trim()
@@ -349,16 +403,15 @@ export default function ChatBooking() {
     setSubmitting(true)
     const attrs = attrRef.current
     let photoData: string | undefined
-    if (photo) {
-      try {
-        photoData = await preparePhoto(photo)
-      } catch {
-        sendingRef.current = false
-        setSubmitting(false)
-        alert("We couldn't process the selected photo. Please choose another image and try again.")
-        return
-      }
+    try {
+      photoData = await preparePhoto(photo)
+    } catch {
+      sendingRef.current = false
+      setSubmitting(false)
+      alert("We couldn't process the selected photo. Please choose another image and try again.")
+      return
     }
+
     const payload = {
       name,
       phone,
@@ -374,7 +427,7 @@ export default function ChatBooking() {
       medium: attrs.utm_medium || "",
       campaign: attrs.utm_campaign || "",
       pageUrl: attrs.page_url || (typeof window !== "undefined" ? window.location.href : ""),
-      formSource: "Hair Scan Chat",
+      formSource: "Scan Popup",
     }
 
     try {
@@ -391,7 +444,7 @@ export default function ChatBooking() {
       return
     }
 
-    track("whatsapp_click", { branch: BRANCH, concern: answers.primaryConcern, source: "chat_booking" })
+    track("whatsapp_click", { branch: BRANCH, concern: answers.primaryConcern, source: "scan_popup" })
 
     const message = [
       "Hi, I'd like to book a hair consultation.",
@@ -411,67 +464,95 @@ export default function ChatBooking() {
     window.open(link, "_blank", "noopener,noreferrer")
   }
 
-  return (
-    <section id="book" className="scroll-mt-24 border-b border-[#e7ecf3] bg-[#fbf8f5] py-14 sm:py-16 lg:py-20">
-      <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8">
-        <div className="mx-auto mb-9 max-w-[720px] text-center sm:mb-11">
-          <p className="kicker justify-center">
-           Start Your Hair Assessment Now
-          </p>
-          <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">
-            Your answers will help our hair specialist prepare for your consultation 
-          </h2>
-          {/* <p className="mx-auto mt-4 max-w-[600px] text-[0.95rem] leading-relaxed text-[#5f6f88] sm:text-[1rem]">
-            Share a few details about your symptoms and connect privately with our specialist team.
-          </p> */}
-        </div>
+  /* ---------------------------------------------------------------- */
+  /*  Render                                                           */
+  /* ---------------------------------------------------------------- */
 
-        <Reveal className="grid grid-cols-1 gap-5 md:grid-cols-[1.2fr_1fr] md:items-stretch">
-          {/* LEFT — chatbot-style assessment */}
-          <div className="flex flex-col overflow-hidden rounded-[26px] border border-[#e7ecf3] bg-white">
-            {/* chat header */}
-            <div className="flex flex-none items-center gap-3 bg-[#22395f] px-6 py-5">
-              <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-white/10 text-[#fccbb6]">
-                <LuMessageCircle className="h-5 w-5" />
-              </span>
-              <div className="leading-tight">
-                <div className="text-[0.95rem] font-bold text-white">Reshape Assistant</div>
-                <div className="flex items-center gap-1.5 text-[0.72rem] text-white/60">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#6ee7a0]" />
-                  Typically replies instantly
+  const stepNumber = stage === "qa" ? qaIndex + 1 : QA_STEPS.length
+  const progress = stage === "qa" ? (qaIndex / QA_STEPS.length) * 100 : stage === "sent" ? 100 : 92
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="reshape fixed inset-0 z-[120] flex items-end justify-center p-0 sm:items-center sm:p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {/* backdrop */}
+          <div
+            className="absolute inset-0 bg-[#16263f]/75 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* panel */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Hair scan assessment"
+            className="relative z-10 flex max-h-[94vh] w-full max-w-[580px] flex-col overflow-hidden rounded-t-[26px] bg-white shadow-[0_50px_110px_-40px_rgba(0,0,0,0.7)] sm:max-h-[92vh] sm:rounded-[26px]"
+            initial={{ opacity: 0, scale: 0.96, y: 26 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 14 }}
+            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {/* ── header ─────────────────────────────────────────── */}
+            <div className="relative flex-none bg-gradient-to-br from-[#22395f] via-[#22395f] to-[#16263f] px-5 pb-5 pt-5 sm:px-6">
+              <div className="flex items-center gap-3 pr-10">
+                <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-white/10 text-[#fccbb6]">
+                  <LuMessageCircle className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 leading-tight">
+                  <div className="text-[0.98rem] font-bold text-white">Reshape Assistant</div>
+                  <div className="flex items-center gap-1.5 text-[0.72rem] text-white/60">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#6ee7a0]" />
+                    Typically replies instantly
+                  </div>
                 </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+              >
+                <LuX className="h-5 w-5" />
+              </button>
+
+              {/* progress rail */}
+              <div className="mt-5 flex items-center gap-3">
+                <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/15">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-[#fccbb6] to-[#fde0d0] transition-[width] duration-500 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="flex-none text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white/55">
+                  {stage === "qa" ? `Step ${stepNumber}/${QA_STEPS.length}` : stage === "sent" ? "Done" : "Almost there"}
+                </span>
               </div>
             </div>
 
-            {/* one screen at a time — the next question replaces the last, right in this same spot */}
-            <div className="flex-1 px-6 py-6">
-              {/* Intro belongs to the question flow; later stages show only their relevant content. */}
+            {/* ── body ───────────────────────────────────────────── */}
+            <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-6">
               {stage === "qa" && (
                 <div className="mb-4 space-y-3">
                   <BotBubble>
-                    <span className="font-bold text-[#22395f]">Let&apos;s Understand Your Concern</span>
+                    <span className="font-bold text-[#22395f]">Let&apos;s understand your concern</span>
                   </BotBubble>
-                  <BotBubble>
-                    Tell us what you&apos;ve noticed about your hair and scalp.
-                  </BotBubble>
-                  <BotBubble>Your answers will help our hair specialist prepare for your consultation 👇</BotBubble>
+                  <BotBubble>Your answers help our hair specialist prepare for your consultation 👇</BotBubble>
                 </div>
               )}
 
               {stage === "qa" && (
                 <div key={qaIndex} className="rise space-y-5">
-                  <div className="flex items-center gap-1.5">
-                    {QA_STEPS.map((s, i) => (
-                      <span
-                        key={s.key}
-                        className={`h-0.5 flex-1 rounded-full ${i <= qaIndex ? "bg-[#22395f]" : "bg-[#e7ecf3]"}`}
-                      />
-                    ))}
-                  </div>
-
                   <BotBubble>{current.question}</BotBubble>
 
-                  <div className="pt-2">
+                  <div className="pt-1">
                     {current.type === "options" ? (
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="group" aria-label={current.question}>
                         {current.options?.map((option) => (
@@ -511,13 +592,13 @@ export default function ChatBooking() {
                       </div>
                     )}
 
-                    {current.required === false && (
+                    {qaIndex > 0 && (
                       <button
                         type="button"
-                        onClick={() => advanceQa("")}
+                        onClick={() => setQaIndex((i) => Math.max(0, i - 1))}
                         className="mt-3 text-[0.78rem] font-semibold text-[#5f6f88] underline underline-offset-2"
                       >
-                        Skip for now
+                        Back
                       </button>
                     )}
                   </div>
@@ -528,7 +609,7 @@ export default function ChatBooking() {
                 <div className="rise space-y-4">
                   <BotBubble>Please confirm that your contact and hair assessment details are correct.</BotBubble>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {QA_STEPS.map((s, i) => (
                       <div
                         key={s.key}
@@ -572,7 +653,7 @@ export default function ChatBooking() {
                     <button
                       type="button"
                       onClick={() => setStage("insight")}
-                      className="btn-wave group/btn flex flex-1 items-center justify-center gap-2 rounded-full bg-[#22395f] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
+                      className="btn-wave flex flex-1 items-center justify-center gap-2 rounded-full bg-[#22395f] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
                     >
                       <span className="relative z-10">Continue</span>
                     </button>
@@ -582,25 +663,26 @@ export default function ChatBooking() {
 
               {stage === "insight" && (
                 <div className="rise space-y-5">
-                  <div className="flex items-center gap-2 text-[0.9rem] font-semibold text-[#3a5f8a]">
+                  <div className="flex items-center gap-2 text-[0.9rem] font-semibold text-[#3a537f]">
                     <LuStethoscope className="h-5 w-5" />
                     Your preliminary care guidance
                   </div>
 
-                  <div className="rounded-2xl bg-[#fef5ef] px-5 py-5 text-[1.08rem] font-bold leading-snug text-[#d96f00]">
+                  <div className="rounded-2xl bg-[#fef5ef] px-5 py-5 text-[1.08rem] font-bold leading-snug text-[#c8763f]">
                     A specialist consultation is recommended
                   </div>
 
                   <div className="text-[0.9rem] font-bold text-[#22395f]">Based on your answers</div>
 
-                  <div className="flex gap-3 rounded-2xl border border-[#a8c8ff] bg-[#f0f6ff] px-4 py-4 text-[0.88rem] leading-relaxed text-[#1f2f47]">
-                    <LuActivity className="mt-0.5 h-5 w-5 flex-none text-[#3485f5]" />
+                  <div className="flex gap-3 rounded-2xl border border-[#cdd8ec] bg-[#f2f6fc] px-4 py-4 text-[0.88rem] leading-relaxed text-[#1f2f47]">
+                    <LuActivity className="mt-0.5 h-5 w-5 flex-none text-[#3a537f]" />
                     <p>
-                      A clinical examination can help identify the type of hair loss and whether monitoring, treatment or a surgical opinion is the most suitable next step.
+                      A clinical examination can help identify the type of hair loss and whether monitoring, treatment or
+                      a surgical opinion is the most suitable next step.
                     </p>
                   </div>
 
-                  <p className="rounded-2xl bg-[#eef2f6] px-4 py-3 text-[0.78rem] leading-relaxed text-[#5f6f88]">
+                  <p className="rounded-2xl bg-[#eef2f7] px-4 py-3 text-[0.78rem] leading-relaxed text-[#5f6f88]">
                     This guidance is not a diagnosis. Your specialist will assess your hair, scalp and medical history.
                   </p>
 
@@ -632,7 +714,7 @@ export default function ChatBooking() {
                     <button
                       type="button"
                       onClick={() => setStage("final")}
-                      className="btn-wave group/btn flex flex-1 items-center justify-center rounded-full bg-[#22395f] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
+                      className="btn-wave flex flex-1 items-center justify-center rounded-full bg-[#22395f] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
                     >
                       <span className="relative z-10">Continue</span>
                     </button>
@@ -729,24 +811,14 @@ export default function ChatBooking() {
                       <span className="pl-1 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-[#5f6f88]">
                         Name
                       </span>
-                      <input
-                        type="text"
-                        value={answers.name}
-                        readOnly
-                        className={`${chatInputCls} bg-[#fbf8f5]`}
-                      />
+                      <input type="text" value={answers.name} readOnly className={`${chatInputCls} bg-[#fbf8f5]`} />
                     </label>
 
                     <label className="space-y-1.5">
                       <span className="pl-1 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-[#5f6f88]">
                         Phone number
                       </span>
-                      <input
-                        type="tel"
-                        value={answers.phone}
-                        readOnly
-                        className={`${chatInputCls} bg-[#fbf8f5]`}
-                      />
+                      <input type="tel" value={answers.phone} readOnly className={`${chatInputCls} bg-[#fbf8f5]`} />
                     </label>
 
                     <label className="space-y-1.5 sm:col-span-2">
@@ -779,7 +851,7 @@ export default function ChatBooking() {
               )}
 
               {stage === "sent" && (
-                <div className="rise px-2 py-4 text-center">
+                <div className="rise px-2 py-6 text-center">
                   <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#e7fbef] text-[#25D366]">
                     <FaWhatsapp className="h-6 w-6" />
                   </div>
@@ -799,39 +871,16 @@ export default function ChatBooking() {
                 </div>
               )}
             </div>
-          </div>
 
-          {/* RIGHT — before / after slideshow, one image at a time (reusing the clinic's existing before/after photos) */}
-          <div className="relative h-56 overflow-hidden rounded-[26px] border border-[#e7ecf3] md:h-full">
-            <div
-              className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{ transform: `translateX(-${bfIndex * 100}%)` }}
-            >
-              {BEFORE_AFTER.map((b) => (
-                <div key={b.label} className="relative h-full w-full shrink-0 grow-0">
-                  <Image src={b.src} alt={b.label} fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" />
-                  <span className="absolute left-4 top-4 rounded-full bg-[#22395f]/85 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-white backdrop-blur-sm">
-                    {b.label}
-                  </span>
-                </div>
-              ))}
+            {/* ── footer trust strip ─────────────────────────────── */}
+            <div className="flex flex-none items-center justify-center gap-2 border-t border-[#e7ecf3] bg-[#fbf8f5] px-5 py-3 text-[0.72rem] font-semibold text-[#5f6f88]">
+              <LuLock className="h-3.5 w-3.5 text-[#22395f]" />
+              Private &amp; confidential · Reviewed by a certified specialist
             </div>
-
-            {/* dots */}
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
-              {BEFORE_AFTER.map((b, i) => (
-                <span
-                  key={b.label}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === bfIndex ? "w-5 bg-white" : "w-1.5 bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 

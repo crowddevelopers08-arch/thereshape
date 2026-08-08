@@ -4,15 +4,13 @@ import { useEffect, useState } from "react"
 import { track } from "./track"
 
 const NAV = [
-  { label: "Trinity", href: "#trinity", id: "trinity" },
-  { label: "Specialist", href: "#doctor", id: "doctor" },
-  { label: "Conditions", href: "#conditions", id: "conditions" },
-  { label: "Why Us", href: "#why", id: "why" },
   { label: "Journey", href: "#process", id: "process" },
-  { label: "FAQ", href: "#faq", id: "faq" },
+  { label: "Specialist", href: "#doctor", id: "doctor" },
+  { label: "Insight", href: "#insight", id: "insight" },
+  { label: "Why Us", href: "#why", id: "why" },
 ]
 
-const ANNOUNCEMENTS = ["Doctor-Led Hair Care", "3-in-1 Hair Therapy", "Personalised Treatment Plan"]
+const ANNOUNCEMENTS = ["Free Hair & Scalp Scan", "Doctor-Led Hair Care", "Personalised Treatment Plan"]
 // repeated enough times that one set alone is always wider than the bar,
 // so the seamless -50% loop never runs out of content on wide screens
 const ANNOUNCEMENTS_SET = Array.from({ length: 4 }, () => ANNOUNCEMENTS).flat()
@@ -113,11 +111,11 @@ export default function Header() {
             +91 86085 51555
           </a>
           <a
-            href="#assessment-form"
+            href="#book"
             className="btn-wave inline-flex items-center justify-center rounded-full bg-[#22395f] px-4 py-2.5 text-[0.82rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] sm:px-6 sm:text-[0.88rem]"
           >
-            <span className="relative z-10 sm:hidden">Book</span>
-            <span className="relative z-10 hidden sm:inline">Book Consultation</span>
+            <span className="relative z-10 sm:hidden">Let&apos;s Talk</span>
+            <span className="relative z-10 hidden sm:inline">Let&apos;s Talk</span>
           </a>
         </div>
       </div>
