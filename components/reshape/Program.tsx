@@ -1,9 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { LuSyringe, LuDroplet, LuZap, LuChevronLeft, LuChevronRight } from "react-icons/lu"
-import { FaAward } from "react-icons/fa"
 import Reveal from "./Reveal"
+import { track } from "./track"
+
+const LEAD_ENDPOINT = "/api/leads"
+const BRANCH = "Reshape Clinic"
 
 const FEATURES = [
   {
@@ -27,7 +30,9 @@ const FEATURES = [
 ]
 
 export default function Program() {
+  const formRef = useRef<HTMLFormElement>(null)
   const [index, setIndex] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
   const maxIndex = FEATURES.length - 1
 
   const prev = () => setIndex((i) => (i <= 0 ? maxIndex : i - 1))
@@ -37,6 +42,52 @@ export default function Program() {
     const id = setInterval(next, 5000)
     return () => clearInterval(id)
   }, [])
+
+  useEffect(() => {
+    const form = formRef.current
+    if (!form) return
+    const params = new URLSearchParams(window.location.search)
+    ;["utm_source", "utm_medium", "utm_campaign"].forEach((name) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement | null
+      if (input) input.value = params.get(name) || ""
+    })
+  }, [])
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const form = formRef.current
+    if (!form) return
+    if (!form.checkValidity()) return form.reportValidity()
+
+    setSubmitting(true)
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>
+
+    try {
+      const response = await fetch(LEAD_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          area: data.concern,
+          duration: data.since,
+          branch: BRANCH,
+          source: data.utm_source || "direct",
+          medium: data.utm_medium || "",
+          campaign: data.utm_campaign || "",
+          pageUrl: window.location.href,
+          formSource: "Hair Trinity Form",
+        }),
+      })
+      if (!response.ok) throw new Error(`Request failed with ${response.status}`)
+      track("lead_submit", { branch: BRANCH, concern: data.concern })
+      window.location.href = "/thank-you"
+    } catch {
+      setSubmitting(false)
+      alert("That did not go through. Please call +91 86085 51555 instead.")
+    }
+  }
 
   return (
     <section id="trinity" className="border-b border-[#e7ecf3] bg-white py-14 sm:py-16 lg:py-20 max-[470px]:py-6">
@@ -51,18 +102,10 @@ export default function Program() {
           <h2 className="text-[clamp(1.9rem,4vw,3rem)]">Three Approaches. One Personalised Program.</h2>
         </Reveal>
 
-        {/* 3. description */}
-        <Reveal index={2} className="mt-3 lg:col-start-1 lg:row-start-3">
-          <p className="text-[1.05rem] font-semibold leading-snug text-[#22395f]">
-            Hair and scalp concerns can have different contributing factors, which is why the same approach may not
-            suit everyone.
-          </p>
-        </Reveal>
-
         {/* 4. card section — carousel of the three approaches (mobile: right after the description; desktop: right column spanning all rows) */}
         <Reveal
           index={3}
-          className="mt-8 lg:col-start-2 lg:row-start-1 lg:row-span-5 lg:mt-0 lg:flex lg:h-full lg:flex-col lg:justify-center"
+          className="mt-8 lg:col-start-1 lg:row-start-3"
         >
           <div className="relative">
             <div className="overflow-hidden rounded-[26px] border border-[#e7ecf3] bg-[#fbf8f5]">
@@ -110,28 +153,74 @@ export default function Program() {
           </div>
         </Reveal>
 
-        {/* 5. paragraph */}
-        <Reveal index={4} className="mt-4 lg:col-start-1 lg:row-start-4">
-          <p className="max-w-[52ch] text-[0.98rem] leading-relaxed text-[#5f6f88]">
-            Hair Trinity brings together targeted scalp therapy, nutritional support, and advanced scalp care
-            technology. Your protocol is selected following consultation and clinical assessment.
-          </p>
-        </Reveal>
+        <Reveal index={4} className="mt-8 lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:mt-0">
+          <form
+            ref={formRef}
+            onSubmit={onSubmit}
+            noValidate
+            className="rounded-[26px] border border-[#e7ecf3] bg-[#fbf8f5] p-6 sm:p-8"
+          >
+            <p className="kicker">Start Your Hair Journey</p>
+            <h3 className="mt-3 text-[1.5rem] font-bold text-[#22395f]">Book Your Consultation</h3>
+            <p className="mt-2 text-[0.9rem] leading-relaxed text-[#5f6f88]">
+              Share a few details and our team will contact you to confirm your consultation.
+            </p>
 
-        {/* 6. certified badge */}
-        <Reveal index={5} className="mt-8 lg:col-start-1 lg:row-start-5">
-          <div className="float inline-flex w-fit items-center gap-3 rounded-[20px] border border-[#e7ecf3] bg-white px-4 py-3">
-            <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-[#fef5ef] text-[#22395f]">
-              <FaAward className="h-5 w-5" />
-            </span>
-            <div className="leading-tight">
-              <div className="display text-[1.05rem] font-bold text-[#22395f]">Certified</div>
-              <div className="text-[0.72rem] font-semibold text-[#5f6f88]">Clinic &amp; Specialists</div>
+            <div className="mt-6">
+              <ProgramField label="Full name" htmlFor="program-name">
+                <input id="program-name" name="name" required autoComplete="name" placeholder="Your name" className={inputCls} />
+              </ProgramField>
+              <ProgramField label="Mobile number" htmlFor="program-phone">
+                <input id="program-phone" name="phone" type="tel" required inputMode="numeric" pattern="[6-9][0-9]{9}" title="Enter a 10-digit mobile number starting with 6, 7, 8 or 9." autoComplete="tel" placeholder="10-digit number" className={inputCls} />
+              </ProgramField>
+              <ProgramField label="Email address" htmlFor="program-email">
+                <input id="program-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" className={inputCls} />
+              </ProgramField>
+              <ProgramField label="Your hair concern" htmlFor="program-concern">
+                <select id="program-concern" name="concern" required defaultValue="" className={inputCls}>
+                  <option value="">Select a concern</option>
+                  <option>Hair Regrowth</option>
+                  <option>Hair Loss / Hair Fall</option>
+                  <option>Baldness / Receding Hairline</option>
+                  <option>Hair Thinning</option>
+                  <option>Scalp Health</option>
+                  <option>Not sure — need advice</option>
+                </select>
+              </ProgramField>
+              <ProgramField label="How long has it been?" htmlFor="program-since">
+                <select id="program-since" name="since" required defaultValue="" className={inputCls}>
+                  <option value="">Select duration</option>
+                  <option>Under 3 months</option>
+                  <option>3 to 12 months</option>
+                  <option>Over a year</option>
+                </select>
+              </ProgramField>
             </div>
-          </div>
+
+            <input type="hidden" name="utm_source" />
+            <input type="hidden" name="utm_medium" />
+            <input type="hidden" name="utm_campaign" />
+            <button type="submit" disabled={submitting} className="btn btn-primary mt-1 w-full disabled:cursor-not-allowed disabled:opacity-70">
+              <span className="relative z-10">{submitting ? "Booking…" : "Schedule Your Consultation"}</span>
+            </button>
+          </form>
         </Reveal>
       </div>
     </section>
+  )
+}
+
+const inputCls =
+  "w-full rounded-xl border border-[#e7ecf3] bg-white px-3.5 py-2.5 text-[0.9rem] text-[#1f2f47] transition-all duration-150 focus:border-[#22395f] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]"
+
+function ProgramField({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-3">
+      <label htmlFor={htmlFor} className="mb-1.5 block text-[0.68rem] font-bold uppercase tracking-[0.08em] text-[#5f6f88]">
+        {label}
+      </label>
+      {children}
+    </div>
   )
 }
 
