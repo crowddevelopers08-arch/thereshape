@@ -137,7 +137,7 @@ export default function Footer() {
       {/* bottom bar */}
       <div className="relative border-t border-white/10">
         <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-center justify-between gap-4 px-5 py-6 text-[0.78rem] text-white/50 sm:px-8">
-          <span>© 2026 thereshape. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} thereshape. All rights reserved.</span>
           <a href="/privacy-policy" className="font-semibold text-white/80 transition-colors hover:text-white">
             Privacy policy
           </a>

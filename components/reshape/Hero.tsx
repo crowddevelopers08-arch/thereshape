@@ -32,10 +32,10 @@ export default function Hero() {
     >
       <div className="relative mx-auto w-full max-w-[1912px]">
         <Image
-          src="https://res.cloudinary.com/n0ccg2u6/image/upload/banner_b5wgr9.png"
+          src="banner.jpeg"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={1912}
-          height={823}
+          height={783}
           priority
           className="hidden h-auto w-full sm:block"
         />
@@ -48,8 +48,8 @@ export default function Hero() {
           className="h-auto w-full sm:hidden"
         />
 
-        <div className="absolute right-0 top-0 hidden aspect-square h-full sm:block">
-          {/* floating cards */}
+        {/* <div className="absolute right-0 top-0 hidden aspect-square h-full sm:block">
+
           <div className="rise d3 absolute right-[2%] top-[1%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:-left-[20%] lg:top-[2%] lg:w-[46%]">
             <div className="float" style={{ animationDelay: "0s" }}>
               <div className={CARD_3D}>
@@ -97,7 +97,7 @@ export default function Hero() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   )
