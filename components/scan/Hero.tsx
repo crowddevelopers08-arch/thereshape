@@ -11,7 +11,7 @@ const SANS = "var(--font-inter), ui-sans-serif, system-ui, sans-serif"
    its own before/after framing, clinic logo and trust row, so the hero shows it
    whole rather than dressing it in a second frame. */
 const RESULTS_IMAGE = {
-  src: "/scan.png",
+  src: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787039538/scan.png",
   alt: "thereshape patient results — before and after the Hair Trinity Program, with natural results, safe and effective treatment and expert care",
 }
 
