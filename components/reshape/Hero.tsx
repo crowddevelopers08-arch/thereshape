@@ -40,7 +40,7 @@ export default function Hero() {
           className="hidden h-auto w-full sm:block"
         />
         <Image
-          src="https://res.cloudinary.com/n0ccg2u6/image/upload/v1785393251/0c892b7b-fdd7-493f-b8aa-45b8db7db1bd_y1c04b.png"
+          src="banner-image.png"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={864}
           height={1821}
@@ -48,56 +48,6 @@ export default function Hero() {
           className="h-auto w-full sm:hidden"
         />
 
-        {/* <div className="absolute right-0 top-0 hidden aspect-square h-full sm:block">
-
-          <div className="rise d3 absolute right-[2%] top-[1%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:-left-[20%] lg:top-[2%] lg:w-[46%]">
-            <div className="float" style={{ animationDelay: "0s" }}>
-              <div className={CARD_3D}>
-                <span className={ICON_3D}>
-                  <Activity className="h-4 w-4" />
-                </span>
-                <p className="mt-2 text-[1.05rem] sm:mt-2.5 sm:text-[1.35rem] font-extrabold leading-none text-[#22395f]" style={{ fontFamily: SANS }}>
-                  <CountUp end={92} suffix="%" />
-                </p>
-                <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
-                  Patients saw visible regrowth*
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="rise d4 absolute right-[0%] top-[40%] hidden w-[40%] max-w-[126px] sm:block sm:max-w-[184px] lg:left-[2%] lg:top-[38%] lg:w-[48%]">
-            <div className="float" style={{ animationDelay: "-1.6s" }}>
-              <div className={CARD_3D}>
-                <span className={ICON_3D}>
-                  <BadgeCheck className="h-4 w-4" />
-                </span>
-                <p className="mt-2 text-[0.8rem] sm:mt-2.5 sm:text-[0.95rem] font-bold leading-tight text-[#22395f]" style={{ fontFamily: SANS }}>
-                  Certified Specialists
-                </p>
-                <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
-                  Board-certified &amp; trusted by 500+ patients
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="rise d4 absolute bottom-[2%] left-[2%] hidden w-[38%] max-w-[118px] sm:block sm:max-w-[152px] lg:left-[30%] lg:w-[46%]">
-            <div className="float" style={{ animationDelay: "-3.2s" }}>
-              <div className={CARD_3D}>
-                <span className={ICON_3D}>
-                  <Star className="h-4 w-4 fill-current" />
-                </span>
-                <p className="mt-2 text-[1.05rem] sm:mt-2.5 sm:text-[1.35rem] font-extrabold leading-none text-[#22395f]" style={{ fontFamily: SANS }}>
-                  <CountUp end={4.8} decimals={1} suffix="/5" />
-                </p>
-                <p className="mt-1 text-[0.6rem] sm:mt-1.5 sm:text-[0.72rem] leading-tight text-[#5f6f88]" style={{ fontFamily: SANS }}>
-                  Patient satisfaction rating
-                </p>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </section>
   )
