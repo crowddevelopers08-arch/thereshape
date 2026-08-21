@@ -11,6 +11,7 @@ export const LEADS_TAB = "thereshape Leads"
 export const FEEDBACK_TAB = "thereshape Feedback"
 export const HAIR_SCAN_TAB = "thereshape Hair Scan"
 export const SCAN_TAB = "thereshape Scan"
+export const HAIRTRINITY_TAB = "thereshape Hairtrinity"
 
 /**
  * The guided assessment flows collect a field set (location, most-noticeable
@@ -21,6 +22,9 @@ export const SCAN_TAB = "thereshape Scan"
 const ASSESSMENT_ROUTES: Record<string, { formType: string; sheetTab: string }> = {
   // components/hair-scan-component/ChatBooking.tsx
   "Hair Scan Chat": { formType: "hairscan", sheetTab: HAIR_SCAN_TAB },
+  // components/hairtrinity/ChatBooking.tsx — same field shape as Hair Scan Chat, own tab
+  "hairtrinity-leads": { formType: "hairtrinity", sheetTab: HAIRTRINITY_TAB },
+  "Hair Trinity Form": { formType: "hairtrinity", sheetTab: HAIRTRINITY_TAB },
   // components/scan/BookingModal.tsx
   "Scan Popup": { formType: "scan", sheetTab: SCAN_TAB },
 }

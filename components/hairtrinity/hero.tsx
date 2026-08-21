@@ -157,27 +157,27 @@ export default function HairTreatmentHero() {
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <section className="bg-white px-4 py-10 font-sans sm:px-8 lg:px-16 lg:py-16">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-10 lg:grid-cols-[0.72fr_1fr] lg:gap-14">
+    <section id="top" className="scroll-mt-28 bg-white px-4 py-6 font-sans sm:px-8 lg:px-16 lg:py-16">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-0 sm:gap-10 lg:grid-cols-[0.72fr_1fr] lg:gap-14">
         {/* Left column */}
-        <div className="max-w-[520px]">
-          <span className="inline-block rounded-[3px] bg-[#fdeee3] px-3 py-[6px] text-[10.5px] font-bold tracking-[1px] text-[#e8823f]">
+        <div className="max-w-[520px] max-sm:contents">
+          <span className="inline-block rounded-[3px] bg-[#fdeee3] px-3 py-[6px] text-[10.5px] font-bold tracking-[1px] text-[#e8823f] max-sm:order-1 max-sm:w-fit">
             BEFORE YOU CHOOSE YOUR NEXT HAIR TREATMENT
           </span>
 
-          <h1 className="mt-4 text-[34px] font-extrabold leading-[1.2] tracking-[-0.5px] text-[#0f1e3d] sm:text-[38px] lg:text-[40px]">
+          <h1 className="mt-4 text-[34px] font-extrabold leading-[1.2] tracking-[-0.5px] text-[#0f1e3d] max-sm:order-2 sm:text-[38px] lg:text-[40px]">
             Before You Take Any Hair Treatment{" "}
             <span className="text-[#e8823f]">Watch This First.</span>
           </h1>
 
-          <p className="mt-5 text-[15px] leading-[1.7] text-[#6b7280]">
+          <p className="mt-5 text-[15px] leading-[1.7] text-[#6b7280] max-sm:order-3">
             PRP, GFC or other hair treatment may work differently for different people, understand{" "}
             <span className="font-semibold text-[#3a4250]">your hair &amp; scalp</span> before choosing a treatment.
           </p>
 
-          <div className="mt-7 flex items-center gap-4">
+          <div className="mt-7 flex items-center gap-4 max-sm:order-5">
             <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-[#e6e8ec]">
-              <Image src="/dr-aneesha.jpg" alt="Dr. Aneesha" fill sizes="56px" className="object-cover" />
+              <Image src="https://res.cloudinary.com/n0ccg2u6/image/upload/docaneesha_rik4bt.png" alt="Dr. Aneesha" fill sizes="56px" className="object-cover" />
             </div>
             <div>
               <p className="text-[15px] font-bold text-[#0f1e3d]">Dr. Aneesha</p>
@@ -190,23 +190,26 @@ export default function HairTreatmentHero() {
 
           <button
             type="button"
-            className="mt-8 flex w-full max-w-[420px] items-center justify-between rounded-[6px] bg-[#0f1e3d] px-6 py-4 text-[13px] font-bold tracking-[0.5px] text-white transition-opacity hover:opacity-90 sm:w-auto"
+            onClick={() => document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            className="btn-wave mt-8 flex w-full max-w-[420px] items-center justify-between rounded-full bg-[#22395f] px-6 py-4 text-[13px] font-semibold tracking-[0.5px] text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] max-sm:order-6 sm:w-auto"
           >
-            <span>BOOK YOUR HAIR ASSESSMENT NOW</span>
-            <ArrowRightIcon />
+            <span className="relative z-10">BOOK YOUR HAIR ASSESSMENT NOW</span>
+            <span className="relative z-10 flex items-center">
+              <ArrowRightIcon />
+            </span>
           </button>
 
-          <p className="mt-3 text-[12.5px] text-[#9aa0ab]">
+          <p className="mt-3 text-[12.5px] text-[#9aa0ab] max-sm:order-7">
             Understand your concerns before deciding your next treatment approach.
           </p>
         </div>
 
         {/* Right column — video */}
-        <div>
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[#0f1e3d] shadow-[0_20px_50px_rgba(15,30,61,.15)] sm:aspect-[16/9]">
+        <div className="max-sm:order-4 max-sm:mt-7">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[#0f1e3d] sm:aspect-[16/9]">
             <video
               ref={videoRef}
-              src="/0819.mp4"
+              src="https://res.cloudinary.com/m5fcfwt7/video/upload/v1787313627/0819_1__squished.mp4"
               autoPlay
               loop
               muted={isMuted}
@@ -273,7 +276,7 @@ export default function HairTreatmentHero() {
           </div>
 
           {/* As seen on bar */}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-[10px] border border-[#eceef1] bg-white px-5 py-4 shadow-[0_4px_16px_rgba(15,30,61,.04)] sm:gap-6">
+          <div className="mt-4 max-sm:hidden flex flex-wrap items-center justify-between gap-4 rounded-[10px] border border-[#eceef1] bg-white px-5 py-4 shadow-[0_4px_16px_rgba(15,30,61,.04)] sm:gap-6">
             <span className="text-[13px] font-semibold text-[#8a8f99]">As Seen On</span>
             <div className="flex flex-1 flex-wrap items-center justify-between gap-5 sm:gap-8">
               <AsSeenOnLogo variant="timesnow" />

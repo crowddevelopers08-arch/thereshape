@@ -89,7 +89,7 @@ const multipleFactors = [
 
 export default function PrpGfcLimitations() {
   return (
-    <section className="px-4 py-16 sm:px-8 lg:px-16 lg:py-20" style={{ backgroundColor: "var(--cream)" }}>
+    <section id="limitations" className="scroll-mt-28 px-4 py-8 sm:px-8 lg:px-16 lg:py-10">
       <div className="mx-auto max-w-[1320px]">
         <div className="flex items-center gap-3">
           <span className="h-px w-8" style={{ backgroundColor: "var(--line)" }} aria-hidden="true" />
@@ -205,7 +205,7 @@ export default function PrpGfcLimitations() {
 
             {/* Multiple factors card */}
             <div
-              className="overflow-hidden rounded-[16px] border shadow-[0_16px_40px_-24px_rgba(22,38,63,0.35)]"
+              className="overflow-hidden rounded-[16px] border"
               style={{ borderColor: "var(--line)", backgroundColor: "var(--paper)" }}
             >
               <div className="px-6 py-5 text-center" style={{ backgroundColor: "var(--peach-soft)" }}>
@@ -214,15 +214,24 @@ export default function PrpGfcLimitations() {
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3.5 px-6 py-6">
-                {multipleFactors.map((f) => (
-                  <div key={f.label} className="flex items-center gap-3">
-                    <SmallFactorIcon src={f.icon} />
-                    <p className="t-caption font-semibold" style={{ color: "var(--ink)" }}>
-                      {f.label}
-                    </p>
-                  </div>
-                ))}
+              <div
+                className="relative overflow-hidden px-6 py-6"
+                style={{
+                  height: "260px",
+                  WebkitMaskImage: "linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)",
+                  maskImage: "linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)",
+                }}
+              >
+                <div className="marquee-y gap-3.5">
+                  {[...multipleFactors, ...multipleFactors].map((f, i) => (
+                    <div key={`${f.label}-${i}`} className="flex items-center gap-3">
+                      <SmallFactorIcon src={f.icon} />
+                      <p className="t-caption font-semibold" style={{ color: "var(--ink)" }}>
+                        {f.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

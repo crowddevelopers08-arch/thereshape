@@ -4,12 +4,11 @@ import { useEffect, useState } from "react"
 import { track } from "./track"
 
 const NAV = [
-  { label: "Trinity", href: "#trinity", id: "trinity" },
-  { label: "Specialist", href: "#doctor", id: "doctor" },
-  { label: "Conditions", href: "#conditions", id: "conditions" },
-  { label: "Why Us", href: "#why", id: "why" },
-  { label: "Journey", href: "#process", id: "process" },
-  { label: "FAQ", href: "#faq", id: "faq" },
+  { label: "Home", href: "#top", id: "top" },
+  { label: "Why Results Differ", href: "#why-results", id: "why-results" },
+  { label: "PRP & GFC", href: "#limitations", id: "limitations" },
+  { label: "Journey", href: "#journey", id: "journey" },
+  { label: "Assessment", href: "#assessment", id: "assessment" },
 ]
 
 const ANNOUNCEMENTS = ["Doctor-Led Hair Care", "3-in-1 Hair Therapy", "Personalised Treatment Plan"]
@@ -119,7 +118,7 @@ export default function Header() {
             +91 86085 51555
           </a>
           <a
-            href="#assessment-form"
+            href="#book"
             className="btn-wave inline-flex items-center justify-center rounded-full bg-[#22395f] px-4 py-2.5 text-[0.82rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-[#16263f] sm:px-6 sm:text-[0.88rem]"
           >
             <span className="relative z-10 sm:hidden">Book</span>

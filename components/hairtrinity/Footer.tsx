@@ -1,22 +1,16 @@
 "use client"
 
-import { LuPhone, LuClock, LuArrowRight, LuMail, LuMapPin } from "react-icons/lu"
+import { LuPhone, LuMail, LuMapPin } from "react-icons/lu"
 import { FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa"
 import { track } from "./track"
 
-// const EXPLORE = [
-//   { label: "Results", href: "#results" },
-//   { label: "Specialist", href: "#doctor" },
-//   { label: "Conditions", href: "#conditions" },
-//   { label: "FAQ", href: "#faq" },
-// ]
-
-const TREATMENTS = [
-  "Hair Regrowth",
-  "Hair Loss Treatment",
-  "Baldness Treatment",
-  "Hair Thinning",
-  "Scalp Rejuvenation",
+const QUICK_LINKS = [
+  { label: "Home", href: "#top" },
+  { label: "Why Results Differ", href: "#why-results" },
+  { label: "PRP & GFC Limitations", href: "#limitations" },
+  { label: "Treatment Journey", href: "#journey" },
+  { label: "Hair Assessment", href: "#assessment" },
+  { label: "Book Consultation", href: "#book" },
 ]
 
 const SOCIALS = [
@@ -55,28 +49,14 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* explore */}
-        {/* <div>
-          <h4 className="text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#fccbb6]">Explore</h4>
+        {/* quick links */}
+        <div>
+          <h4 className="text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#fccbb6]">Quick Links</h4>
           <ul className="mt-4 space-y-2.5 text-[0.9rem]">
-            {EXPLORE.map((l) => (
+            {QUICK_LINKS.map((l) => (
               <li key={l.href}>
                 <a href={l.href} className="transition-colors hover:text-white">
                   {l.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div> */}
-
-        {/* treatments */}
-        <div>
-          <h4 className="text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#fccbb6]">Treatments</h4>
-          <ul className="mt-4 space-y-2.5 text-[0.9rem]">
-            {TREATMENTS.map((t) => (
-              <li key={t}>
-                <a href="#conditions" className="transition-colors hover:text-white">
-                  {t}
                 </a>
               </li>
             ))}

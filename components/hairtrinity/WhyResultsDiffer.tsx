@@ -1,20 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
 function BulbIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="#fccbb6" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 18h6M10 21h4" />
       <path d="M12 3a6.5 6.5 0 0 0-3.8 11.8c.6.4 1 1.1 1 1.9V17h5.6v-.3c0-.8.3-1.5 1-1.9A6.5 6.5 0 0 0 12 3Z" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ dir = "left" }: { dir?: "left" | "right" }) {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      {dir === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
     </svg>
   );
 }
@@ -47,36 +37,11 @@ function StarIcon({ filled }: { filled: boolean }) {
   );
 }
 
-function FactorIcon({ src }: { src: string }) {
-  return (
-    <span
-      role="img"
-      aria-hidden="true"
-      className="h-8 w-8 shrink-0"
-      style={{
-        backgroundColor: "var(--peach)",
-        WebkitMaskImage: `url(${src})`,
-        maskImage: `url(${src})`,
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-      }}
-    />
-  );
-}
-
 const factors = [
-  { icon: "/icon-1.png", label: "Genetics & Family History" },
-  { icon: "/icon-2.png", label: "Scalp Condition" },
-  { icon: "/icon-3.png", label: "Hormonal Factors" },
-  { icon: "/icon-4.png", label: "Lifestyle & Stress" },
-  { icon: "/icon-5.png", label: "Nutritional Factors" },
-  { icon: "/icon-8.png", label: "Overall Health" },
-  { icon: "/icon-6.png", label: "Environmental Factors" },
-  { icon: "/icon-7.png", label: "Hair Loss Pattern & Severity" },
+  "Genetics & Family History",
+  "Scalp Condition",
+  "Hormonal Factors",
+  "Lifestyle & Stress",
 ];
 
 const testimonials = [
@@ -122,32 +87,9 @@ const testimonials = [
   },
 ];
 
-const AUTOPLAY_MS = 5000;
-
 export default function WhyResultsDiffer() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setActive((a) => (a + 1) % testimonials.length);
-    }, AUTOPLAY_MS);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.children[active] as HTMLElement | undefined;
-    if (card) track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: "smooth" });
-  }, [active]);
-
-  const goTo = (index: number) => {
-    setActive((index + testimonials.length) % testimonials.length);
-  };
-
   return (
-    <section className="px-4 py-16 sm:px-8 lg:px-16 lg:py-20" style={{ backgroundColor: "var(--navy-deep)" }}>
+    <section id="why-results" className="scroll-mt-28 px-4 py-8 sm:px-8 lg:px-16 lg:py-10" style={{ backgroundColor: "var(--navy-deep)" }}>
       <div className="mx-auto max-w-[1320px]">
         {/* Header */}
         <div className="mx-auto max-w-[720px] text-center">
@@ -163,7 +105,7 @@ export default function WhyResultsDiffer() {
         </div>
 
         {/* Content grid */}
-        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[1.05fr_1.15fr] lg:gap-10">
+        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
           {/* Left — factors */}
           <div>
             <p className="t-caption font-bold uppercase tracking-[1.5px]" style={{ color: "var(--peach)" }}>
@@ -171,15 +113,14 @@ export default function WhyResultsDiffer() {
             </p>
             <p className="t-body mt-2 text-white/85">Factors that can influence your treatment response:</p>
 
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {factors.map((f) => (
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              {factors.map((label) => (
                 <div
-                  key={f.label}
-                  className="flex flex-col items-center gap-2.5 rounded-[10px] border px-3 py-5 text-center"
+                  key={label}
+                  className="flex items-center justify-center rounded-[10px] border px-3 py-6 text-center"
                   style={{ borderColor: "rgba(252,203,182,0.2)", backgroundColor: "rgba(34,57,95,0.6)" }}
                 >
-                  <FactorIcon src={f.icon} />
-                  <p className="t-caption font-semibold leading-[1.35] text-white/90">{f.label}</p>
+                  <p className="t-caption font-semibold leading-[1.35] text-white/90">{label}</p>
                 </div>
               ))}
             </div>
@@ -206,7 +147,7 @@ export default function WhyResultsDiffer() {
             </div>
           </div>
 
-          {/* Right — real patient experiences carousel */}
+          {/* Right — real patient experiences, slow auto-scrolling row */}
           <div>
             <div className="flex items-center justify-center gap-3">
               <span className="h-px flex-1 border-t border-dashed" style={{ borderColor: "rgba(252,203,182,0.3)" }} aria-hidden="true" />
@@ -216,25 +157,18 @@ export default function WhyResultsDiffer() {
               <span className="h-px flex-1 border-t border-dashed" style={{ borderColor: "rgba(252,203,182,0.3)" }} aria-hidden="true" />
             </div>
 
-            <div className="relative mt-5">
-              <button
-                type="button"
-                aria-label="Previous"
-                onClick={() => goTo(active - 1)}
-                className="absolute left-[-14px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 place-items-center rounded-full border transition-colors sm:grid"
-                style={{ borderColor: "rgba(252,203,182,0.3)", backgroundColor: "var(--navy)", color: "var(--peach)" }}
-              >
-                <ChevronIcon dir="left" />
-              </button>
-
-              <div
-                ref={trackRef}
-                className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
-                {testimonials.map((t) => (
+            <div
+              className="relative mt-5 overflow-hidden"
+              style={{
+                WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+                maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+              }}
+            >
+              <div className="marquee gap-4">
+                {[...testimonials, ...testimonials].map((t, i) => (
                   <div
-                    key={t.badge}
-                    className="w-[78%] shrink-0 snap-start rounded-[14px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.25)] sm:w-[47%] lg:w-[45%]"
+                    key={`${t.badge}-${i}`}
+                    className="w-[300px] shrink-0 rounded-[14px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
                     style={{ backgroundColor: "var(--paper)" }}
                   >
                     <span
@@ -245,8 +179,8 @@ export default function WhyResultsDiffer() {
                     </span>
 
                     <div className="mt-3 flex items-center gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <StarIcon key={i} filled={i < t.stars} />
+                      {Array.from({ length: 5 }).map((_, s) => (
+                        <StarIcon key={s} filled={s < t.stars} />
                       ))}
                     </div>
 
@@ -265,32 +199,6 @@ export default function WhyResultsDiffer() {
                   </div>
                 ))}
               </div>
-
-              <button
-                type="button"
-                aria-label="Next"
-                onClick={() => goTo(active + 1)}
-                className="absolute right-[-14px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 place-items-center rounded-full border transition-colors sm:grid"
-                style={{ borderColor: "rgba(252,203,182,0.3)", backgroundColor: "var(--navy)", color: "var(--peach)" }}
-              >
-                <ChevronIcon dir="right" />
-              </button>
-            </div>
-
-            <div className="mt-4 flex items-center justify-center gap-2">
-              {testimonials.map((t, i) => (
-                <button
-                  key={t.badge}
-                  type="button"
-                  aria-label={`Go to slide ${i + 1}`}
-                  onClick={() => goTo(i)}
-                  className="h-2 rounded-full transition-all"
-                  style={{
-                    width: active === i ? "20px" : "8px",
-                    backgroundColor: active === i ? "var(--peach)" : "var(--navy-soft)",
-                  }}
-                />
-              ))}
             </div>
 
             {/* Q&A footer */}

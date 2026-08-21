@@ -495,6 +495,26 @@
   }
 }
 
+/* vertical marquee — slow auto-scrolling column, loops seamlessly when
+   the content is rendered twice back-to-back by the caller */
+.reshape .marquee-y {
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  animation: reshape-marquee-y 20s linear infinite;
+}
+.reshape .marquee-y:hover {
+  animation-play-state: paused;
+}
+@keyframes reshape-marquee-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
 /* continuous white shimmer sweeping back and forth inside a CTA button */
 .reshape .btn-wave {
   position: relative;

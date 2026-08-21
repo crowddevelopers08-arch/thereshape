@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import Header from "@/components/reshape/Header"
+import Header from "@/components/hairtrinity/Header"
 import Results from "@/components/reshape/Results"
 import CtaBand from "@/components/reshape/CtaBand"
 import Doctor from "@/components/reshape/Doctor"
@@ -10,13 +10,15 @@ import WhyReshape from "@/components/reshape/WhyReshape"
 import Process from "@/components/reshape/Process"
 import Conditions from "@/components/reshape/Conditions"
 import Faq from "@/components/reshape/Faq"
-import Footer from "@/components/reshape/Footer"
+import Footer from "@/components/hairtrinity/Footer"
 import StickyCta from "@/components/reshape/StickyCta"
 import CinematicScroll from "@/components/reshape/CinematicScroll"
 import HairTreatmentHero from "@/components/hairtrinity/hero"
 import WhyResultsDiffer from "@/components/hairtrinity/WhyResultsDiffer"
 import PrpGfcLimitations from "@/components/hairtrinity/PrpGfcLimitations"
 import Journey from "@/components/hairtrinity/Journey"
+import ChatBooking from "@/components/hairtrinity/ChatBooking"
+import AssessmentCandidates from "@/components/hairtrinity/AssessmentCandidates"
 
 export const metadata: Metadata = {
   title: "thereshape — Advanced Hair Trinity Program | Personalized Hair Restoration",
@@ -34,10 +36,13 @@ export default function ReshapePage() {
         <HairTreatmentHero />
         <WhyResultsDiffer />
         <PrpGfcLimitations />
+        <ChatBooking />
         {/* <Results /> */}
         {/* 2 · Why Reshape */}
         {/* <Program /> */}
         <Journey />
+        <AssessmentCandidates />
+
         {/* 3 · Process */}
       </main>
       <Footer />

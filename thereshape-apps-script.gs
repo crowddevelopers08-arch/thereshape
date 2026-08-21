@@ -1,5 +1,5 @@
 /* ============================================================
-   thereshape — Google Apps Script (THREE FORMS, THREE TABS)
+   thereshape — Google Apps Script (FOUR FORMS, FOUR TABS)
 
    Routes:
      /api/leads     -> { formType:'lead', sheetTab, timestamp, name, phone,
@@ -11,12 +11,14 @@
                          hairLossArea, familyHistory, branch, source, medium,
                          campaign, pageUrl, formSource } and land in their own
                        tab, one per page:
-                         formType 'hairscan' -> 'thereshape Hair Scan'
-                           (/hair-scan, ChatBooking.tsx)
-                         formType 'scan'     -> 'thereshape Scan'
+                         formType 'hairscan'    -> 'thereshape Hair Scan'
+                           (/hair-scan, hair-scan-component/ChatBooking.tsx)
+                         formType 'scan'        -> 'thereshape Scan'
                            (/scan, scan/BookingModal.tsx)
-                       Both tabs share one column layout because both forms ask
-                       the same questions.
+                         formType 'hairtrinity' -> 'thereshape Hairtrinity'
+                           (/hairtrinity, hairtrinity/ChatBooking.tsx)
+                       All three tabs share one column layout because all
+                       three forms ask the same questions.
      /api/feedback  -> { formType:'feedback', sheetTab, timestamp, name, email,
                          phone, rating, suggestions, source, pageUrl }
 
@@ -25,8 +27,9 @@
 
    Routing is on `formType`. If it is missing the script sniffs the payload
    (`suggestions` is unique to the feedback form, `hairLossArea` to the
-   hair-scan form) and otherwise falls back to Leads — so an older deploy of
-   the site still lands in the right tab.
+   guided-assessment forms, `formSource` disambiguates which one) and
+   otherwise falls back to Leads — so an older deploy of the site still
+   lands in the right tab.
 
    SETUP
      1. Extensions → Apps Script, paste this file, Save.
@@ -42,10 +45,11 @@
    ============================================================ */
 
 /* ── Tab names — must match the exported tab names in lib/sheets.ts ── */
-var LEADS_TAB     = 'thereshape Leads';
-var FEEDBACK_TAB  = 'thereshape Feedback';
-var HAIR_SCAN_TAB = 'thereshape Hair Scan';
-var SCAN_TAB      = 'thereshape Scan';
+var LEADS_TAB       = 'thereshape Leads';
+var FEEDBACK_TAB    = 'thereshape Feedback';
+var HAIR_SCAN_TAB   = 'thereshape Hair Scan';
+var SCAN_TAB        = 'thereshape Scan';
+var HAIRTRINITY_TAB = 'thereshape Hairtrinity';
 
 var LEADS_HEADERS = [
   'Timestamp', 'Name', 'Phone', 'Email', 'Hair Concern', 'Duration',
@@ -60,10 +64,10 @@ var FEEDBACK_WIDTHS = [175, 160, 130, 210, 80, 440, 210, 300];
 
 // Every field the guided assessment flows collect — including the two
 // (Most Noticeable Area, Family History) that used to be dropped entirely.
-// /hair-scan and /scan each get their own tab but ask the same questions, so
-// they share one column layout. Form Source still records which form captured
-// the lead: it is what identifies a row that reached the wrong tab through the
-// payload-sniffing fallback in doPost.
+// /hair-scan, /scan and /hairtrinity each get their own tab but ask the same
+// questions, so they share one column layout. Form Source still records which
+// form captured the lead: it is what identifies a row that reached the wrong
+// tab through the payload-sniffing fallback in doPost.
 var HAIR_SCAN_HEADERS = [
   'Timestamp', 'Name', 'Phone', 'Email', 'Location', 'Primary Concern',
   'Hair Loss Duration', 'Most Noticeable Area', 'Family History',
@@ -71,14 +75,18 @@ var HAIR_SCAN_HEADERS = [
 ];
 var HAIR_SCAN_WIDTHS = [175, 160, 130, 200, 160, 190, 160, 180, 130, 150, 150, 140, 170, 300, 150];
 
-// The Scan tab is deliberately the same shape — one appender serves both.
+// The Scan and Hairtrinity tabs are deliberately the same shape — one
+// appender serves all three.
 var SCAN_HEADERS = HAIR_SCAN_HEADERS;
 var SCAN_WIDTHS  = HAIR_SCAN_WIDTHS;
+var HAIRTRINITY_HEADERS = HAIR_SCAN_HEADERS;
+var HAIRTRINITY_WIDTHS  = HAIR_SCAN_WIDTHS;
 
-var BRAND  = '#22395f'; // thereshape navy — Leads header
-var PEACH  = '#b4632f'; // deepened peach, readable behind white text — Feedback header
-var TEAL   = '#0f766e'; // hair-scan teal — Hair Scan header
-var VIOLET = '#5b4b8a'; // muted violet — Scan header
+var BRAND       = '#22395f'; // thereshape navy — Leads header
+var PEACH       = '#b4632f'; // deepened peach, readable behind white text — Feedback header
+var TEAL        = '#0f766e'; // hair-scan teal — Hair Scan header
+var VIOLET      = '#5b4b8a'; // muted violet — Scan header
+var HAIRTRINITY_COLOR = '#b45309'; // amber — Hairtrinity header
 
 function authorize() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -86,7 +94,7 @@ function authorize() {
 }
 
 function doGet() {
-  return _json({ status: 'thereshape API is live', tabs: [LEADS_TAB, FEEDBACK_TAB, HAIR_SCAN_TAB, SCAN_TAB] });
+  return _json({ status: 'thereshape API is live', tabs: [LEADS_TAB, FEEDBACK_TAB, HAIR_SCAN_TAB, SCAN_TAB, HAIRTRINITY_TAB] });
 }
 
 function _json(obj) {
@@ -213,6 +221,14 @@ function getOrCreateScanSheet(ss) {
   return _getOrCreateAssessmentSheet(ss, SCAN_TAB, VIOLET);
 }
 
+function createHairtrinitySheet(ss) {
+  return _createAssessmentSheet(ss, HAIRTRINITY_TAB, HAIRTRINITY_COLOR);
+}
+
+function getOrCreateHairtrinitySheet(ss) {
+  return _getOrCreateAssessmentSheet(ss, HAIRTRINITY_TAB, HAIRTRINITY_COLOR);
+}
+
 /* ── Row appenders ──────────────────────────────────────────────────────── */
 
 function appendLeadRow(sheet, data, ts) {
@@ -298,14 +314,24 @@ function doPost(e) {
       String(data.formSource || '').toLowerCase() === 'scan popup' ||
       (data.sheetTab && String(data.sheetTab).toLowerCase() === SCAN_TAB.toLowerCase());
 
+    // Check Hairtrinity first: its guided form also carries hairLossArea.
+    var isHairtrinity =
+      !isScan &&
+      (String(data.formType || '').toLowerCase() === 'hairtrinity' ||
+        String(data.formSource || '').toLowerCase() === 'hairtrinity-leads' ||
+        String(data.formSource || '').toLowerCase() === 'hair trinity form' ||
+        (data.sheetTab && String(data.sheetTab).toLowerCase() === HAIRTRINITY_TAB.toLowerCase()));
+
     var isHairScan =
       !isScan &&
+      !isHairtrinity &&
       (String(data.formType || '').toLowerCase() === 'hairscan' ||
         !!data.hairLossArea ||
         (data.sheetTab && String(data.sheetTab).toLowerCase().indexOf('hair scan') !== -1));
 
     var isFeedback =
       !isScan &&
+      !isHairtrinity &&
       !isHairScan &&
       (String(data.formType || '').toLowerCase() === 'feedback' ||
         !!data.suggestions ||
@@ -316,6 +342,12 @@ function doPost(e) {
       var scanSheet = getOrCreateScanSheet(ss);
       var scanRow = appendHairScanRow(scanSheet, data, ts);
       return _json({ success: true, tab: SCAN_TAB, row: scanRow });
+    }
+
+    if (isHairtrinity) {
+      var hairtrinitySheet = getOrCreateHairtrinitySheet(ss);
+      var hairtrinityRow = appendHairScanRow(hairtrinitySheet, data, ts);
+      return _json({ success: true, tab: HAIRTRINITY_TAB, row: hairtrinityRow });
     }
 
     if (isHairScan) {
@@ -374,6 +406,14 @@ function setupSheets() {
   } else {
     getOrCreateScanSheet(ss);
     Logger.log('OK: ' + SCAN_TAB);
+  }
+
+  if (!ss.getSheetByName(HAIRTRINITY_TAB)) {
+    createHairtrinitySheet(ss);
+    Logger.log('Created: ' + HAIRTRINITY_TAB);
+  } else {
+    getOrCreateHairtrinitySheet(ss);
+    Logger.log('OK: ' + HAIRTRINITY_TAB);
   }
 
   Logger.log('setupSheets complete.');
@@ -475,6 +515,33 @@ function testScanWithoutFormType() {
     }
   });
   Logger.log(result.getContent());
+}
+
+function testHairtrinityLead() {
+  var result = doPost({
+    postData: {
+      contents: JSON.stringify({
+        formType: 'hairtrinity',
+        sheetTab: HAIRTRINITY_TAB,
+        name: 'Test Hair Trinity Lead',
+        phone: '9876543210',
+        email: 'test.hairtrinity@example.com',
+        location: 'Chennai',
+        primaryConcern: 'Hair thinning',
+        hairLossDuration: '3-6 months',
+        hairLossArea: 'Crown area',
+        familyHistory: 'Yes',
+        branch: 'Reshape Clinic',
+        source: 'direct',
+        medium: '',
+        campaign: 'hair-trinity',
+        pageUrl: 'https://thereshape.in/hairtrinity',
+        formSource: 'hairtrinity-leads',
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      })
+    }
+  });
+  Logger.log(result.getContent()); // expect tab: 'thereshape Hairtrinity'
 }
 
 function testFeedback() {
