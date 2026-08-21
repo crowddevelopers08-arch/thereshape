@@ -14,7 +14,7 @@ const CARD_3D =
   "backdrop-blur transform-gpu transition-transform duration-300 will-change-transform " +
   "[transform:perspective(900px)_rotateX(7deg)_rotateY(-11deg)] hover:[transform:perspective(900px)_rotateX(0deg)_rotateY(0deg)_translateY(-4px)]"
 
-// 3D icon chip: raised, glossy top edge.
+// 3D icon chip: raised, gloss 
 const ICON_3D =
   "flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-[8px] sm:rounded-[9px] border border-white bg-gradient-to-br from-white to-[#fbeade] text-[#22395f] " +
   "shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_8px_-2px_rgba(34,57,95,0.28)]"
@@ -32,7 +32,7 @@ export default function Hero() {
     >
       <div className="relative mx-auto w-full max-w-[1912px]">
         <Image
-          src="https://res.cloudinary.com/n0ccg2u6/image/upload/banner_b5wgr9.png"
+          src="/banner.jpeg"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={1912}
           height={823}
@@ -40,7 +40,7 @@ export default function Hero() {
           className="hidden h-auto w-full sm:block"
         />
         <Image
-          src="https://res.cloudinary.com/n0ccg2u6/image/upload/v1785393251/0c892b7b-fdd7-493f-b8aa-45b8db7db1bd_y1c04b.png"
+          src="/banner.jpeg"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={864}
           height={1821}

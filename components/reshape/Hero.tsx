@@ -32,7 +32,7 @@ export default function Hero() {
     >
       <div className="relative mx-auto w-full max-w-[1912px]">
         <Image
-          src="https://res.cloudinary.com/x6ec5hqm/image/upload/v1787039530/banner.jpg"
+          src="/banner.jpeg"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={1912}
           height={783}
@@ -40,7 +40,7 @@ export default function Hero() {
           className="hidden h-auto w-full sm:block"
         />
         <Image
-          src="https://res.cloudinary.com/x6ec5hqm/image/upload/v1787039535/banner-image.png"
+          src="/banner.jpeg"
           alt="The Hair Trinity Program — three advanced hair therapies in one doctor-personalised session"
           width={864}
           height={1821}
