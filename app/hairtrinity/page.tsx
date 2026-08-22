@@ -35,8 +35,9 @@ export default function ReshapePage() {
         {/* 1 · Hook + primary CTA */}
         <HairTreatmentHero />
         <WhyResultsDiffer />
-        <PrpGfcLimitations />
         <ChatBooking />
+        <PrpGfcLimitations />
+
         {/* <Results /> */}
         {/* 2 · Why Reshape */}
         {/* <Program /> */}

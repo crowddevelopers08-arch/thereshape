@@ -64,8 +64,8 @@ function AsSeenOnLogo({ variant }: { variant: "timesnow" | "ndtv" | "indiatoday"
   if (variant === "timesnow") {
     return (
       <div className="text-center leading-[0.85] text-[#3a4250]">
-        <span className="block text-[15px] font-extrabold tracking-tight">TIMES</span>
-        <span className="block text-[15px] font-extrabold tracking-tight">NOW</span>
+        <span className="block text-[15px] font-extrabold tracking-tight">TIMES NOW</span>
+        {/* <span className="block text-[15px] font-extrabold tracking-tight"></span> */}
       </div>
     );
   }
@@ -79,8 +79,8 @@ function AsSeenOnLogo({ variant }: { variant: "timesnow" | "ndtv" | "indiatoday"
   if (variant === "indiatoday") {
     return (
       <div className="text-center leading-[0.9] text-[#2c333f]">
-        <span className="block text-[13px] font-bold tracking-wide">INDIA</span>
-        <span className="block text-[15px] font-extrabold tracking-tight">TODAY</span>
+        <span className="block text-[13px] font-bold tracking-wide">INDIA TODAY</span>
+        {/* <span className="block text-[15px] font-extrabold tracking-tight"></span> */}
       </div>
     );
   }
@@ -92,12 +92,31 @@ function AsSeenOnLogo({ variant }: { variant: "timesnow" | "ndtv" | "indiatoday"
   );
 }
 
+const asSeenOnVariants = ["timesnow", "ndtv", "indiatoday", "news18"] as const;
+
 export default function HairTreatmentHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const navigationEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    if (navigationEntry?.type !== "reload") return;
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    const scrollToHero = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    scrollToHero();
+    const frameId = window.requestAnimationFrame(scrollToHero);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -154,25 +173,66 @@ export default function HairTreatmentHero() {
     setCurrentTime(time);
   };
 
+  const handleVideoKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (event.target !== event.currentTarget) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      togglePlay();
+      return;
+    }
+
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      const seekAmount = event.key === "ArrowLeft" ? -5 : 5;
+      const videoDuration = Number.isFinite(video.duration) ? video.duration : 0;
+      video.currentTime = Math.min(Math.max(video.currentTime + seekAmount, 0), videoDuration);
+      return;
+    }
+
+    if (event.key.toLowerCase() === "m") {
+      event.preventDefault();
+      toggleMute();
+      return;
+    }
+
+    if (event.key.toLowerCase() === "f") {
+      event.preventDefault();
+      toggleFullscreen();
+    }
+  };
+
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <section id="top" className="scroll-mt-28 bg-white px-4 py-6 font-sans sm:px-8 lg:px-16 lg:py-16">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-0 sm:gap-10 lg:grid-cols-[0.72fr_1fr] lg:gap-14">
+    <section id="top" className="scroll-mt-28 bg-white px-4 py-6 font-sans sm:px-8 lg:px-16 lg:py-12">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-0 sm:gap-20 lg:grid-cols-[minmax(0,48fr)_minmax(0,56fr)] lg:gap-12">
         {/* Left column */}
-        <div className="max-w-[520px] max-sm:contents">
+        <div className="w-full min-w-0 max-sm:contents">
           <span className="inline-block rounded-[3px] bg-[#fdeee3] px-3 py-[6px] text-[10.5px] font-bold tracking-[1px] text-[#e8823f] max-sm:order-1 max-sm:w-fit">
             BEFORE YOU CHOOSE YOUR NEXT HAIR TREATMENT
           </span>
 
           <h1 className="mt-4 text-[34px] font-extrabold leading-[1.2] tracking-[-0.5px] text-[#0f1e3d] max-sm:order-2 sm:text-[38px] lg:text-[40px]">
-            Before You Take Any Hair Treatment{" "}
-            <span className="text-[#e8823f]">Watch This First.</span>
+            <span className="sm:block">Before You Take Any </span>
+            <span className="sm:block">
+              Hair Treatment{" "}
+              <span className="inline-block animate-[hairtrinity-word-colour_3.6s_ease-in-out_infinite] text-[#e8823f]">Watch</span>
+            </span>
+            <span className="text-[#e8823f] sm:block">
+              {" "}<span className="inline-block animate-[hairtrinity-word-colour_3.6s_ease-in-out_0.4s_infinite]">This</span>{" "}
+              <span className="inline-block animate-[hairtrinity-word-colour_3.6s_ease-in-out_0.8s_infinite]">First.</span>
+            </span>
           </h1>
 
           <p className="mt-5 text-[15px] leading-[1.7] text-[#6b7280] max-sm:order-3">
-            PRP, GFC or other hair treatment may work differently for different people, understand{" "}
-            <span className="font-semibold text-[#3a4250]">your hair &amp; scalp</span> before choosing a treatment.
+            <span className="sm:block">PRP, GFC or other hair treatment may work differently for different people, </span>
+            <span>
+              understand <strong className="font-bold text-[#0f1e3d]">your hair &amp; scalp</strong> before choosing a treatment.
+            </span>
           </p>
 
           <div className="mt-7 flex items-center gap-4 max-sm:order-5">
@@ -205,8 +265,14 @@ export default function HairTreatmentHero() {
         </div>
 
         {/* Right column — video */}
-        <div className="max-sm:order-4 max-sm:mt-7">
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[#0f1e3d] sm:aspect-[16/9]">
+        <div className="w-full min-w-0 max-sm:order-4 max-sm:mt-7">
+          <div
+            role="group"
+            tabIndex={0}
+            aria-label="Video player. Press Space to play or pause, arrow keys to seek, M to mute, and F for fullscreen."
+            onKeyDown={handleVideoKeyDown}
+            className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[#0f1e3d] outline-none ring-[#e8823f] transition-shadow focus-visible:ring-2 focus-visible:ring-offset-2 sm:aspect-[16/9]"
+          >
             <video
               ref={videoRef}
               src="https://res.cloudinary.com/m5fcfwt7/video/upload/v1787313627/0819_1__squished.mp4"
@@ -214,9 +280,17 @@ export default function HairTreatmentHero() {
               loop
               muted={isMuted}
               playsInline
-              className="absolute inset-0 h-full w-full object-cover object-[70%_center]"
+              className="absolute inset-0 h-full w-full object-cover object-[50%_center]"
               onClick={togglePlay}
             />
+
+            <div className="pointer-events-none absolute right-4 top-4 z-10 flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] text-white backdrop-blur-sm">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+              </span>
+              LIVE
+            </div>
 
             {!isPlaying && (
               <>
@@ -276,13 +350,19 @@ export default function HairTreatmentHero() {
           </div>
 
           {/* As seen on bar */}
-          <div className="mt-4 max-sm:hidden flex flex-wrap items-center justify-between gap-4 rounded-[10px] border border-[#eceef1] bg-white px-5 py-4 shadow-[0_4px_16px_rgba(15,30,61,.04)] sm:gap-6">
-            <span className="text-[13px] font-semibold text-[#8a8f99]">As Seen On</span>
-            <div className="flex flex-1 flex-wrap items-center justify-between gap-5 sm:gap-8">
-              <AsSeenOnLogo variant="timesnow" />
-              <AsSeenOnLogo variant="ndtv" />
-              <AsSeenOnLogo variant="indiatoday" />
-              <AsSeenOnLogo variant="news18" />
+          <div className="mt-4 max-sm:hidden flex h-[68px] items-center gap-5 overflow-hidden rounded-[10px] border border-[#eceef1] bg-white px-5 shadow-[0_4px_16px_rgba(15,30,61,.04)]">
+            <span className="shrink-0 whitespace-nowrap text-[13px] font-semibold text-[#8a8f99]">As Seen On</span>
+            <div className="min-w-0 flex-1 overflow-hidden">
+              <div className="flex w-[200%] animate-[as-seen-on-scroll_16s_linear_infinite] will-change-transform hover:[animation-play-state:paused]">
+                {[...asSeenOnVariants, ...asSeenOnVariants].map((variant, index) => (
+                  <div
+                    key={`${variant}-${index}`}
+                    className="mx-1.5 flex h-11 w-[calc(12.5%_-_12px)] shrink-0 items-center justify-center rounded-lg border border-[#eceef1] bg-[#fafbfc] px-2"
+                  >
+                    <AsSeenOnLogo variant={variant} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

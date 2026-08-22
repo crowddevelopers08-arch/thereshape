@@ -92,15 +92,20 @@ export default function WhyResultsDiffer() {
     <section id="why-results" className="scroll-mt-28 px-4 py-8 sm:px-8 lg:px-16 lg:py-10" style={{ backgroundColor: "var(--navy-deep)" }}>
       <div className="mx-auto max-w-[1320px]">
         {/* Header */}
-        <div className="mx-auto max-w-[720px] text-center">
+        <div className="mx-auto max-w-[920px] text-center">
           <h2 className="t-h2 uppercase" style={{ color: "#ffffff" }}>
-            Why Doesn&rsquo;t the Same Hair Treatment{" "}
-            <span style={{ color: "var(--peach)" }}>Work for Everyone?</span>
+            Why Doesn&rsquo;t the{" "}
+            <span className="inline-block">
+              <span className="inline-block animate-[hairtrinity-dark-word-colour_3.6s_ease-in-out_infinite]">Same</span>{" "}
+              <span className="inline-block animate-[hairtrinity-dark-word-colour_3.6s_ease-in-out_0.4s_infinite]">Hair</span>{" "}
+              <span className="inline-block animate-[hairtrinity-dark-word-colour_3.6s_ease-in-out_0.8s_infinite]">Treatment</span>
+            </span>{" "}
+            {/* <span style={{ color: "var(--peach)" }}>Work for Everyone?</span> */}
+            <span>Work for Everyone?</span>
           </h2>
           <div className="mx-auto mt-4 h-2 w-2 rotate-45" style={{ backgroundColor: "var(--peach)" }} aria-hidden="true" />
           <p className="t-body-lg mt-4 text-white/70">
-            Hair loss isn&rsquo;t always caused by the same factors. So the same treatment may not lead to the same
-            experience for everyone.
+            Hair loss can have different causes, so the same treatment may not work the same way for everyone.
           </p>
         </div>
 
@@ -201,28 +206,7 @@ export default function WhyResultsDiffer() {
               </div>
             </div>
 
-            {/* Q&A footer */}
-            <div
-              className="mt-5 grid grid-cols-1 gap-4 rounded-[12px] px-5 py-4 sm:grid-cols-2 sm:divide-x sm:divide-[var(--line)]"
-              style={{ backgroundColor: "var(--cream)" }}
-            >
-              <div className="flex items-start gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border" style={{ borderColor: "var(--line)" }}>
-                  <QuestionMarkIcon />
-                </span>
-                <p className="t-caption leading-[1.5]" style={{ color: "var(--muted)" }}>
-                  Why do some people see improvement while others see little or no noticeable change?
-                </p>
-              </div>
-              <div className="flex items-start gap-3 sm:pl-4">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border" style={{ borderColor: "var(--line)" }}>
-                  <TargetIcon />
-                </span>
-                <p className="t-caption leading-[1.5]" style={{ color: "var(--muted)" }}>
-                  Because the root causes, severity, and scalp conditions are not the same.
-                </p>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>

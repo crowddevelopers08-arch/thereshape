@@ -641,6 +641,55 @@
   will-change: auto;
 }
 
+@keyframes as-seen-on-enter {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes as-seen-on-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes hairtrinity-word-colour {
+  0%,
+  100% {
+    color: #e8823f;
+  }
+  25% {
+    color: #f2a15f;
+  }
+  50% {
+    color: #22395f;
+  }
+  75% {
+    color: #0f1e3d;
+  }
+}
+
+@keyframes hairtrinity-dark-word-colour {
+  0%,
+  100% {
+    color: #ffffff;
+  }
+  35% {
+    color: #f2a15f;
+  }
+  70% {
+    color: #e8823f;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reshape .reveal,
   .reshape .rise,
