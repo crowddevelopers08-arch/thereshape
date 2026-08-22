@@ -216,15 +216,14 @@ export default function HairTreatmentHero() {
             BEFORE YOU CHOOSE YOUR NEXT HAIR TREATMENT
           </span>
 
-          <h1 className="mt-4 text-[34px] font-extrabold leading-[1.2] tracking-[-0.5px] text-[#0f1e3d] max-sm:order-2 sm:text-[38px] lg:text-[40px]">
+          <h1 className="mt-4 text-[34px] font-extrabold !leading-[1.16] tracking-[-0.5px] text-[#0f1e3d] max-sm:order-2 sm:text-[38px] lg:text-[40px]">
             <span className="sm:block">Before You Take Any </span>
-            <span className="sm:block">
-              Hair Treatment{" "}
-              <span className="inline-block animate-[hairtrinity-word-colour_3.6s_ease-in-out_infinite] text-[#e8823f]">Watch</span>
+            <span className="sm:flex sm:items-baseline sm:gap-[0.18em]">
+              <span>Hair Treatment</span>{" "}
+              <span className="hairtrinity-highlight inline-block bg-[#f7c6b1] px-1.5 text-[#0f1e3d]">Watch</span>
             </span>
-            <span className="text-[#e8823f] sm:block">
-              {" "}<span className="inline-block animate-[hairtrinity-word-colour_3.6s_ease-in-out_0.4s_infinite]">This</span>{" "}
-              <span className="inline-block animate-[hairtrinity-word-colour_3.6s_ease-in-out_0.8s_infinite]">First.</span>
+            <span className="hairtrinity-highlight hairtrinity-highlight-delay inline-block bg-[#f7c6b1] px-1.5 text-[#0f1e3d] sm:mt-1 sm:block sm:w-fit">
+              This First.
             </span>
           </h1>
 
@@ -244,7 +243,7 @@ export default function HairTreatmentHero() {
               <p className="text-[13px] leading-[1.4] text-[#6b7280]">
                 Aesthetic Physician <span className="text-[#c7cbd3]">•</span> B.D.S., F.D.S., F.M.C.
               </p>
-              <p className="text-[12.5px] text-[#8a8f99]">8+ years of experience</p>
+              <p className="text-[12.5px] text-[#8a8f99]">. PG Dip.Dermatology (RCPI) Ireland, 8+ years of experience</p>
             </div>
           </div>
 

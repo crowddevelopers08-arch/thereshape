@@ -690,6 +690,48 @@
   }
 }
 
+.hairtrinity-highlight {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  vertical-align: baseline;
+  line-height: 1.08;
+  padding-top: 0.04em;
+  padding-bottom: 0.06em;
+}
+
+.hairtrinity-highlight::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.82) 46%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.82) 54%,
+    transparent 80%
+  );
+  transform: translateX(-120%);
+  animation: hairtrinity-highlight-shimmer 2.8s ease-in-out infinite;
+}
+
+.hairtrinity-highlight-delay::after {
+  animation-delay: 0.35s;
+}
+
+@keyframes hairtrinity-highlight-shimmer {
+  0%,
+  18% {
+    transform: translateX(-120%);
+  }
+  68%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reshape .reveal,
   .reshape .rise,
