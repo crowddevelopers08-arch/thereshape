@@ -175,6 +175,33 @@ export default function HairTreatmentHero() {
     };
   }, []);
 
+  useEffect(() => {
+    const removeInteractionListeners = () => {
+      document.removeEventListener("pointerdown", enableSoundAfterInteraction, true);
+      document.removeEventListener("keydown", enableSoundAfterInteraction, true);
+    };
+
+    const enableSoundAfterInteraction = () => {
+      const video = videoRef.current;
+      if (!video || !video.muted) return;
+
+      video.muted = false;
+      setIsMuted(false);
+      video
+        .play()
+        .then(removeInteractionListeners)
+        .catch(() => {
+          video.muted = true;
+          setIsMuted(true);
+        });
+    };
+
+    document.addEventListener("pointerdown", enableSoundAfterInteraction, true);
+    document.addEventListener("keydown", enableSoundAfterInteraction, true);
+
+    return removeInteractionListeners;
+  }, []);
+
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
