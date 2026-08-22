@@ -91,14 +91,8 @@ export default function PrpGfcLimitations() {
   return (
     <section id="limitations" className="scroll-mt-28 px-4 py-8 sm:px-8 lg:px-16 lg:py-10">
       <div className="mx-auto max-w-[1320px]">
-        <div className="flex items-center gap-3">
-          <span className="h-px w-8" style={{ backgroundColor: "var(--line)" }} aria-hidden="true" />
-          <p className="t-caption font-bold uppercase tracking-[1.5px]" style={{ color: "var(--muted)" }}>
-            Understand Before You Treat
-          </p>
-        </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[0.9fr_1.6fr] lg:gap-8">
+        <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[0.9fr_1.6fr] lg:gap-8">
           {/* Left — heading + intro */}
           <div>
             <h2 className="t-h2 flex flex-wrap items-baseline gap-x-[0.22em] uppercase leading-[1.15]" style={{ color: "var(--ink)" }}>
@@ -112,7 +106,7 @@ export default function PrpGfcLimitations() {
               <span>Not Address Every Cause of Hair Loss?</span>
             </h2>
 
-            <div className="mt-7 flex flex-col gap-6">
+            <div className="mt-7 flex flex-col  gap-3">
               <div className="flex items-start gap-3">
                 <span
                   className="grid h-10 w-10 shrink-0 place-items-center rounded-full border"
@@ -121,8 +115,7 @@ export default function PrpGfcLimitations() {
                   <DropletIcon />
                 </span>
                 <p className="t-body leading-[1.6]" style={{ color: "var(--muted)" }}>
-                  PRP and GFC may support hair follicle health and help create a healthier environment for hair
-                  growth.
+                  PRP and GFC may support healthier hair follicles and hair growth.
                 </p>
               </div>
               <div className="flex items-start gap-3">
@@ -133,15 +126,14 @@ export default function PrpGfcLimitations() {
                   <LayersIcon />
                 </span>
                 <p className="t-body leading-[1.6]" style={{ color: "var(--muted)" }}>
-                  However, hair loss can involve multiple contributing factors, and a single approach may not
-                  address every concern for every individual.
+                  However, hair loss can have multiple causes, so one approach may not suit everyone.
                 </p>
               </div>
             </div>
           </div>
 
           {/* Right — two comparison cards with a divider badge */}
-          <div className="relative grid grid-cols-1 items-stretch gap-10 sm:grid-cols-[1fr_1fr] sm:gap-6">
+          <div className="relative grid grid-cols-1 items-stretch gap-5 sm:grid-cols-[1fr_1fr] sm:gap-6">
             {/* PRP / GFC card */}
             <div
               className="overflow-hidden rounded-[16px] border shadow-[0_16px_40px_-24px_rgba(22,38,63,0.35)]"
@@ -246,7 +238,7 @@ export default function PrpGfcLimitations() {
 
         {/* Quote banner */}
         <div
-          className="relative mt-10 overflow-hidden rounded-[16px] px-6 py-8 sm:px-10 sm:py-10"
+          className="hairtrinity-soft-bounce relative mt-10 overflow-hidden rounded-[16px] px-6 py-8 sm:px-10 sm:py-10"
           style={{ backgroundColor: "var(--navy-deep)" }}
         >
           <QuoteIcon />

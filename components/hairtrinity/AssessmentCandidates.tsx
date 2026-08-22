@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const cards = [
   { title: "Hair Fall", description: "Ongoing or increased hair shedding concerns.", color: "#e8823f", image: "images-3.avif", position: "center" },
@@ -13,9 +13,10 @@ const cards = [
 export default function AssessmentCandidates() {
   const carouselRef = useRef<HTMLDivElement>(null)
   const [activeCard, setActiveCard] = useState(0)
+  const [isAutoPaused, setIsAutoPaused] = useState(false)
 
   const goToCard = (index: number) => {
-    const nextIndex = Math.max(0, Math.min(cards.length - 1, index))
+    const nextIndex = (index + cards.length) % cards.length
     const carousel = carouselRef.current
     if (!carousel) return
 
@@ -23,11 +24,28 @@ export default function AssessmentCandidates() {
     setActiveCard(nextIndex)
   }
 
+  useEffect(() => {
+    if (isAutoPaused) return
+
+    const autoPlay = window.setInterval(() => {
+      setActiveCard((currentCard) => {
+        const nextCard = (currentCard + 1) % cards.length
+        const carousel = carouselRef.current
+        carousel?.scrollTo({ left: carousel.clientWidth * nextCard, behavior: "smooth" })
+        return nextCard
+      })
+    }, 4000)
+
+    return () => window.clearInterval(autoPlay)
+  }, [isAutoPaused])
+
   const updateActiveCard = () => {
     const carousel = carouselRef.current
     if (!carousel || !carousel.clientWidth) return
     setActiveCard(Math.round(carousel.scrollLeft / carousel.clientWidth))
   }
+
+  const orderedCards = cards.map((_, index) => cards[(activeCard + index) % cards.length])
 
   const Card = ({ card }: { card: (typeof cards)[number] }) => (
     <article className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-[#0f1e3d]/8 bg-white shadow-[0_10px_30px_rgba(15,30,61,0.08)] transition-transform duration-300 hover:-translate-y-1">
@@ -65,39 +83,44 @@ export default function AssessmentCandidates() {
 
       <div className="relative mx-auto max-w-[1440px]">
         <header className="mx-auto max-w-4xl text-center text-[#0f1e3d]">
-          <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[#e8823f] sm:text-[14px]">Who May Consider an Assessment?</p>
-          <h2 className="mt-4 text-[30px] font-extrabold leading-tight sm:text-[42px] lg:text-[52px]">Is a Personalised Hair Assessment Right for You?</h2>
-          <p className="mt-4 text-[15px] font-medium tracking-wide sm:text-[18px]">This may be relevant if you&apos;re concerned about:</p>
+          <h2 className="mt-4 text-[30px] font-extrabold leading-tight sm:text-[42px] lg:text-[52px]">Who May Consider an Assessment?</h2>
+          <p className="mt-4 text-[15px] font-medium tracking-wide sm:text-[18px]">Is a Personalised Hair Assessment Right for You?</p>
         </header>
 
         {/* Mobile carousel */}
         <div
           ref={carouselRef}
           onScroll={updateActiveCard}
-          className="mt-8 flex snap-x snap-mandatory overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+          onMouseEnter={() => setIsAutoPaused(true)}
+          onMouseLeave={() => setIsAutoPaused(false)}
+          onPointerDown={() => setIsAutoPaused(true)}
+          onPointerUp={() => setIsAutoPaused(false)}
+          className="mx-auto mt-8 flex max-w-[640px] snap-x snap-mandatory overflow-x-auto px-1 pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
         >
           {cards.map((card) => (
             <div key={card.title} className="w-full shrink-0 snap-center px-2"><Card card={card} /></div>
           ))}
         </div>
 
-        <div className="mt-5 flex items-center justify-center gap-4 sm:hidden" aria-label="Assessment carousel navigation">
-          <button type="button" onClick={() => goToCard(activeCard - 1)} disabled={activeCard === 0} aria-label="Previous card" className="grid size-10 place-items-center rounded-full bg-[#0f1e3d] text-white shadow-md transition disabled:cursor-not-allowed disabled:opacity-30">
-            <span aria-hidden="true" className="text-xl leading-none">←</span>
+        <div
+          key={activeCard}
+          className="mx-auto mt-12 hidden max-w-[1180px] grid-cols-4 gap-6 animate-[as-seen-on-enter_500ms_ease-out] sm:grid"
+        >
+          {orderedCards.map((card) => <Card key={card.title} card={card} />)}
+        </div>
+
+        <div className="relative mt-5 flex items-center justify-end gap-3 max-sm:pr-0 pr-30" aria-label="Assessment carousel navigation">
+          <button type="button" onClick={() => goToCard(activeCard - 1)} aria-label="Previous card" className="grid size-10 place-items-center rounded-full bg-[#0f1e3d] text-white shadow-md transition hover:scale-105 hover:bg-[#22395f] sm:size-12">
+            <span aria-hidden="true" className="text-2xl leading-none">&larr;</span>
           </button>
-          <div className="flex items-center gap-2">
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2">
             {cards.map((card, index) => (
               <button key={card.title} type="button" onClick={() => goToCard(index)} aria-label={`Go to card ${index + 1}`} className={`h-2.5 rounded-full transition-all ${activeCard === index ? "w-7 bg-[#e8823f]" : "w-2.5 bg-[#0f1e3d]/25"}`} />
             ))}
           </div>
-          <button type="button" onClick={() => goToCard(activeCard + 1)} disabled={activeCard === cards.length - 1} aria-label="Next card" className="grid size-10 place-items-center rounded-full bg-[#0f1e3d] text-white shadow-md transition disabled:cursor-not-allowed disabled:opacity-30">
-            <span aria-hidden="true" className="text-xl leading-none">→</span>
+          <button type="button" onClick={() => goToCard(activeCard + 1)} aria-label="Next card" className="grid size-10 place-items-center rounded-full bg-[#0f1e3d] text-white shadow-md transition hover:scale-105 hover:bg-[#22395f] sm:size-12">
+            <span aria-hidden="true" className="text-2xl leading-none">&rarr;</span>
           </button>
-        </div>
-
-        {/* Desktop grid */}
-        <div className="mx-auto mt-12 hidden max-w-[1180px] gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map((card) => <Card key={card.title} card={card} />)}
         </div>
       </div>
     </section>

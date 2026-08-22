@@ -292,16 +292,22 @@ export default function HairTreatmentHero() {
             </span>
           </p>
 
-          <div className="mt-7 flex items-center gap-4 max-sm:order-5">
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-[#e6e8ec]">
-              <Image src="https://res.cloudinary.com/n0ccg2u6/image/upload/docaneesha_rik4bt.png" alt="Dr. Aneesha" fill sizes="56px" className="object-cover" />
+          <div className="mt-7 flex items-start gap-4 max-sm:order-5">
+            <div className="relative mt-0.5 h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-[#fde0d0] bg-white shadow-sm">
+              <Image src="https://res.cloudinary.com/n0ccg2u6/image/upload/docaneesha_rik4bt.png" alt="Dr. Aneesha" fill sizes="64px" className="object-cover" />
             </div>
-            <div>
-              <p className="text-[15px] font-bold text-[#0f1e3d]">Dr. Aneesha</p>
-              <p className="text-[13px] leading-[1.4] text-[#6b7280]">
-                Aesthetic Physician <span className="text-[#c7cbd3]">•</span> B.D.S., F.D.S., F.M.C.
+            <div className="min-w-0">
+              <p className="text-[16px] font-bold leading-tight text-[#0f1e3d]">Dr. Aneesha</p>
+              <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[14px] font-medium leading-[1.4] text-[#6b7280]">
+                <span>Aesthetic Physician</span>
+                {/* <span className="text-[#e8823f]" aria-hidden="true">•</span> */}
               </p>
-              <p className="text-[12.5px] text-[#8a8f99]">.PG Dip.Dermatology (RCPI) Ireland, 8+ years of experience</p>
+              <p className="mt-1.5 max-w-[430px] font-bold text-[14.5px] leading-[1.55] text-[#8a8f99]">
+                B.D.S., F.D.S., F.M.C. <span className="text-[#8a8f99]">•</span> PG Dip. Dermatology (RCPI), Ireland .
+              </p>
+              <p className="mt-1.5 max-w-[430px] font-bold text-[14.5px] leading-[1.55] text-[#8a8f99]">
+                8+ years of experience .
+              </p>
             </div>
           </div>
 
@@ -315,10 +321,6 @@ export default function HairTreatmentHero() {
               <ArrowRightIcon />
             </span>
           </button>
-
-          <p className="mt-3 text-[12.5px] text-[#9aa0ab] max-sm:order-7">
-            Understand your concerns before deciding your next treatment approach.
-          </p>
         </div>
 
         {/* Right column — video */}

@@ -109,45 +109,28 @@ export default function WhyResultsDiffer() {
         </div>
 
         {/* Content grid */}
-        <div className="mt-12 max-sm:mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+        <div className="mt-12 grid grid-cols-1 gap-8 max-sm:mt-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] lg:gap-10">
           {/* Left — factors */}
           <div>
             <p className="t-caption font-bold uppercase tracking-[1.5px]" style={{ color: "var(--peach)" }}>
-              Every Hair Loss Journey Is Different
+             Factors that can influence your treatment response:
             </p>
-            <p className="t-body mt-2 text-white/85">Factors that can influence your treatment response:</p>
 
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              {factors.map((label) => (
+            <div
+              className="mt-5 grid grid-cols-2 overflow-hidden rounded-[12px] border"
+              style={{ borderColor: "rgba(252,203,182,0.24)", backgroundColor: "rgba(34,57,95,0.6)" }}
+            >
+              {factors.map((label, index) => (
                 <div
                   key={label}
-                  className="flex items-center justify-center rounded-[10px] border px-3 py-6 text-center"
-                  style={{ borderColor: "rgba(252,203,182,0.2)", backgroundColor: "rgba(34,57,95,0.6)" }}
+                  className={`flex min-h-20 items-center justify-center px-3 py-5 text-center ${
+                    index % 2 === 0 ? "border-r" : ""
+                  } ${index < 2 ? "border-b" : ""}`}
+                  style={{ borderColor: "rgba(252,203,182,0.18)" }}
                 >
                   <p className="t-caption font-semibold leading-[1.35] text-white/90">{label}</p>
                 </div>
               ))}
-            </div>
-
-            <div
-              className="mt-5 flex items-start gap-3 rounded-[10px] border px-5 py-4"
-              style={{ borderColor: "rgba(252,203,182,0.4)", backgroundColor: "var(--navy)" }}
-            >
-              <span
-                className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full"
-                style={{ backgroundColor: "rgba(252,203,182,0.15)" }}
-              >
-                <BulbIcon />
-              </span>
-              <div>
-                <p className="t-small font-bold leading-[1.4]" style={{ color: "var(--peach)" }}>
-                  Same Treatment Doesn&rsquo;t Always Mean the Same Experience.
-                </p>
-                <p className="t-caption mt-1.5 leading-[1.6] text-white/70">
-                  What works for one person may produce a different level of improvement for another. Because the
-                  underlying factors can be different.
-                </p>
-              </div>
             </div>
           </div>
 
