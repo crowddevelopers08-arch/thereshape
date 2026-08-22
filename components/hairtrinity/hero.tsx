@@ -95,11 +95,32 @@ function AsSeenOnLogo({ variant }: { variant: "timesnow" | "ndtv" | "indiatoday"
 const asSeenOnVariants = ["timesnow", "ndtv", "indiatoday", "news18"] as const;
 
 export default function HairTreatmentHero() {
+  const heroRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isVideoFloating, setIsVideoFloating] = useState(false);
+  const [isFloatingDismissed, setIsFloatingDismissed] = useState(false);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVideoFloating(false);
+        setIsFloatingDismissed(false);
+        return;
+      }
+
+      setIsVideoFloating(entry.boundingClientRect.bottom < 0);
+    });
+
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const navigationEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
@@ -134,7 +155,16 @@ export default function HairTreatmentHero() {
     video.addEventListener("pause", onPause);
     video.addEventListener("ended", onEnded);
 
-    video.play().catch(() => {});
+    video.muted = false;
+    setIsMuted(false);
+
+    video.play().catch(() => {
+      // Browsers may block autoplay with sound. Keep the video playing muted
+      // so the user can enable sound from the visible control.
+      video.muted = true;
+      setIsMuted(true);
+      video.play().catch(() => {});
+    });
 
     return () => {
       video.removeEventListener("timeupdate", onTimeUpdate);
@@ -208,22 +238,24 @@ export default function HairTreatmentHero() {
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <section id="top" className="scroll-mt-28 bg-white px-4 py-6 font-sans sm:px-8 lg:px-16 lg:py-12">
+    <section ref={heroRef} id="top" className="scroll-mt-28 bg-white px-4 py-6 font-sans sm:px-8 lg:px-16 lg:py-12">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-0 sm:gap-20 lg:grid-cols-[minmax(0,48fr)_minmax(0,56fr)] lg:gap-12">
         {/* Left column */}
         <div className="w-full min-w-0 max-sm:contents">
-          <span className="inline-block rounded-[3px] bg-[#fdeee3] px-3 py-[6px] text-[10.5px] font-bold tracking-[1px] text-[#e8823f] max-sm:order-1 max-sm:w-fit">
-            BEFORE YOU CHOOSE YOUR NEXT HAIR TREATMENT
+          <span className="inline-block uppercase rounded-[3px] bg-[#fdeee3] px-3 py-[6px] text-[10.5px] font-bold tracking-[1px] text-[#e8823f] max-sm:order-1 max-sm:w-fit">
+            Your Hair Regrowth Guide
           </span>
 
           <h1 className="mt-4 text-[34px] font-extrabold !leading-[1.16] tracking-[-0.5px] text-[#0f1e3d] max-sm:order-2 sm:text-[38px] lg:text-[40px]">
             <span className="sm:block">Before You Take Any </span>
             <span className="sm:flex sm:items-baseline sm:gap-[0.18em]">
               <span>Hair Treatment</span>{" "}
-              <span className="hairtrinity-highlight inline-block bg-[#f7c6b1] px-1.5 text-[#0f1e3d]">Watch</span>
+              <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d]">
+                <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_infinite]">Watch</span>
+              </span>
             </span>
-            <span className="hairtrinity-highlight hairtrinity-highlight-delay inline-block bg-[#f7c6b1] px-1.5 text-[#0f1e3d] sm:mt-1 sm:block sm:w-fit">
-              This First.
+            <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d] sm:mt-1 sm:block sm:w-fit">
+              <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_0.45s_infinite]">This First.</span>
             </span>
           </h1>
 
@@ -243,7 +275,7 @@ export default function HairTreatmentHero() {
               <p className="text-[13px] leading-[1.4] text-[#6b7280]">
                 Aesthetic Physician <span className="text-[#c7cbd3]">•</span> B.D.S., F.D.S., F.M.C.
               </p>
-              <p className="text-[12.5px] text-[#8a8f99]">. PG Dip.Dermatology (RCPI) Ireland, 8+ years of experience</p>
+              <p className="text-[12.5px] text-[#8a8f99]">.PG Dip.Dermatology (RCPI) Ireland, 8+ years of experience</p>
             </div>
           </div>
 
@@ -265,12 +297,17 @@ export default function HairTreatmentHero() {
 
         {/* Right column — video */}
         <div className="w-full min-w-0 max-sm:order-4 max-sm:mt-7">
+          {isVideoFloating && !isFloatingDismissed && <div className="aspect-[16/10] w-full sm:aspect-[16/9]" aria-hidden="true" />}
           <div
             role="group"
             tabIndex={0}
             aria-label="Video player. Press Space to play or pause, arrow keys to seek, M to mute, and F for fullscreen."
             onKeyDown={handleVideoKeyDown}
-            className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[#0f1e3d] outline-none ring-[#e8823f] transition-shadow focus-visible:ring-2 focus-visible:ring-offset-2 sm:aspect-[16/9]"
+            className={`overflow-hidden rounded-[14px] bg-[#0f1e3d] outline-none ring-[#e8823f] transition-shadow focus-visible:ring-2 focus-visible:ring-offset-2 ${
+              isVideoFloating && !isFloatingDismissed
+                ? "hairtrinity-floating-video fixed bottom-20 right-4 z-[70] aspect-video w-[min(390px,calc(100vw-2rem))] shadow-[0_18px_50px_rgba(15,30,61,.35)] sm:bottom-5 sm:right-5"
+                : "relative aspect-[16/10] w-full sm:aspect-[16/9]"
+            }`}
           >
             <video
               ref={videoRef}
@@ -283,6 +320,17 @@ export default function HairTreatmentHero() {
               onClick={togglePlay}
             />
 
+            {isVideoFloating && !isFloatingDismissed && (
+              <button
+                type="button"
+                aria-label="Close floating video"
+                onClick={() => setIsFloatingDismissed(true)}
+                className="absolute left-3 top-3 z-20 grid h-8 w-8 place-items-center rounded-full text-lg leading-none text-white backdrop-blur-sm transition hover:bg-black/80"
+              >
+                &times;
+              </button>
+            )}
+
             <div className="pointer-events-none absolute right-4 top-4 z-10 flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] text-white backdrop-blur-sm">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
@@ -293,7 +341,7 @@ export default function HairTreatmentHero() {
 
             {!isPlaying && (
               <>
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0f1e3d] via-[#0f1e3d]/70 to-transparent" />
+                <div className="pointer-events-none absolute inset-0" />
 
                 {/* <div className="pointer-events-none absolute inset-0 flex items-center px-6 pb-10 sm:px-10">
                   <h2 className="max-w-[360px] text-[24px] font-extrabold leading-[1.25] text-white sm:text-[28px] lg:text-[30px]">
@@ -303,19 +351,6 @@ export default function HairTreatmentHero() {
                 </div> */}
               </>
             )}
-
-            <button
-              type="button"
-              aria-label={isPlaying ? "Pause video" : "Play video"}
-              onClick={togglePlay}
-              className={`group absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#e8b088]/90 shadow-lg transition-all hover:scale-105 sm:h-[70px] sm:w-[70px] ${
-                isPlaying ? "pointer-events-none opacity-0" : "opacity-100"
-              }`}
-            >
-              <svg viewBox="0 0 24 24" className="ml-1 h-6 w-6 text-white sm:h-7 sm:w-7" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7L8 5Z" />
-              </svg>
-            </button>
 
             {/* custom control bar */}
             <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-black/40 to-transparent px-4 pb-3 pt-8 text-white sm:px-6">

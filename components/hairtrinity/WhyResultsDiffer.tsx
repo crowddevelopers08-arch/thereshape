@@ -93,22 +93,21 @@ export default function WhyResultsDiffer() {
       <div className="mx-auto max-w-[1320px]">
         {/* Header */}
         <div className="mx-auto max-w-[920px] text-center">
-          <h2 className="t-h2 flex flex-wrap items-baseline justify-center gap-x-[0.22em] uppercase" style={{ color: "#ffffff" }}>
-            <span>Why Doesn&rsquo;t the</span>
-            <span className="hairtrinity-highlight inline-block bg-[#f7c6b1] px-1.5 text-[#0f1e3d]">
-              Same Hair Treatment
+          <h2 className="t-h2 flex flex-wrap items-baseline justify-center gap-x-[0.22em] uppercase max-sm:gap-y-2" style={{ color: "#ffffff" }}>
+            <span className="max-sm:w-full">Why Doesn&rsquo;t the</span>
+            <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d] max-sm:whitespace-nowrap max-sm:!text-[clamp(20px,6.2vw,24px)]">
+              <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_infinite]">Same Hair Treatment</span>
             </span>
             {/* <span style={{ color: "var(--peach)" }}>Work for Everyone?</span> */}
-            <span>Work for Everyone?</span>
+            <span className="max-sm:w-full">Work for Everyone?</span>
           </h2>
-          <div className="mx-auto mt-4 h-2 w-2 rotate-45" style={{ backgroundColor: "var(--peach)" }} aria-hidden="true" />
           <p className="t-body-lg mt-4 text-white/70">
             Hair loss can have different causes, so the same treatment may not work the same way for everyone.
           </p>
         </div>
 
         {/* Content grid */}
-        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+        <div className="mt-12 max-sm:mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
           {/* Left — factors */}
           <div>
             <p className="t-caption font-bold uppercase tracking-[1.5px]" style={{ color: "var(--peach)" }}>
