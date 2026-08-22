@@ -103,8 +103,11 @@ export default function PrpGfcLimitations() {
           <div>
             <h2 className="t-h2 flex flex-wrap items-baseline gap-x-[0.22em] uppercase leading-[1.15]" style={{ color: "var(--ink)" }}>
               <span>Why Might</span>
-              <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d]">
-                <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_infinite]">PRP or GFC Alone</span>
+              <span className="inline-block">
+                <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_infinite]">PRP</span>{" "}
+                <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_0.3s_infinite]">or</span>{" "}
+                <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_0.6s_infinite]">GFC</span>{" "}
+                <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_0.9s_infinite]">Alone</span>
               </span>
               <span>Not Address Every Cause of Hair Loss?</span>
             </h2>

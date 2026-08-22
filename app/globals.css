@@ -742,6 +742,19 @@
   }
 }
 
+@keyframes hairtrinity-word-glow {
+  0%,
+  100% {
+    color: #e8823f;
+  }
+  35% {
+    color: #f2a15f;
+  }
+  70% {
+    color: #22395f;
+  }
+}
+
 .hairtrinity-floating-video {
   contain: layout paint;
   backface-visibility: hidden;

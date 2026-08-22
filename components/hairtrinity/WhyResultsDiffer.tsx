@@ -95,8 +95,10 @@ export default function WhyResultsDiffer() {
         <div className="mx-auto max-w-[920px] text-center">
           <h2 className="t-h2 flex flex-wrap items-baseline justify-center gap-x-[0.22em] uppercase max-sm:gap-y-2" style={{ color: "#ffffff" }}>
             <span className="max-sm:w-full">Why Doesn&rsquo;t the</span>
-            <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d] max-sm:whitespace-nowrap max-sm:!text-[clamp(20px,6.2vw,24px)]">
-              <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_infinite]">Same Hair Treatment</span>
+            <span className="inline-block max-sm:whitespace-nowrap max-sm:!text-[clamp(20px,6.2vw,24px)]">
+              <span className="inline-block animate-[hairtrinity-dark-word-colour_4.2s_ease-in-out_infinite]">Same</span>{" "}
+              <span className="inline-block animate-[hairtrinity-dark-word-colour_4.2s_ease-in-out_0.45s_infinite]">Hair</span>{" "}
+              <span className="inline-block animate-[hairtrinity-dark-word-colour_4.2s_ease-in-out_0.9s_infinite]">Treatment</span>
             </span>
             {/* <span style={{ color: "var(--peach)" }}>Work for Everyone?</span> */}
             <span className="max-sm:w-full">Work for Everyone?</span>

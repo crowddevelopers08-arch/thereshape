@@ -277,12 +277,11 @@ export default function HairTreatmentHero() {
             <span className="sm:block">Before You Take Any </span>
             <span className="sm:flex sm:items-baseline sm:gap-[0.18em]">
               <span>Hair Treatment</span>{" "}
-              <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d]">
-                <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_infinite]">Watch</span>
-              </span>
+              <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_infinite] text-[#e8823f]">Watch</span>
             </span>
-            <span className="inline-block bg-[#f7c6b1] px-1.5 py-[0.04em] leading-[1.08] text-[#0f1e3d] sm:mt-1 sm:block sm:w-fit">
-              <span className="animate-[hairtrinity-text-blink_4.5s_ease-in-out_0.45s_infinite]">This First.</span>
+            <span className="text-[#e8823f] sm:block">
+              <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_0.45s_infinite]">This</span>{" "}
+              <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_0.9s_infinite]">First.</span>
             </span>
           </h1>
 
