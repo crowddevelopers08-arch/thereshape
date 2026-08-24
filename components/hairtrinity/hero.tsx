@@ -11,55 +11,6 @@ function ArrowRightIcon() {
   );
 }
 
-function PlayIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
-      <path d="M8 5v14l11-7L8 5Z" />
-    </svg>
-  );
-}
-
-function VolumeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor" stroke="none" />
-      <path d="M16.5 8.5a5 5 0 0 1 0 7" />
-    </svg>
-  );
-}
-
-function MuteIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor" stroke="none" />
-      <path d="M15 9l5 6M20 9l-5 6" />
-    </svg>
-  );
-}
-
-function PauseIcon({ className = "h-4 w-4" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-      <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
-    </svg>
-  );
-}
-
-function formatTime(seconds: number) {
-  if (!Number.isFinite(seconds)) return "00:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
-function FullscreenIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5" />
-    </svg>
-  );
-}
-
 function AsSeenOnLogo({ variant }: { variant: "timesnow" | "ndtv" | "indiatoday" | "news18" }) {
   if (variant === "timesnow") {
     return (
@@ -96,11 +47,6 @@ const asSeenOnVariants = ["timesnow", "ndtv", "indiatoday", "news18"] as const;
 
 export default function HairTreatmentHero() {
   const heroRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [isVideoFloating, setIsVideoFloating] = useState(false);
   const [isFloatingDismissed, setIsFloatingDismissed] = useState(false);
 
@@ -138,131 +84,6 @@ export default function HairTreatmentHero() {
       window.history.scrollRestoration = previousScrollRestoration;
     };
   }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const onTimeUpdate = () => setCurrentTime(video.currentTime);
-    const onLoadedMetadata = () => setDuration(video.duration);
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
-    const onEnded = () => setIsPlaying(false);
-
-    video.addEventListener("timeupdate", onTimeUpdate);
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("play", onPlay);
-    video.addEventListener("pause", onPause);
-    video.addEventListener("ended", onEnded);
-
-    video.muted = false;
-    setIsMuted(false);
-
-    video.play().catch(() => {
-      // Browsers may block autoplay with sound. Keep the video playing muted
-      // so the user can enable sound from the visible control.
-      video.muted = true;
-      setIsMuted(true);
-      video.play().catch(() => {});
-    });
-
-    return () => {
-      video.removeEventListener("timeupdate", onTimeUpdate);
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("play", onPlay);
-      video.removeEventListener("pause", onPause);
-      video.removeEventListener("ended", onEnded);
-    };
-  }, []);
-
-  useEffect(() => {
-    const removeInteractionListeners = () => {
-      document.removeEventListener("pointerdown", enableSoundAfterInteraction, true);
-      document.removeEventListener("keydown", enableSoundAfterInteraction, true);
-    };
-
-    const enableSoundAfterInteraction = () => {
-      const video = videoRef.current;
-      if (!video || !video.muted) return;
-
-      video.muted = false;
-      setIsMuted(false);
-      video
-        .play()
-        .then(removeInteractionListeners)
-        .catch(() => {
-          video.muted = true;
-          setIsMuted(true);
-        });
-    };
-
-    document.addEventListener("pointerdown", enableSoundAfterInteraction, true);
-    document.addEventListener("keydown", enableSoundAfterInteraction, true);
-
-    return removeInteractionListeners;
-  }, []);
-
-  const togglePlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) video.play();
-    else video.pause();
-  };
-
-  const toggleMute = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setIsMuted(video.muted);
-  };
-
-  const toggleFullscreen = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.requestFullscreen) video.requestFullscreen();
-  };
-
-  const handleSeek: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const video = videoRef.current;
-    if (!video || !duration) return;
-    const time = (Number(e.target.value) / 100) * duration;
-    video.currentTime = time;
-    setCurrentTime(time);
-  };
-
-  const handleVideoKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    if (event.target !== event.currentTarget) return;
-
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (event.key === " " || event.key === "Enter") {
-      event.preventDefault();
-      togglePlay();
-      return;
-    }
-
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-      event.preventDefault();
-      const seekAmount = event.key === "ArrowLeft" ? -5 : 5;
-      const videoDuration = Number.isFinite(video.duration) ? video.duration : 0;
-      video.currentTime = Math.min(Math.max(video.currentTime + seekAmount, 0), videoDuration);
-      return;
-    }
-
-    if (event.key.toLowerCase() === "m") {
-      event.preventDefault();
-      toggleMute();
-      return;
-    }
-
-    if (event.key.toLowerCase() === "f") {
-      event.preventDefault();
-      toggleFullscreen();
-    }
-  };
-
-  const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
     <section ref={heroRef} id="top" className="scroll-mt-28 bg-white px-4 py-6 font-sans sm:px-8 lg:px-16 lg:py-12">
@@ -328,24 +149,19 @@ export default function HairTreatmentHero() {
           {isVideoFloating && !isFloatingDismissed && <div className="aspect-[16/10] w-full sm:aspect-[16/9]" aria-hidden="true" />}
           <div
             role="group"
-            tabIndex={0}
-            aria-label="Video player. Press Space to play or pause, arrow keys to seek, M to mute, and F for fullscreen."
-            onKeyDown={handleVideoKeyDown}
+            aria-label="Hair treatment video"
             className={`overflow-hidden rounded-[14px] bg-[#0f1e3d] outline-none ring-[#e8823f] transition-shadow focus-visible:ring-2 focus-visible:ring-offset-2 ${
               isVideoFloating && !isFloatingDismissed
                 ? "hairtrinity-floating-video fixed bottom-20 right-4 z-[70] aspect-video w-[min(390px,calc(100vw-2rem))] shadow-[0_18px_50px_rgba(15,30,61,.35)] sm:bottom-5 sm:right-5"
                 : "relative aspect-[16/10] w-full sm:aspect-[16/9]"
             }`}
           >
-            <video
-              ref={videoRef}
-              src="https://res.cloudinary.com/m5fcfwt7/video/upload/v1787313627/0819_1__squished.mp4"
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
-              className="absolute inset-0 h-full w-full object-cover object-[50%_center]"
-              onClick={togglePlay}
+            <iframe
+              src="https://www.youtube.com/embed/G7yXPQPkYm0?autoplay=1&mute=0&playsinline=1&rel=0"
+              title="Hair treatment guide"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full border-0"
             />
 
             {isVideoFloating && !isFloatingDismissed && (
@@ -359,56 +175,6 @@ export default function HairTreatmentHero() {
               </button>
             )}
 
-            <div className="pointer-events-none absolute right-4 top-4 z-10 flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] text-white backdrop-blur-sm">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
-              </span>
-              LIVE
-            </div>
-
-            {!isPlaying && (
-              <>
-                <div className="pointer-events-none absolute inset-0" />
-
-                {/* <div className="pointer-events-none absolute inset-0 flex items-center px-6 pb-10 sm:px-10">
-                  <h2 className="max-w-[360px] text-[24px] font-extrabold leading-[1.25] text-white sm:text-[28px] lg:text-[30px]">
-                    Why Doesn&rsquo;t the Same Hair Treatment Work{" "}
-                    <span className="text-[#e8823f]">for Everyone?</span>
-                  </h2>
-                </div> */}
-              </>
-            )}
-
-            {/* custom control bar */}
-            <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-black/40 to-transparent px-4 pb-3 pt-8 text-white sm:px-6">
-              <button type="button" aria-label={isPlaying ? "Pause" : "Play"} onClick={togglePlay} className="opacity-95 hover:opacity-100">
-                {isPlaying ? <PauseIcon /> : <PlayIcon />}
-              </button>
-
-              <div className="mx-1 flex-1">
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={0.1}
-                  value={progress}
-                  onChange={handleSeek}
-                  aria-label="Seek"
-                  className="h-[3px] w-full cursor-pointer appearance-none rounded-full bg-white/25 accent-[#e8823f]"
-                />
-              </div>
-
-              <span className="whitespace-nowrap text-[12px] font-medium text-white/85">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
-              <button type="button" aria-label={isMuted ? "Unmute" : "Mute"} onClick={toggleMute} className="opacity-95 hover:opacity-100">
-                {isMuted ? <MuteIcon /> : <VolumeIcon />}
-              </button>
-              <button type="button" aria-label="Fullscreen" onClick={toggleFullscreen} className="opacity-95 hover:opacity-100">
-                <FullscreenIcon />
-              </button>
-            </div>
           </div>
 
           {/* As seen on bar */}
