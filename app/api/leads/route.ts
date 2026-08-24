@@ -57,16 +57,36 @@ export async function POST(request: NextRequest) {
       campaign,
       pageUrl,
       formSource,
+      hairLossArea,
+      familyHistory,
+    }
+    const dbPayload = {
+      name,
+      phone,
+      email,
+      location,
+      area,
+      duration,
+      branch: branch || 'Reshape Clinic',
+      source,
+      medium,
+      campaign,
+      pageUrl,
+      formSource,
     }
 
-    // Deliver to TeleCRM + Google Sheet + our own database in parallel; independent best-effort.
-    // hairLossArea/familyHistory are hair-scan-chat-only fields that go to the Sheet
-    // (its own tab) but aren't part of the Lead DB schema, so they're kept out of
-    // leadPayload and passed to sendToGoogleSheet alone.
-    const [telecrmOutcome, sheetOutcome, dbOutcome] = await Promise.allSettled([
-      sendToTeleCRM(leadPayload),
-      sendToGoogleSheet({ ...leadPayload, hairLossArea, familyHistory }),
-      prisma.lead.create({ data: { ...leadPayload, photoData } }),
+    // Save first so an uploaded assessment image can be exposed to TeleCRM as a
+    // stable lead-specific URL. CRM and Sheets remain independent best-effort syncs.
+    const dbOutcome = await Promise.resolve(prisma.lead.create({ data: { ...dbPayload, photoData } }))
+      .then((value) => ({ status: 'fulfilled' as const, value }))
+      .catch((reason) => ({ status: 'rejected' as const, reason }))
+    const photoUrl =
+      dbOutcome.status === 'fulfilled' && photoData
+        ? new URL(`/api/leads/${dbOutcome.value.id}/photo`, request.nextUrl.origin).toString()
+        : undefined
+    const [telecrmOutcome, sheetOutcome] = await Promise.allSettled([
+      sendToTeleCRM({ ...leadPayload, photoUrl }),
+      sendToGoogleSheet(leadPayload),
     ])
 
     let telecrmSynced = false

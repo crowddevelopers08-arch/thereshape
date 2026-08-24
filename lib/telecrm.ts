@@ -7,13 +7,18 @@ export interface TeleCRMLead {
   name: string
   phone: string
   email?: string | null
+  location?: string | null
   area?: string | null // hair concern
   duration?: string | null // how long it has been
+  hairLossArea?: string | null // most noticeable area
+  familyHistory?: string | null
   branch?: string | null
   source?: string | null // utm_source or "direct"
   medium?: string | null
   campaign?: string | null
   pageUrl?: string | null
+  formSource?: string | null
+  photoUrl?: string | null
 }
 
 export interface TeleCRMResult {
@@ -35,6 +40,50 @@ export async function sendToTeleCRM(lead: TeleCRMLead): Promise<TeleCRMResult> {
 
   const sourceURL = lead.pageUrl || FALLBACK_PAGE
   const branch = lead.branch || "Reshape Clinic"
+  const isHairAssessment = Boolean(
+    lead.location ||
+      lead.hairLossArea ||
+      lead.familyHistory ||
+      lead.formSource === "Hairtrinity-Leads" ||
+      lead.formSource === "Hair-Scan-Chat" ||
+      lead.formSource === "Scan-Popup",
+  )
+  const formName = lead.formSource || "thereshape lp leads"
+  const summaryTitles: Record<string, string> = {
+    "Hairtrinity-Leads": "Hair Trinity assessment details",
+    "Hair-Scan-Chat": "Hair Scan assessment details",
+    "Scan-Popup": "Scan Popup assessment details",
+    "Reshape-General-leads": "Reshape general enquiry details",
+  }
+  const summaryNote = [
+    summaryTitles[formName] || "Lead enquiry details",
+    `Name: ${lead.name}`,
+    `Phone: ${lead.phone.replace(/\D/g, "")}`,
+    `Email: ${lead.email || "Not specified"}`,
+    ...(isHairAssessment ? [`Location: ${lead.location || "Not specified"}`] : []),
+    `Primary hair concern: ${lead.area || "Not specified"}`,
+    `Hair loss duration: ${lead.duration || "Not specified"}`,
+    ...(isHairAssessment
+      ? [
+          `Most noticeable area: ${lead.hairLossArea || "Not specified"}`,
+          `Family history: ${lead.familyHistory || "Not specified"}`,
+        ]
+      : []),
+  ].join(" | ")
+  const detailActions = [
+    { type: "SYSTEM_NOTE", text: `Form name: ${formName}` },
+    { type: "SYSTEM_NOTE", text: `Name: ${lead.name}` },
+    { type: "SYSTEM_NOTE", text: `Phone: ${lead.phone.replace(/\D/g, "")}` },
+    { type: "SYSTEM_NOTE", text: `Email: ${lead.email || "Not specified"}` },
+    ...(isHairAssessment
+      ? [
+          { type: "SYSTEM_NOTE", text: `Location: ${lead.location || "Not specified"}` },
+          { type: "SYSTEM_NOTE", text: `Most noticeable area: ${lead.hairLossArea || "Not specified"}` },
+          { type: "SYSTEM_NOTE", text: `Family history: ${lead.familyHistory || "Not specified"}` },
+        ]
+      : []),
+    ...(lead.photoUrl ? [{ type: "SYSTEM_NOTE", text: `Uploaded image: ${lead.photoUrl}` }] : []),
+  ]
 
   const payload = {
     fields: {
@@ -60,13 +109,15 @@ export async function sendToTeleCRM(lead: TeleCRMLead): Promise<TeleCRMResult> {
       Branch: branch,
       Area_of_Pain: lead.area || "",
       Duration: lead.duration || "",
-      FormName: "thereshape lp leads",
+      FormName: formName,
       Lead_Source: lead.source || "direct",
       Campaign: lead.campaign || "",
       Medium: lead.medium || "",
       Source: sourceURL,
     },
     actions: [
+      { type: "SYSTEM_NOTE", text: summaryNote },
+      ...detailActions,
       { type: "SYSTEM_NOTE", text: `Branch: ${branch}` },
       { type: "SYSTEM_NOTE", text: `Hair concern: ${lead.area || "Not specified"}` },
       { type: "SYSTEM_NOTE", text: `Duration: ${lead.duration || "Not specified"}` },

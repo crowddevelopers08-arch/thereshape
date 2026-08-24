@@ -77,7 +77,7 @@ export default function Program() {
           medium: data.utm_medium || "",
           campaign: data.utm_campaign || "",
           pageUrl: window.location.href,
-          formSource: "Hair Trinity Form",
+          formSource: "Reshape-General-leads",
         }),
       })
       if (!response.ok) throw new Error(`Request failed with ${response.status}`)

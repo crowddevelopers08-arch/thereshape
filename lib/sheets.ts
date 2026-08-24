@@ -21,12 +21,12 @@ export const HAIRTRINITY_TAB = "thereshape Hairtrinity"
  */
 const ASSESSMENT_ROUTES: Record<string, { formType: string; sheetTab: string }> = {
   // components/hair-scan-component/ChatBooking.tsx
-  "Hair Scan Chat": { formType: "hairscan", sheetTab: HAIR_SCAN_TAB },
+  "Hair-Scan-Chat": { formType: "hairscan", sheetTab: HAIR_SCAN_TAB },
   // components/hairtrinity/ChatBooking.tsx — same field shape as Hair Scan Chat, own tab
-  "hairtrinity-leads": { formType: "hairtrinity", sheetTab: HAIRTRINITY_TAB },
+  "Hairtrinity-Leads": { formType: "hairtrinity", sheetTab: HAIRTRINITY_TAB },
   "Hair Trinity Form": { formType: "hairtrinity", sheetTab: HAIRTRINITY_TAB },
   // components/scan/BookingModal.tsx
-  "Scan Popup": { formType: "scan", sheetTab: SCAN_TAB },
+  "Scan-Popup": { formType: "scan", sheetTab: SCAN_TAB },
 }
 
 export interface SheetLead {

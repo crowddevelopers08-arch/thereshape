@@ -402,7 +402,7 @@ export default function ChatBooking() {
       medium: attrs.utm_medium || "",
       campaign: attrs.utm_campaign || "",
       pageUrl: attrs.page_url || (typeof window !== "undefined" ? window.location.href : ""),
-      formSource: "Hair Scan Chat",
+      formSource: "Hair-Scan-Chat",
     }
 
     try {
