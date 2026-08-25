@@ -610,7 +610,7 @@ export default function ChatBooking() {
                       onClick={() => setStage("insight")}
                       className="btn-wave group/btn flex flex-1 items-center justify-center gap-2 rounded-full bg-[#22395f] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
                     >
-                      <span className="relative z-10">Continue</span>
+                      <span id="hair-assessment" className="relative z-10">Continue</span>
                     </button>
                   </div>
                 </div>
