@@ -98,7 +98,7 @@ export default function HairTreatmentHero() {
             <span className="sm:block">Before You Take Any </span>
             <span className="sm:flex sm:items-baseline sm:gap-[0.18em]">
               <span>Hair Treatment</span>{" "}
-              <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_infinite] text-[#e8823f]">Watch</span>
+              <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_infinite] text-[#e8823f] max-sm:mr-2">Watch</span>
             </span>
             <span className="text-[#e8823f] sm:block">
               <span className="inline-block animate-[hairtrinity-word-glow_4.2s_ease-in-out_0.45s_infinite]">This</span>{" "}
