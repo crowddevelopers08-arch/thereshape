@@ -4,10 +4,10 @@ import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 
 const cards = [
-  { title: "Hair Fall", description: "Ongoing or increased hair shedding concerns.", color: "#e8823f", image: "images-3.avif", position: "center" },
-  { title: "Hair Thinning", description: "Hair appearing thinner than before.", color: "#0f1e3d", image: "images-4.avif", position: "center" },
-  { title: "Reduced Density", description: "Concerns about visible scalp or reduced hair volume.", color: "#e8823f", image: "images-5.avif", position: "center" },
-  { title: "Scalp Concerns", description: "Scalp-related concerns that may need evaluation.", color: "#0f1e3d", image: "images-6.webp", position: "top" },
+  { title: "Hair Fall", description: "Ongoing or increased hair shedding concerns.", color: "#e8823f", image: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656996/images-3.avif", position: "center" },
+  { title: "Hair Thinning", description: "Hair appearing thinner than before.", color: "#0f1e3d", image: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656997/images-4.avif", position: "center" },
+  { title: "Reduced Density", description: "Concerns about visible scalp or reduced hair volume.", color: "#e8823f", image: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656997/images-5.avif", position: "center" },
+  { title: "Scalp Concerns", description: "Scalp-related concerns that may need evaluation.", color: "#0f1e3d", image: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656998/images-6.webp", position: "top" },
 ]
 
 export default function AssessmentCandidates() {

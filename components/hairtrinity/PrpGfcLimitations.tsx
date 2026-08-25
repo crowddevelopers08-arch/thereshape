@@ -78,13 +78,13 @@ const supportChecklist = [
 ];
 
 const multipleFactors = [
-  { icon: "/icon-1.png", label: "Genetics & Family History" },
-  { icon: "/icon-3.png", label: "Hormonal Factors" },
-  { icon: "/icon-2.png", label: "Scalp Condition" },
-  { icon: "/icon-5.png", label: "Nutritional Deficiencies" },
-  { icon: "/icon-4.png", label: "Stress & Lifestyle Factors" },
-  { icon: "/icon-8.png", label: "Overall Health Factors" },
-  { icon: "/icon-6.png", label: "Environmental Factors" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656986/icon-1.png", label: "Genetics & Family History" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656986/icon-3.png", label: "Hormonal Factors" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656986/icon-2.png", label: "Scalp Condition" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656987/icon-5.png", label: "Nutritional Deficiencies" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656987/icon-4.png", label: "Stress & Lifestyle Factors" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656991/icon-8.png", label: "Overall Health Factors" },
+  { icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656990/icon-6.png", label: "Environmental Factors" },
 ];
 
 export default function PrpGfcLimitations() {

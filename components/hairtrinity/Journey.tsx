@@ -34,19 +34,19 @@ function PlayIcon() {
 const steps = [
   {
     n: "01",
-    icon: "/icon-5.png",
+    icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656987/icon-5.png",
     title: "Hair & Scalp Assessment",
     text: "Your hair and scalp concerns are evaluated in detail.",
   },
   {
     n: "02",
-    icon: "/icons-1.png",
+    icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656994/icons-1.png",
     title: "Doctor Consultation",
     text: "The doctor discusses your concerns and determines the right direction.",
   },
   {
     n: "03",
-    icon: "/icons-2.png",
+    icon: "https://res.cloudinary.com/x6ec5hqm/image/upload/v1787656994/icons-2.png",
     title: "Personalised Approach",
     text: "A treatment approach is recommended based on your condition and suitability.",
   },
