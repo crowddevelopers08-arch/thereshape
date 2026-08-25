@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react"
-import Image from "next/image"
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import Image from "next/image";
 import {
   LuSend,
   LuMessageCircle,
@@ -14,43 +14,63 @@ import {
   LuStethoscope,
   LuActivity,
   LuCircleAlert,
-} from "react-icons/lu"
-import { FaWhatsapp } from "react-icons/fa"
-import Reveal from "./Reveal"
-import { track } from "./track"
+} from "react-icons/lu";
+import { FaWhatsapp } from "react-icons/fa";
+import Reveal from "./Reveal";
+import { track } from "./track";
 
 /* Leads are saved to our database and pushed to TeleCRM via this API route. */
-const LEAD_ENDPOINT = "/api/leads"
-const BRANCH = "Reshape Clinic"
-const WHATSAPP_NUMBER = "918608551555"
+const LEAD_ENDPOINT = "/api/leads";
+const BRANCH = "Reshape Clinic";
+const WHATSAPP_NUMBER = "918608551555";
 
 const BEFORE_AFTER = [
-  { src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392873/bf2_kvopn9.png", label: "Before" },
-  { src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392872/bf1_t5ienb.png", label: "After" },
-]
+  {
+    src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392873/bf2_kvopn9.png",
+    label: "Before",
+  },
+  {
+    src: "https://res.cloudinary.com/n0ccg2u6/image/upload/v1785392872/bf1_t5ienb.png",
+    label: "After",
+  },
+];
 
 const REVIEW_USPS = [
   "Private & confidential",
   "Specialist-led review",
   "Personalised guidance",
   "Second-opinion support",
-]
+];
 
-type QaKey = "name" | "phone" | "email" | "location" | "primaryConcern" | "hairLossDuration" | "hairLossArea" | "familyHistory"
+type QaKey =
+  | "name"
+  | "phone"
+  | "email"
+  | "location"
+  | "primaryConcern"
+  | "hairLossDuration"
+  | "hairLossArea"
+  | "familyHistory";
 
 interface QaStep {
-  key: QaKey
-  label: string
-  question: string
-  type: "text" | "tel" | "email" | "options"
-  placeholder: string
-  options?: string[]
+  key: QaKey;
+  label: string;
+  question: string;
+  type: "text" | "tel" | "email" | "options";
+  placeholder: string;
+  options?: string[];
   /** defaults to true — set false to let this step be skipped */
-  required?: boolean
+  required?: boolean;
 }
 
 const QA_STEPS: QaStep[] = [
-  { key: "name", label: "Name", question: "What's your name?", type: "text", placeholder: "Type your name…" },
+  {
+    key: "name",
+    label: "Name",
+    question: "What's your name?",
+    type: "text",
+    placeholder: "Type your name…",
+  },
   {
     key: "phone",
     label: "Phone number",
@@ -78,7 +98,14 @@ const QA_STEPS: QaStep[] = [
     question: "What is your primary hair concern?",
     type: "options",
     placeholder: "Choose your primary concern",
-    options: ["Hair fall", "Hair thinning", "Receding hairline", "Bald patches", "Excessive hair shedding", "Slow hair growth"],
+    options: [
+      "Hair fall",
+      "Hair thinning",
+      "Receding hairline",
+      "Bald patches",
+      "Excessive hair shedding",
+      "Slow hair growth",
+    ],
   },
   {
     key: "hairLossDuration",
@@ -86,7 +113,12 @@ const QA_STEPS: QaStep[] = [
     question: "How long have you been experiencing hair loss?",
     type: "options",
     placeholder: "Choose a duration",
-    options: ["Less than 3 months", "3–6 months", "6–12 months", "More than 1 year"],
+    options: [
+      "Less than 3 months",
+      "3–6 months",
+      "6–12 months",
+      "More than 1 year",
+    ],
   },
   {
     key: "hairLossArea",
@@ -94,7 +126,13 @@ const QA_STEPS: QaStep[] = [
     question: "Where is your hair loss most noticeable?",
     type: "options",
     placeholder: "Choose an area",
-    options: ["Front hairline", "Crown area", "Entire scalp", "Side temples", "Beard/Eyebrows"],
+    options: [
+      "Front hairline",
+      "Crown area",
+      "Entire scalp",
+      "Side temples",
+      "Beard/Eyebrows",
+    ],
   },
   {
     key: "familyHistory",
@@ -104,42 +142,42 @@ const QA_STEPS: QaStep[] = [
     placeholder: "Choose an option",
     options: ["Yes", "No", "Not sure"],
   },
-]
+];
 
 /* ── Validation ────────────────────────────────────────────────────────────
    Indian mobiles are 10 digits opening with 6–9. The email test is deliberately
    loose — it rejects obvious typos without turning away unusual but valid
    addresses, which a stricter pattern would. */
-const PHONE_RE = /^[6-9][0-9]{9}$/
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PHONE_RE = /^[6-9][0-9]{9}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Returns a message explaining why an answer is unacceptable, or "" if it's fine. */
 function validateAnswer(step: QaStep, rawValue: string): string {
-  const value = rawValue.trim()
+  const value = rawValue.trim();
 
   if (!value) {
-    if (step.required === false) return ""
+    if (step.required === false) return "";
     return step.type === "options"
       ? "Please choose an option to continue."
-      : `Please enter your ${step.label.toLowerCase()}.`
+      : `Please enter your ${step.label.toLowerCase()}.`;
   }
   if (step.key === "phone" && !PHONE_RE.test(value)) {
-    return "Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9."
+    return "Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9.";
   }
   if (step.key === "email" && !EMAIL_RE.test(value)) {
-    return "Enter a valid email address, like you@example.com."
+    return "Enter a valid email address, like you@example.com.";
   }
-  return ""
+  return "";
 }
 
-type Stage = "qa" | "review" | "insight" | "final" | "sent"
+type Stage = "qa" | "review" | "insight" | "final" | "sent";
 
 export default function ChatBooking() {
-  const [bfIndex, setBfIndex] = useState(0)
+  const [bfIndex, setBfIndex] = useState(0);
 
-  const [stage, setStage] = useState<Stage>("qa")
-  const [qaIndex, setQaIndex] = useState(0)
-  const [editingReview, setEditingReview] = useState(false)
+  const [stage, setStage] = useState<Stage>("qa");
+  const [qaIndex, setQaIndex] = useState(0);
+  const [editingReview, setEditingReview] = useState(false);
   const [answers, setAnswers] = useState<Record<QaKey, string>>({
     name: "",
     phone: "",
@@ -149,63 +187,79 @@ export default function ChatBooking() {
     hairLossDuration: "",
     hairLossArea: "",
     familyHistory: "",
-  })
+  });
 
-  const [photo, setPhoto] = useState<File | null>(null)
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
-  const [cameraOpen, setCameraOpen] = useState(false)
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">(
+    "environment",
+  );
 
-  const [submitting, setSubmitting] = useState(false)
-  const [waLink, setWaLink] = useState("")
+  const [submitting, setSubmitting] = useState(false);
+  const [waLink, setWaLink] = useState("");
   /** Validation message for the step on screen; cleared on every stage/step move. */
-  const [error, setError] = useState("")
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const textInputRef = useRef<HTMLInputElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
-  const attrRef = useRef<Record<string, string>>({})
+  const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const textInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const attrRef = useRef<Record<string, string>>({});
   // synchronous re-entrancy guard — `submitting` state only blocks the button after
   // the next render, so a second click/Enter fired in that gap would still get through
-  const sendingRef = useRef(false)
+  const sendingRef = useRef(false);
 
   // auto-advance the before/after slideshow
   useEffect(() => {
-    const id = setInterval(() => setBfIndex((i) => (i + 1) % BEFORE_AFTER.length), 3000)
-    return () => clearInterval(id)
-  }, [])
+    const id = setInterval(
+      () => setBfIndex((i) => (i + 1) % BEFORE_AFTER.length),
+      3000,
+    );
+    return () => clearInterval(id);
+  }, []);
 
   // release the camera if the component unmounts while it's open
-  useEffect(() => () => streamRef.current?.getTracks().forEach((t) => t.stop()), [])
+  useEffect(
+    () => () => streamRef.current?.getTracks().forEach((t) => t.stop()),
+    [],
+  );
 
   // release the camera if the user navigates away from the final step while it's open
   useEffect(() => {
     if (stage !== "final") {
-      streamRef.current?.getTracks().forEach((t) => t.stop())
-      streamRef.current = null
-      setCameraOpen(false)
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+      setCameraOpen(false);
     }
-  }, [stage])
+  }, [stage]);
 
   // campaign attribution — captured once from the URL
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search)
-    const attrs: Record<string, string> = {}
-    ;["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"].forEach((k) => {
-      attrs[k] = q.get(k) || ""
-    })
-    attrs.page_url = window.location.href
-    attrRef.current = attrs
-  }, [])
+    const q = new URLSearchParams(window.location.search);
+    const attrs: Record<string, string> = {};
+    [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_content",
+      "utm_term",
+      "fbclid",
+      "gclid",
+    ].forEach((k) => {
+      attrs[k] = q.get(k) || "";
+    });
+    attrs.page_url = window.location.href;
+    attrRef.current = attrs;
+  }, []);
 
-  const current = QA_STEPS[qaIndex]
+  const current = QA_STEPS[qaIndex];
 
   const resetFlow = () => {
-    sendingRef.current = false
-    if (photoUrl) URL.revokeObjectURL(photoUrl)
-    setStage("qa")
-    setQaIndex(0)
-    setEditingReview(false)
+    sendingRef.current = false;
+    if (photoUrl) URL.revokeObjectURL(photoUrl);
+    setStage("qa");
+    setQaIndex(0);
+    setEditingReview(false);
     setAnswers({
       name: "",
       phone: "",
@@ -215,176 +269,193 @@ export default function ChatBooking() {
       hairLossDuration: "",
       hairLossArea: "",
       familyHistory: "",
-    })
-    setPhoto(null)
-    setPhotoUrl(null)
-    setWaLink("")
-    setError("")
-  }
+    });
+    setPhoto(null);
+    setPhotoUrl(null);
+    setWaLink("");
+    setError("");
+  };
 
   // 15s after WhatsApp opens, return to a blank form so it's ready for the next visitor
   useEffect(() => {
-    if (stage !== "sent") return
-    const id = setTimeout(resetFlow, 15000)
-    return () => clearTimeout(id)
+    if (stage !== "sent") return;
+    const id = setTimeout(resetFlow, 15000);
+    return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage])
+  }, [stage]);
 
   const advanceQa = (rawValue: string) => {
-    const value = rawValue.trim()
+    const value = rawValue.trim();
 
-    const message = validateAnswer(current, value)
+    const message = validateAnswer(current, value);
     if (message) {
-      setError(message)
-      return
+      setError(message);
+      return;
     }
-    setError("")
-    setAnswers((prev) => ({ ...prev, [current.key]: value }))
+    setError("");
+    setAnswers((prev) => ({ ...prev, [current.key]: value }));
 
     if (editingReview) {
-      setEditingReview(false)
-      setStage("review")
-      return
+      setEditingReview(false);
+      setStage("review");
+      return;
     }
     if (qaIndex + 1 < QA_STEPS.length) {
-      setQaIndex((i) => i + 1)
+      setQaIndex((i) => i + 1);
     } else {
-      setStage("review")
+      setStage("review");
     }
-  }
+  };
 
   const onPickPhoto = (file: File | null) => {
-    if (photoUrl) URL.revokeObjectURL(photoUrl)
-    setPhoto(file)
-    setPhotoUrl(file ? URL.createObjectURL(file) : null)
-    if (file) setError("")
-  }
+    if (photoUrl) URL.revokeObjectURL(photoUrl);
+    setPhoto(file);
+    setPhotoUrl(file ? URL.createObjectURL(file) : null);
+    if (file) setError("");
+  };
 
   const isMobileDevice = () =>
-    typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
+    typeof navigator !== "undefined" &&
+    /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
 
   const stopCameraStream = () => {
-    streamRef.current?.getTracks().forEach((t) => t.stop())
-    streamRef.current = null
-  }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  };
 
   const startCamera = async (mode: "user" | "environment") => {
-    stopCameraStream()
+    stopCameraStream();
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode }, audio: false })
-      streamRef.current = stream
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: mode },
+        audio: false,
+      });
+      streamRef.current = stream;
       if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        await videoRef.current.play()
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
       }
     } catch {
-      alert("Couldn't access the camera. Please check permissions, or use Upload instead.")
-      setCameraOpen(false)
+      alert(
+        "Couldn't access the camera. Please check permissions, or use Upload instead.",
+      );
+      setCameraOpen(false);
     }
-  }
+  };
 
   const openCamera = () => {
     // phones default to the back camera (better for photographing the affected area) but can flip;
     // desktops only have a front-facing webcam, so start there directly
-    const mode = isMobileDevice() ? "environment" : "user"
-    setFacingMode(mode)
-    setCameraOpen(true)
-    startCamera(mode)
-  }
+    const mode = isMobileDevice() ? "environment" : "user";
+    setFacingMode(mode);
+    setCameraOpen(true);
+    startCamera(mode);
+  };
 
   const flipCamera = () => {
-    const next = facingMode === "environment" ? "user" : "environment"
-    setFacingMode(next)
-    startCamera(next)
-  }
+    const next = facingMode === "environment" ? "user" : "environment";
+    setFacingMode(next);
+    startCamera(next);
+  };
 
   const closeCamera = () => {
-    stopCameraStream()
-    setCameraOpen(false)
-  }
+    stopCameraStream();
+    setCameraOpen(false);
+  };
 
   const capturePhoto = () => {
-    const video = videoRef.current
-    if (!video) return
-    const canvas = document.createElement("canvas")
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+    const video = videoRef.current;
+    if (!video) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     canvas.toBlob(
       (blob) => {
-        if (!blob) return
-        onPickPhoto(new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" }))
-        closeCamera()
+        if (!blob) return;
+        onPickPhoto(
+          new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" }),
+        );
+        closeCamera();
       },
       "image/jpeg",
       0.9,
-    )
-  }
+    );
+  };
 
   const preparePhoto = (file: File) =>
     new Promise<string>((resolve, reject) => {
-      const image = document.createElement("img")
-      const objectUrl = URL.createObjectURL(file)
+      const image = document.createElement("img");
+      const objectUrl = URL.createObjectURL(file);
       image.onload = () => {
-        const maxSide = 1200
-        const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight))
-        const canvas = document.createElement("canvas")
-        canvas.width = Math.round(image.naturalWidth * scale)
-        canvas.height = Math.round(image.naturalHeight * scale)
-        const context = canvas.getContext("2d")
+        const maxSide = 1200;
+        const scale = Math.min(
+          1,
+          maxSide / Math.max(image.naturalWidth, image.naturalHeight),
+        );
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(image.naturalWidth * scale);
+        canvas.height = Math.round(image.naturalHeight * scale);
+        const context = canvas.getContext("2d");
         if (!context) {
-          URL.revokeObjectURL(objectUrl)
-          reject(new Error("Could not process image"))
-          return
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error("Could not process image"));
+          return;
         }
-        context.drawImage(image, 0, 0, canvas.width, canvas.height)
-        URL.revokeObjectURL(objectUrl)
-        resolve(canvas.toDataURL("image/jpeg", 0.72))
-      }
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(objectUrl);
+        resolve(canvas.toDataURL("image/jpeg", 0.72));
+      };
       image.onerror = () => {
-        URL.revokeObjectURL(objectUrl)
-        reject(new Error("Could not read image"))
-      }
-      image.src = objectUrl
-    })
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Could not read image"));
+      };
+      image.src = objectUrl;
+    });
 
   const handleWhatsApp = async () => {
-    if (sendingRef.current) return
-    sendingRef.current = true
+    if (sendingRef.current) return;
+    sendingRef.current = true;
 
-    const name = answers.name.trim()
-    const phone = answers.phone.trim()
+    const name = answers.name.trim();
+    const phone = answers.phone.trim();
     // Re-check every answer at the point of submission — the visitor can edit any
     // step from the review screen, so an earlier pass is not proof it is still valid.
-    const invalidIndex = QA_STEPS.findIndex((step) => validateAnswer(step, answers[step.key]))
+    const invalidIndex = QA_STEPS.findIndex((step) =>
+      validateAnswer(step, answers[step.key]),
+    );
     if (invalidIndex !== -1) {
-      sendingRef.current = false
-      const step = QA_STEPS[invalidIndex]
-      setQaIndex(invalidIndex)
-      setStage("qa")
-      setError(validateAnswer(step, answers[step.key]))
-      return
+      sendingRef.current = false;
+      const step = QA_STEPS[invalidIndex];
+      setQaIndex(invalidIndex);
+      setStage("qa");
+      setError(validateAnswer(step, answers[step.key]));
+      return;
     }
     if (!photo) {
-      sendingRef.current = false
-      setError("Please add a clear photo of the affected hair or scalp area to continue.")
-      return
+      sendingRef.current = false;
+      setError(
+        "Please add a clear photo of the affected hair or scalp area to continue.",
+      );
+      return;
     }
-    setError("")
+    setError("");
 
-    setSubmitting(true)
-    const attrs = attrRef.current
-    let photoData: string | undefined
+    setSubmitting(true);
+    const attrs = attrRef.current;
+    let photoData: string | undefined;
     if (photo) {
       try {
-        photoData = await preparePhoto(photo)
+        photoData = await preparePhoto(photo);
       } catch {
-        sendingRef.current = false
-        setSubmitting(false)
-        setError("We couldn't process that photo. Please choose another image and try again.")
-        return
+        sendingRef.current = false;
+        setSubmitting(false);
+        setError(
+          "We couldn't process that photo. Please choose another image and try again.",
+        );
+        return;
       }
     }
     const payload = {
@@ -401,25 +472,33 @@ export default function ChatBooking() {
       source: attrs.utm_source || "direct",
       medium: attrs.utm_medium || "",
       campaign: attrs.utm_campaign || "",
-      pageUrl: attrs.page_url || (typeof window !== "undefined" ? window.location.href : ""),
+      pageUrl:
+        attrs.page_url ||
+        (typeof window !== "undefined" ? window.location.href : ""),
       formSource: "Hairtrinity-Leads",
-    }
+    };
 
     try {
       const response = await fetch(LEAD_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      })
-      if (!response.ok) throw new Error("Lead submission failed")
+      });
+      if (!response.ok) throw new Error("Lead submission failed");
     } catch {
-      sendingRef.current = false
-      setSubmitting(false)
-      setError("We couldn't save your details. Please try again before continuing to WhatsApp.")
-      return
+      sendingRef.current = false;
+      setSubmitting(false);
+      setError(
+        "We couldn't save your details. Please try again before continuing to WhatsApp.",
+      );
+      return;
     }
 
-    track("whatsapp_click", { branch: BRANCH, concern: answers.primaryConcern, source: "chat_booking" })
+    track("whatsapp_click", {
+      branch: BRANCH,
+      concern: answers.primaryConcern,
+      source: "chat_booking",
+    });
 
     const message = [
       "Hi, I'd like to book a hair consultation.",
@@ -430,24 +509,25 @@ export default function ChatBooking() {
       `Hair loss duration: ${answers.hairLossDuration}`,
     ]
       .filter(Boolean)
-      .join("\n")
+      .join("\n");
 
-    const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
-    setWaLink(link)
-    setSubmitting(false)
-    setStage("sent")
-    window.open(link, "_blank", "noopener,noreferrer")
-  }
+    const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    setWaLink(link);
+    setSubmitting(false);
+    setStage("sent");
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
 
   return (
-    <section id="book" className="scroll-mt-24 border-b border-[#e7ecf3] bg-[#fbf8f5] py-8 sm:py-10 lg:py-5 lg:pb-20">
+    <section
+      id="book"
+      className="scroll-mt-24 border-b border-[#e7ecf3] bg-[#fbf8f5] py-8 sm:py-10 lg:py-5 lg:pb-20"
+    >
       <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8">
         <div className="mx-auto mb-9 max-w-[720px] text-center sm:mb-11">
-          <p className="kicker justify-center">
-           Hair Assessment
-          </p>
+          <p className="kicker justify-center">Hair Assessment</p>
           <h2 className="mt-4 text-[clamp(1.9rem,4vw,3rem)]">
-             Identify the cause of your hair loss 
+            Identify the cause of your hair loss
           </h2>
           {/* <p className="mx-auto mt-4 max-w-[600px] text-[0.95rem] leading-relaxed text-[#5f6f88] sm:text-[1rem]">
             Share a few details about your symptoms and connect privately with our specialist team.
@@ -463,7 +543,9 @@ export default function ChatBooking() {
                 <LuMessageCircle className="h-5 w-5" />
               </span>
               <div className="leading-tight">
-                <div className="text-[0.95rem] font-bold text-white">Reshape Assistant</div>
+                <div className="text-[0.95rem] font-bold text-white">
+                  Reshape Assistant
+                </div>
                 <div className="flex items-center gap-1.5 text-[0.72rem] text-white/60">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#6ee7a0]" />
                   Typically replies instantly
@@ -477,12 +559,17 @@ export default function ChatBooking() {
               {stage === "qa" && (
                 <div className="mb-4 space-y-3">
                   <BotBubble>
-                    <span className="font-bold text-[#22395f]">Let&apos;s Understand Your Concern</span>
+                    <span className="font-bold text-[#22395f]">
+                      Let&apos;s Understand Your Concern
+                    </span>
                   </BotBubble>
                   <BotBubble>
                     Tell us what you&apos;ve noticed about your hair and scalp.
                   </BotBubble>
-                  <BotBubble>Your answers will help our hair specialist prepare for your consultation 👇</BotBubble>
+                  <BotBubble>
+                    Your answers will help our hair specialist prepare for your
+                    consultation 👇
+                  </BotBubble>
                 </div>
               )}
 
@@ -501,7 +588,11 @@ export default function ChatBooking() {
 
                   <div className="pt-2">
                     {current.type === "options" ? (
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="group" aria-label={current.question}>
+                      <div
+                        className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+                        role="group"
+                        aria-label={current.question}
+                      >
                         {current.options?.map((option) => (
                           <button
                             key={option}
@@ -520,21 +611,28 @@ export default function ChatBooking() {
                           ref={textInputRef}
                           autoFocus
                           type={current.type}
-                          inputMode={current.type === "tel" ? "numeric" : undefined}
+                          inputMode={
+                            current.type === "tel" ? "numeric" : undefined
+                          }
                           defaultValue={answers[current.key] || ""}
                           placeholder={current.placeholder}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") advanceQa(textInputRef.current?.value ?? "")
+                            if (e.key === "Enter")
+                              advanceQa(textInputRef.current?.value ?? "");
                           }}
                           // clear the complaint as soon as they start correcting it
                           onInput={() => error && setError("")}
                           aria-invalid={!!error}
-                          aria-describedby={error ? "hairscan-qa-error" : undefined}
+                          aria-describedby={
+                            error ? "hairscan-qa-error" : undefined
+                          }
                           className={`${chatTyperCls} ${error ? "border-[#c2410c] focus:border-[#c2410c] focus:ring-[#f5c4a8]" : ""}`}
                         />
                         <button
                           type="button"
-                          onClick={() => advanceQa(textInputRef.current?.value ?? "")}
+                          onClick={() =>
+                            advanceQa(textInputRef.current?.value ?? "")
+                          }
                           aria-label="Next"
                           className="btn-wave flex h-[50px] w-[50px] flex-none items-center justify-center rounded-full bg-[#22395f] text-white transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#16263f]"
                         >
@@ -560,7 +658,10 @@ export default function ChatBooking() {
 
               {stage === "review" && (
                 <div className="rise space-y-4">
-                  <BotBubble>Please confirm that your contact and hair assessment details are correct.</BotBubble>
+                  <BotBubble>
+                    Please confirm that your contact and hair assessment details
+                    are correct.
+                  </BotBubble>
 
                   <div className="grid grid-cols-2 gap-3">
                     {QA_STEPS.map((s, i) => (
@@ -579,10 +680,10 @@ export default function ChatBooking() {
                         <button
                           type="button"
                           onClick={() => {
-                            setError("")
-                            setQaIndex(i)
-                            setEditingReview(true)
-                            setStage("qa")
+                            setError("");
+                            setQaIndex(i);
+                            setEditingReview(true);
+                            setStage("qa");
                           }}
                           aria-label={`Edit ${s.label}`}
                           className="flex h-8 w-8 flex-none items-center justify-center rounded-full border border-[#e7ecf3] bg-white text-[#22395f] transition-colors hover:bg-[#fef5ef]"
@@ -597,9 +698,9 @@ export default function ChatBooking() {
                     <button
                       type="button"
                       onClick={() => {
-                        setError("")
-                        setQaIndex(QA_STEPS.length - 1)
-                        setStage("qa")
+                        setError("");
+                        setQaIndex(QA_STEPS.length - 1);
+                        setStage("qa");
                       }}
                       className="flex-none rounded-full border border-[#e7ecf3] bg-white px-5 py-3.5 text-[0.9rem] font-semibold text-[#22395f] transition-colors hover:bg-[#fef5ef]"
                     >
@@ -607,10 +708,20 @@ export default function ChatBooking() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setStage("insight")}
+                      onClick={() => {
+                        window.dataLayer = window.dataLayer || [];
+
+                        window.dataLayer.push({
+                          event: "hair_assessment_completed",
+                        });
+
+                        setStage("insight");
+                      }}
                       className="btn-wave group/btn flex flex-1 items-center justify-center gap-2 rounded-full bg-[#22395f] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#16263f]"
                     >
-                      <span id="hair-assessment" className="relative z-10">Continue</span>
+                      <span id="hair-assessment" className="relative z-10">
+                        Continue
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -627,17 +738,22 @@ export default function ChatBooking() {
                     A specialist consultation is recommended
                   </div>
 
-                  <div className="text-[0.9rem] font-bold text-[#22395f]">Based on your answers</div>
+                  <div className="text-[0.9rem] font-bold text-[#22395f]">
+                    Based on your answers
+                  </div>
 
                   <div className="flex gap-3 rounded-2xl border border-[#a8c8ff] bg-[#f0f6ff] px-4 py-4 text-[0.88rem] leading-relaxed text-[#1f2f47]">
                     <LuActivity className="mt-0.5 h-5 w-5 flex-none text-[#3485f5]" />
                     <p>
-                      A clinical examination can help identify the type of hair loss and whether monitoring, treatment or a surgical opinion is the most suitable next step.
+                      A clinical examination can help identify the type of hair
+                      loss and whether monitoring, treatment or a surgical
+                      opinion is the most suitable next step.
                     </p>
                   </div>
 
                   <p className="rounded-2xl bg-[#eef2f6] px-4 py-3 text-[0.78rem] leading-relaxed text-[#5f6f88]">
-                    This guidance is not a diagnosis. Your specialist will assess your hair, scalp and medical history.
+                    This guidance is not a diagnosis. Your specialist will
+                    assess your hair, scalp and medical history.
                   </p>
 
                   <div className="w-full min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]">
@@ -679,7 +795,8 @@ export default function ChatBooking() {
               {stage === "final" && (
                 <div className="rise space-y-4">
                   <BotBubble>
-                    Almost done! Please add a clear photo of the affected hair or scalp area to continue to WhatsApp.
+                    Almost done! Please add a clear photo of the affected hair
+                    or scalp area to continue to WhatsApp.
                   </BotBubble>
 
                   {/* photo upload / camera capture */}
@@ -695,7 +812,12 @@ export default function ChatBooking() {
                     <div className="space-y-3">
                       <div className="relative overflow-hidden rounded-2xl bg-black">
                         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                        <video ref={videoRef} playsInline muted className="aspect-[4/3] w-full object-cover" />
+                        <video
+                          ref={videoRef}
+                          playsInline
+                          muted
+                          className="aspect-[4/3] w-full object-cover"
+                        />
                       </div>
                       <div className="flex items-center justify-center gap-5">
                         <button
@@ -727,9 +849,17 @@ export default function ChatBooking() {
                   ) : photoUrl ? (
                     <div className="relative flex items-center gap-3 rounded-2xl border border-[#e7ecf3] bg-[#fbf8f5] p-2.5">
                       <div className="relative h-14 w-14 flex-none overflow-hidden rounded-xl">
-                        <Image src={photoUrl} alt="Selected photo" fill className="object-cover" unoptimized />
+                        <Image
+                          src={photoUrl}
+                          alt="Selected photo"
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
                       </div>
-                      <div className="min-w-0 flex-1 truncate text-[0.85rem] text-[#1f2f47]">{photo?.name}</div>
+                      <div className="min-w-0 flex-1 truncate text-[0.85rem] text-[#1f2f47]">
+                        {photo?.name}
+                      </div>
                       <button
                         type="button"
                         onClick={() => onPickPhoto(null)}
@@ -808,10 +938,15 @@ export default function ChatBooking() {
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-[0.9rem] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1fb959] disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     <FaWhatsapp className="h-5 w-5" />
-                    {submitting ? "Please wait…" : !photo ? "Add a photo to continue" : "Continue with WhatsApp"}
+                    {submitting
+                      ? "Please wait…"
+                      : !photo
+                        ? "Add a photo to continue"
+                        : "Continue with WhatsApp"}
                   </button>
                   <p className="text-center text-[0.75rem] leading-relaxed text-[#5f6f88]">
-                    By continuing, you agree to be contacted by thereshape about your appointment.
+                    By continuing, you agree to be contacted by thereshape about
+                    your appointment.
                   </p>
                 </div>
               )}
@@ -821,9 +956,12 @@ export default function ChatBooking() {
                   <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#e7fbef] text-[#25D366]">
                     <FaWhatsapp className="h-6 w-6" />
                   </div>
-                  <h3 className="mb-1 text-[1.05rem] text-[#22395f]">Opening WhatsApp…</h3>
+                  <h3 className="mb-1 text-[1.05rem] text-[#22395f]">
+                    Opening WhatsApp…
+                  </h3>
                   <p className="mb-4 text-[0.88rem] text-[#5f6f88]">
-                    If a new tab didn&apos;t open, tap the button below to continue the conversation.
+                    If a new tab didn&apos;t open, tap the button below to
+                    continue the conversation.
                   </p>
                   <a
                     href={waLink}
@@ -846,8 +984,17 @@ export default function ChatBooking() {
               style={{ transform: `translateX(-${bfIndex * 100}%)` }}
             >
               {BEFORE_AFTER.map((b) => (
-                <div key={b.label} className="relative h-full w-full shrink-0 grow-0">
-                  <Image src={b.src} alt={b.label} fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" />
+                <div
+                  key={b.label}
+                  className="relative h-full w-full shrink-0 grow-0"
+                >
+                  <Image
+                    src={b.src}
+                    alt={b.label}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 40vw"
+                    className="object-cover"
+                  />
                   <span className="absolute left-4 top-4 rounded-full bg-[#22395f]/85 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-white backdrop-blur-sm">
                     {b.label}
                   </span>
@@ -870,19 +1017,19 @@ export default function ChatBooking() {
         </Reveal>
       </div>
     </section>
-  )
+  );
 }
 
 const chatInputCls =
-  "w-full rounded-2xl border border-[#e7ecf3] bg-white px-4 py-3 text-[0.92rem] text-[#1f2f47] transition-all duration-150 focus:border-[#22395f] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]"
+  "w-full rounded-2xl border border-[#e7ecf3] bg-white px-4 py-3 text-[0.92rem] text-[#1f2f47] transition-all duration-150 focus:border-[#22395f] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]";
 
 /* the active "typer" field for the current chat question — pill-shaped to match the round send button */
 const chatTyperCls =
-  "w-full rounded-full border border-[#e7ecf3] bg-white px-5 py-3.5 text-[0.95rem] text-[#1f2f47] transition-all duration-150 focus:border-[#22395f] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]"
+  "w-full rounded-full border border-[#e7ecf3] bg-white px-5 py-3.5 text-[0.95rem] text-[#1f2f47] transition-all duration-150 focus:border-[#22395f] focus:outline-none focus:ring-2 focus:ring-[#fccbb6]";
 
 /** Inline validation message. `role="alert"` so screen readers announce it on appearance. */
 function FieldError({ id, message }: { id: string; message: string }) {
-  if (!message) return null
+  if (!message) return null;
   return (
     <p
       id={id}
@@ -892,7 +1039,7 @@ function FieldError({ id, message }: { id: string; message: string }) {
       <LuCircleAlert className="mt-[2px] h-3.5 w-3.5 flex-none" />
       {message}
     </p>
-  )
+  );
 }
 
 function BotBubble({ children }: { children: ReactNode }) {
@@ -900,5 +1047,5 @@ function BotBubble({ children }: { children: ReactNode }) {
     <div className="max-w-[92%] rounded-2xl rounded-bl-sm bg-[#fef5ef] px-4 py-3 text-[0.88rem] leading-relaxed text-[#3a4f6f]">
       {children}
     </div>
-  )
+  );
 }
