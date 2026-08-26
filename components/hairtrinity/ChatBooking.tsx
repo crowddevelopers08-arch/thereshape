@@ -609,7 +609,6 @@ export default function ChatBooking() {
                         <input
                           key={current.key}
                           ref={textInputRef}
-                          autoFocus
                           type={current.type}
                           inputMode={
                             current.type === "tel" ? "numeric" : undefined
