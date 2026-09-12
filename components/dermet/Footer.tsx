@@ -30,7 +30,7 @@ export default function Footer() {
     <footer className="relative overflow-hidden bg-[#16263f] text-white/70">
 
 
-      {/* main columns */}
+      {/* main column */}
       <div className="relative mx-auto grid w-full max-w-[1180px] place-items-center gap-10 px-5 py-14 text-center max-[470px]:py-6 sm:px-8 lg:grid-cols-[1.5fr_1fr_1.2fr] lg:place-items-start lg:text-left">
         {/* brand */}
         <div className="max-w-[34ch]">
