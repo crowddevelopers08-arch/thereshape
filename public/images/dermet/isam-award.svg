@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="184" height="76" viewBox="0 0 184 76">
+  <defs><linearGradient id="logo"><stop stop-color="#df480d"/><stop offset=".55" stop-color="#dc7810"/><stop offset="1" stop-color="#527b29"/></linearGradient></defs>
+  <text x="1" y="47" font-family="Georgia,serif" font-size="34" letter-spacing="-4" fill="url(#logo)">ISAM</text>
+  <g font-family="Arial,sans-serif" font-size="4.5" fill="#505050"><text x="65" y="28">INDIAN</text><text x="65" y="34">SOCIETY OF</text><text x="65" y="40">AESTHETIC</text><text x="65" y="46">MEDICINE</text></g>
+  <path d="M96 10V66" stroke="#cdbb88" stroke-width=".8"/>
+  <g text-anchor="middle" font-family="Georgia,serif"><path d="M132 11h8" stroke="#b98b2c" stroke-width="2"/><text x="140" y="24" font-size="8" font-weight="bold" fill="#39342c">BEST CLINIC</text><text x="140" y="31" font-size="4" fill="#61513a" letter-spacing="1">SOUTH INDIA</text><text x="140" y="44" font-size="14" fill="#ba8e39">· 2025 ·</text><text x="140" y="60" font-size="13" fill="#ab812b">EVERGLO</text><text x="140" y="67" font-size="3.3" letter-spacing="1.7" fill="#8e7645">AESTHETIC CLINIC</text></g>
+  <g fill="#c7a85a"><path d="m95 34 1-3 1 3 3 1-3 1-1 3-1-3-3-1z"/><path d="m111 21 1-2 1 2 2 1-2 1-1 2-1-2-2-1z"/><path d="m170 20 1-2 1 2 2 1-2 1-1 2-1-2-2-1z"/></g>
+</svg>

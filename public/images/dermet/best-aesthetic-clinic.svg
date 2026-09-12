@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="74" viewBox="0 0 112 74">
+  <rect x="1" y="1" width="110" height="72" fill="#fff" stroke="#e7ddc1"/>
+  <path d="M3 14Q18 0 39 3M86 3Q108 5 109 25M3 52Q11 71 35 71M85 71Q108 69 110 48" fill="none" stroke="#eee8d6"/>
+  <g transform="translate(27 35)"><g stroke="#bf9b3a" stroke-width="2"><path d="M0-22V-16M0 16V22M-22 0H-16M16 0H22M-16-16l5 5M11 11l5 5M16-16l-5 5M-11 11l-5 5M-8-20l2 5M6 15l2 5M20-8l-5 2M-15 6l-5 2M8-20l-2 5M-6 15l-2 5M-20-8l5 2M15 6l5 2"/></g><circle r="15" fill="#e1e5ec" stroke="#8e9ab0"/><circle r="12" fill="none" stroke="#fff"/><path d="M-5 7V-6H5V7M-7 8H7M-7-8H7" fill="none" stroke="#8592a9"/><text y="-19" text-anchor="middle" font-family="Georgia" font-size="3" fill="#667488">EXCELLENCE AWARDS</text></g>
+  <g text-anchor="middle" font-family="Georgia,serif"><text x="80" y="18" font-size="8" fill="#63758a">BEST</text><text x="80" y="27" font-size="10" fill="#b99a42">AESTHETIC</text><text x="80" y="36" font-size="10" fill="#b99a42">CLINIC</text><text x="80" y="51" font-size="10" fill="#b5913c">EVERGLO</text><text x="80" y="57" font-size="3.1" fill="#78705c">AESTHETIC CLINIC</text><text x="71" y="65" font-size="3" fill="#5d6f8b">AWARD WINNER</text><text x="100" y="65" font-size="6" fill="#be9c45">2025</text></g>
+  <path d="M53 60H106M54 68H106" stroke="#d8c995" stroke-width=".6"/>
+</svg>
