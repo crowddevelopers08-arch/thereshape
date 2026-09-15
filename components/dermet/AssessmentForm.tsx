@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { track } from "@/components/reshape/track"
 
@@ -69,20 +68,7 @@ export default function AssessmentForm() {
 
   return (
     <section id="assessment-form" className="scroll-mt-[100px] bg-[#fbf8f5] px-5 py-14 sm:px-8 sm:py-20">
-      <div className="mx-auto grid w-full max-w-[1180px] grid-cols-1 items-stretch gap-10 lg:grid-cols-2 lg:gap-14">
-        {/* left — visual */}
-        <div className="relative min-h-[320px] w-full overflow-hidden rounded-[24px] shadow-[0_20px_50px_-20px_rgba(34,57,95,0.35)] lg:min-h-0">
-          {/* placeholder — replace with a clinic/consultation photo when supplied */}
-          <Image
-            src="https://res.cloudinary.com/n0ccg2u6/image/upload/docaneesha_rik4bt.png"
-            alt="Book your consultation at Dermetabience"
-            fill
-            sizes="(min-width: 1024px) 520px, 100vw"
-            className="object-cover"
-          />
-        </div>
-
-        {/* right — form */}
+      <div className="mx-auto w-full max-w-[560px]">
         <form
           ref={formRef}
           onSubmit={onSubmit}
@@ -92,11 +78,8 @@ export default function AssessmentForm() {
           {!done ? (
             <div>
               <div className="text-center">
-                <p className="m-0 text-[0.72rem] font-bold uppercase tracking-[0.16em] text-[#22395f]/60">
-                  Book Your Consultation
-                </p>
                 <h2 className="mt-2 text-[1.4rem] font-bold leading-[1.3] text-[#22395f] sm:text-[1.6rem]">
-                  Tell us a bit about you
+                   Book Your Consultation
                 </h2>
               </div>
 

@@ -6,7 +6,11 @@ import Footer from "@/components/dermet/Footer"
 import Hero from "@/components/dermet/hero"
 import TransformationsCarousel from "@/components/dermet/TransformationsCarousel"
 
-export default function DermetabiencePage() {
+export const dynamic = "force-dynamic"
+
+export default async function DermetabiencePage() {
+  await new Promise((resolve) => setTimeout(resolve, 7000))
+
   return (
     <div className="reshape scroll-smooth">
       <Header />
