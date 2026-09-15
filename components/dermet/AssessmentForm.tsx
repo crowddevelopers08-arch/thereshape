@@ -67,7 +67,7 @@ export default function AssessmentForm() {
   }
 
   return (
-    <section id="assessment-form" className="scroll-mt-[100px] bg-[#fbf8f5] px-5 py-14 sm:px-8 sm:py-20">
+    <section id="assessment-form" className="scroll-mt-[100px] bg-white px-5 py-14 sm:px-8 sm:py-20">
       <div className="mx-auto w-full max-w-[560px]">
         <form
           ref={formRef}

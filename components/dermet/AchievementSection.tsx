@@ -14,7 +14,7 @@ export default function AchievementSection() {
 
   return (
     <section
-      className="bg-white px-[50px] pt-[28px] pb-[27px] text-[#080808] [@media(max-width:600px)]:px-[24px] [@media(max-width:600px)]:pb-[28px]"
+      className="bg-[#fbf8f5] px-[50px] pt-[28px] pb-[27px] text-[#080808] [@media(max-width:600px)]:px-[24px] [@media(max-width:600px)]:pb-[28px]"
       aria-labelledby="achievement-heading"
     >
       <style>{`
