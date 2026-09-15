@@ -14,7 +14,7 @@ export default function AchievementSection() {
 
   return (
     <section
-      className="bg-[#fbf8f5] px-[50px] pt-[28px] pb-[27px] text-[#080808] [@media(max-width:600px)]:px-[24px] [@media(max-width:600px)]:pb-[28px]"
+      className="bg-white px-[50px] pt-[28px] pb-[27px] text-[#080808] [@media(max-width:600px)]:px-[24px] [@media(max-width:600px)]:pb-[28px]"
       aria-labelledby="achievement-heading"
     >
       <style>{`
@@ -24,7 +24,7 @@ export default function AchievementSection() {
         }
       `}</style>
       <div className="mx-auto max-w-[1200px] text-center">
-        <h2 id="achievement-heading" className="m-0 [font-family:Arial,Helvetica,sans-serif] text-[21px] leading-[26px] font-bold tracking-[0.25px]">Achievement Section</h2>
+        <h2 id="achievement-heading" className="m-0 [font-family:Arial,Helvetica,sans-serif] text-[21px] leading-[26px] font-bold tracking-[0.25px]">Achievements</h2>
         <div className="mx-auto mt-[20px] max-w-[1400px] overflow-hidden border-b border-solid border-[#fafafa] pb-[7px] [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
           <ul
             className="flex w-max list-none items-center gap-[42px] p-0 [animation:achievement-marquee_18s_linear_infinite] hover:[animation-play-state:paused] [@media(max-width:600px)]:gap-[24px]"

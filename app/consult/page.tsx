@@ -16,8 +16,8 @@ export default async function DermetabiencePage() {
       <Header />
       <main className="min-h-screen bg-white">
         <Hero />
-        <AssessmentForm />
         <AchievementSection />
+        <AssessmentForm />
         <TransformationsCarousel />
         <Footer />
       </main>
