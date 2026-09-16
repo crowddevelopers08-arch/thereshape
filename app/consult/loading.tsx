@@ -42,7 +42,7 @@ export default function Loading() {
       <style>{`
         .progress-fill {
           width: 0%;
-          animation: progressFill 7s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+          animation: progressFill 5s cubic-bezier(0.3, 0, 0.2, 1) forwards;
         }
         @keyframes progressFill {
           0%   { width: 0%; }
@@ -83,13 +83,13 @@ export default function Loading() {
           100%    { width: 0; }
         }
         .type-word--hairfall {
-          animation: typeHairfall 7.5s infinite;
+          animation: typeHairfall 5s infinite;
         }
         .type-word--hairloss {
-          animation: typeHairloss 7.5s infinite;
+          animation: typeHairloss 5s infinite;
         }
         .type-word--baldness {
-          animation: typeBaldness 7.5s infinite;
+          animation: typeBaldness 5s infinite;
         }
         @keyframes cursorMove {
           0%      { left: 0;    animation-timing-function: steps(10, end); }
@@ -107,7 +107,7 @@ export default function Loading() {
           100%    { left: 0; }
         }
         .type-cursor {
-          animation: cursorMove 7.5s infinite, cursorBlink 0.8s steps(1, end) infinite;
+          animation: cursorMove 5s infinite, cursorBlink 0.8s steps(1, end) infinite;
         }
         @keyframes cursorBlink {
           0%, 49% { opacity: 1; }

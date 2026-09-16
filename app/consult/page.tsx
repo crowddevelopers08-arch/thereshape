@@ -9,7 +9,7 @@ import TransformationsCarousel from "@/components/dermet/TransformationsCarousel
 export const dynamic = "force-dynamic"
 
 export default async function DermetabiencePage() {
-  await new Promise((resolve) => setTimeout(resolve, 7000))
+  await new Promise((resolve) => setTimeout(resolve, 5000))
 
   return (
     <div className="reshape scroll-smooth">

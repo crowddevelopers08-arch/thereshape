@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { LuArrowRight } from "react-icons/lu"
 
 /* placeholder photo blocks — swap each Before/After div for a real patient
    photo (e.g. <Image src="/images/dermet/results/1-before.jpg" .../>) when supplied */
@@ -47,10 +48,12 @@ export default function TransformationsCarousel() {
   return (
     <section id="results" className="scroll-mt-[100px] bg-white px-5 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-[1180px] text-center">
-        <h2 className="m-0 text-[1.6rem] font-bold leading-[1.35] tracking-[-0.01em] text-[#5f6f88] sm:text-[2.1rem]">
-          Real Transformations. <span className="text-[#22395f]">Trusted Expertise.</span>
-          <br />
-          See the <span className="text-[#e8734a]">MAX&trade;</span> <span className="text-[#22395f]">Difference.</span>
+        <h2 className="m-0 flex items-center justify-center gap-3 text-[1.6rem] font-bold leading-[1.35] tracking-[-0.01em] text-[#5f6f88] sm:gap-4 sm:text-[2.1rem]">
+          <span>Before</span>
+          <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#fccbb6] text-[#22395f] sm:h-10 sm:w-10">
+            <LuArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+          </span>
+          <span className="text-[#22395f]">After</span>
         </h2>
         <p className="mx-auto mt-3 max-w-[560px] text-[0.9rem] leading-relaxed text-[#5f6f88]">
           Discover real results from{" "}
