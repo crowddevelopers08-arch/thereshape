@@ -67,7 +67,7 @@ export default function AssessmentForm() {
   }
 
   return (
-    <section id="assessment-form" className="scroll-mt-[100px] bg-[#fbf8f5] px-5 py-14 sm:px-8 sm:py-20">
+    <section id="assessment-form" className="scroll-mt-[100px] bg-[#fbf8f5] px-5 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto w-full max-w-[560px]">
         <form
           ref={formRef}
@@ -126,12 +126,9 @@ export default function AssessmentForm() {
               <Field label="Your concern" htmlFor="af-concern">
                 <select id="af-concern" name="concern" required className={inputCls} defaultValue="">
                   <option value="">Select a concern</option>
-                  <option>Acne / Acne Scars</option>
-                  <option>Pigmentation</option>
-                  <option>Anti-Aging / Wrinkles</option>
-                  <option>Hair Loss / Hair Fall</option>
-                  <option>Skin Whitening / Glow</option>
-                  <option>Not sure — need advice</option>
+                  <option>Hair Loss </option>
+                  <option>Hair Fall</option>
+                  <option>Baldness</option>
                 </select>
               </Field>
 

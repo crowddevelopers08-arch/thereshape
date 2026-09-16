@@ -45,7 +45,7 @@ export default function TransformationsCarousel() {
   }, [])
 
   return (
-    <section id="results" className="scroll-mt-[100px] bg-white px-5 py-14 sm:px-8 sm:py-20">
+    <section id="results" className="scroll-mt-[100px] bg-white px-5 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-[1180px] text-center">
         <h2 className="m-0 text-[1.6rem] font-bold leading-[1.35] tracking-[-0.01em] text-[#5f6f88] sm:text-[2.1rem]">
           Real Transformations. <span className="text-[#22395f]">Trusted Expertise.</span>
