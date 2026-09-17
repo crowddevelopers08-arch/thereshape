@@ -19,8 +19,7 @@ export default async function DermetabiencePage() {
         <AchievementSection />
         <AssessmentForm />
         <TransformationsCarousel />
-        <Footer />
-      </main>
+        <Footer />      </main>
     </div>
   )
 }
