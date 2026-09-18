@@ -43,11 +43,11 @@ export default function AssessmentForm() {
       email: raw.email,
       location: raw.city,
       branch: raw.branch || BRANCH,
-      source: raw.utm_source || "Skin Treatment Leads",
+      source: raw.utm_source || "Hair Treatment Leads",
       medium: raw.utm_medium || "",
       campaign: raw.utm_campaign || "",
       pageUrl: raw.page_url || (typeof window !== "undefined" ? window.location.href : ""),
-      formSource: "skin-treatment-leads",
+      formSource: "hair-treatment-leads",
     }
 
     try {
@@ -60,7 +60,7 @@ export default function AssessmentForm() {
 
       track("lead_submit", { branch: BRANCH })
       setDone(true)
-      window.location.href = "/skin-treatment/thank-you"
+      window.location.href = "/hair-treatment/thank-you"
     } catch {
       setSubmitting(false)
       alert("That did not go through. Please call +91 86085 51555 instead.")
