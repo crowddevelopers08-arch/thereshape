@@ -40,14 +40,14 @@ export default function AssessmentForm() {
     const payload = {
       name: raw.name,
       phone: raw.phone,
+      email: raw.email,
       location: raw.city,
-      area: raw.concern,
       branch: raw.branch || BRANCH,
-      source: raw.utm_source || "dermet leads",
+      source: raw.utm_source || "Skin Treatment Leads",
       medium: raw.utm_medium || "",
       campaign: raw.utm_campaign || "",
       pageUrl: raw.page_url || (typeof window !== "undefined" ? window.location.href : ""),
-      formSource: "consult-leads",
+      formSource: "skin-treatment-leads",
     }
 
     try {
@@ -58,9 +58,9 @@ export default function AssessmentForm() {
       })
       if (!res.ok) throw new Error(`Request failed with ${res.status}`)
 
-      track("lead_submit", { branch: BRANCH, concern: raw.concern })
+      track("lead_submit", { branch: BRANCH })
       setDone(true)
-      window.location.href = "/consult/thank-you"
+      window.location.href = "/skin-treatment/thank-you"
     } catch {
       setSubmitting(false)
       alert("That did not go through. Please call +91 86085 51555 instead.")
@@ -111,7 +111,7 @@ export default function AssessmentForm() {
               </div>
 
               <div className="mt-6">
-              <Field label="Full name" htmlFor="af-name">
+              <Field label="Name" htmlFor="af-name">
                 <input
                   id="af-name"
                   name="name"
@@ -123,7 +123,7 @@ export default function AssessmentForm() {
                 />
               </Field>
 
-              <Field label="Mobile number" htmlFor="af-phone">
+              <Field label="Phone" htmlFor="af-phone">
                 <input
                   id="af-phone"
                   name="phone"
@@ -138,6 +138,18 @@ export default function AssessmentForm() {
                 />
               </Field>
 
+              <Field label="Mail" htmlFor="af-email">
+                <input
+                  id="af-email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className={inputCls}
+                />
+              </Field>
+
               <Field label="City" htmlFor="af-city">
                 <input
                   id="af-city"
@@ -148,15 +160,6 @@ export default function AssessmentForm() {
                   placeholder="Your city"
                   className={inputCls}
                 />
-              </Field>
-
-              <Field label="Your concern" htmlFor="af-concern">
-                <select id="af-concern" name="concern" required className={inputCls} defaultValue="">
-                  <option value="">Select a concern</option>
-                  <option>Hair Loss </option>
-                  <option>Hair Fall</option>
-                  <option>Baldness</option>
-                </select>
               </Field>
 
               {/* campaign attribution — filled automatically */}

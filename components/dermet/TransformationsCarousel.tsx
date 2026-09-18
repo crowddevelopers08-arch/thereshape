@@ -61,18 +61,6 @@ export default function TransformationsCarousel() {
           }
         `}</style>
 
-        <p className="mx-auto mt-3 max-w-[560px] text-[0.9rem] leading-relaxed text-[#5f6f88]">
-          Discover real results from{" "}
-          <a href="#assessment-form" className="font-medium text-[#22395f] underline-offset-2 hover:underline">
-            clients
-          </a>{" "}
-          who trusted MAX Hair Clinic for{" "}
-          <a href="#assessment-form" className="font-medium text-[#22395f] underline-offset-2 hover:underline">
-            effective
-          </a>{" "}
-          hair loss procedure.
-        </p>
-
         {/* all 4 images, one row from sm: up; the active one highlights in turn */}
         <div className="mx-auto mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
           {RESULTS.map((r, i) => (

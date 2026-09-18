@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Users,
   Leaf,
+  Eye,
   Droplet,
   Search,
   FileText,
@@ -135,7 +136,7 @@ export default function Hero() {
             </div>
             <span className="h-6 w-px bg-white/20" />
             <div className="flex items-center gap-1.5 leading-tight">
-              <Leaf className="h-5 w-5 shrink-0 text-[#FBA062]" fill="#FBA062" stroke="#0A1B3D" strokeWidth={1} />
+              <Eye className="h-5 w-5 shrink-0 text-[#FBA062]" fill="#FBA062" stroke="#0A1B3D" strokeWidth={1} />
               <span>
                 Visible
                 <br />
@@ -262,17 +263,6 @@ export default function Hero() {
           ))}
         </svg>
 
-        {/* ================= LOGO ================= */}
-        <div className="absolute z-10" style={{ left: "5.55%", top: "4.69%", width: "2.2%", aspectRatio: "1" }}>
-          <Leaf className="h-full w-full -rotate-45 text-[#FBA062]" strokeWidth={1.75} />
-        </div>
-        <div className="absolute z-10 text-white" style={{ left: "8.35%", top: "3.9%", width: "12%" }}>
-          <div className="font-bold leading-none" style={{ fontSize: "1.9cqw" }}>Reshape</div>
-          <div className="mt-[0.4cqw] text-white/75 leading-none" style={{ fontSize: "0.85cqw" }}>
-            Hair&nbsp;|&nbsp;Skin&nbsp;|&nbsp;You
-          </div>
-        </div>
-
         {/* ================= BADGE ================= */}
         <div
           className="absolute z-10 flex items-center gap-[0.6cqw] rounded-full font-semibold text-[#0A1B3D]"
@@ -285,7 +275,6 @@ export default function Hero() {
             background: "linear-gradient(90deg,#F3C4A4,#FBA062)",
           }}
         >
-          <Droplet className="h-[1.3cqw] w-[1.3cqw]" fill="#0A1B3D" strokeWidth={0} />
           #1 Hair Specialist
         </div>
 
@@ -353,7 +342,7 @@ export default function Hero() {
           </div>
           <span className="mx-[1.4cqw] h-[2.2cqw] w-px bg-white/30" />
           <div className="flex items-center gap-[0.6cqw] leading-tight">
-            <Leaf className="h-[1.8cqw] w-[1.8cqw] shrink-0 text-[#FBA062]" fill="#FBA062" stroke="#0A1B3D" strokeWidth={1} />
+            <Eye className="h-[1.8cqw] w-[1.8cqw] shrink-0 text-[#FBA062]" fill="#FBA062" stroke="#0A1B3D" strokeWidth={1} />
             <span>
               Visible
               <br />
