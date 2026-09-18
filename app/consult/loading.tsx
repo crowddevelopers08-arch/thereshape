@@ -6,12 +6,9 @@ export default function Loading() {
     >
       {/* brand mark */}
       <div className="flex flex-col items-center gap-2.5">
-        <svg viewBox="0 0 24 24" className="h-10 w-10 -rotate-45 text-[#FBA062] sm:h-12 sm:w-12" fill="none" stroke="currentColor" strokeWidth={1.75}>
-          <path d="M12 2c-4 4-8 8-8 13a8 8 0 0 0 16 0c0-5-4-9-8-13Z" />
-          <path d="M12 8v13" />
-        </svg>
+
         <div className="text-2xl font-bold leading-none text-white sm:text-3xl">Reshape</div>
-        <div className="text-sm tracking-wide text-white/50 sm:text-base">Hair&nbsp;|&nbsp;Skin&nbsp;|&nbsp;You</div>
+        <div className="text-sm tracking-wide text-white/50 sm:text-base">Hair&nbsp;|&nbsp;Skin&nbsp;</div>
       </div>
 
       {/* status */}
