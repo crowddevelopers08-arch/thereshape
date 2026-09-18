@@ -12,7 +12,7 @@ import { track } from "@/components/reshape/track"
 //   { label: "FAQ", href: "#faq", id: "faq" },
 // ]
 
-const ANNOUNCEMENTS = ["Continue Hairfall ?", "Severe Hairloss ", "Male Pattern Baldness?", "Alopecia"]
+const ANNOUNCEMENTS = ["Acne ?", "Pigmentation ?", "Dark Patches ?", "Skin Tane ?"]
 // repeated enough times that one set alone is always wider than the bar,
 // so the seamless -50% loop never runs out of content on wide screens
 const ANNOUNCEMENTS_SET = Array.from({ length: 4 }, () => ANNOUNCEMENTS).flat()
