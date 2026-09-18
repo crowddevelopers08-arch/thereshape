@@ -13,11 +13,12 @@ const RESULTS = [
 export default function TransformationsCarousel() {
   const [active, setActive] = useState(0)
 
-  // auto-advance, one slide at a time, looping back to the start
+  // all 3 images sit in view together, in one row — auto-advance just moves
+  // the highlight from one to the next, no scrolling needed
   useEffect(() => {
     const id = setInterval(() => {
       setActive((prev) => (prev + 1) % RESULTS.length)
-    }, 3000)
+    }, 2000)
     return () => clearInterval(id)
   }, [])
 
@@ -59,35 +60,29 @@ export default function TransformationsCarousel() {
           }
         `}</style>
 
-        {/* single-slide auto-sliding carousel — translateX guarantees visible
-            movement, unlike relying on native scroll (which had nothing to
-            scroll to once all cards already fit the row on desktop) */}
-        <div className="relative mx-auto mt-8 w-full max-w-[420px] overflow-hidden">
-          <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${active * 100}%)` }}
-          >
-            {RESULTS.map((r) => (
-              <div key={r.id} className="w-full flex-none px-1 py-6">
-                <div className="relative aspect-square w-full overflow-hidden rounded-2xl shadow-[0_16px_34px_-18px_rgba(20,20,20,0.35)]">
-                  <Image src={r.src} alt={r.label} fill sizes="420px" className="object-cover" priority={r.id === 1} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-2 flex items-center justify-center gap-2">
+        {/* all 3 images, one row at every screen size; the active one highlights in turn */}
+        <div className="mx-auto mt-8 grid grid-cols-3 gap-3 sm:gap-5">
           {RESULTS.map((r, i) => (
-            <button
+            <div
               key={r.id}
-              type="button"
-              aria-label={`Show result ${i + 1} of ${RESULTS.length}`}
-              onClick={() => setActive(i)}
-              className={`h-2 rounded-full transition-all duration-200 ${
-                active === i ? "w-6 bg-[#22395f]" : "w-2 bg-[#d8dee8] hover:bg-[#b7c2d3]"
-              }`}
-            />
+              className="relative aspect-square overflow-hidden rounded-2xl bg-[#f2f2f2] transition-all duration-700 ease-out"
+              style={{
+                transform: active === i ? "scale(1.05)" : "scale(1)",
+                boxShadow:
+                  active === i
+                    ? "0 20px 40px -16px rgba(34,57,95,0.45), 0 0 0 3px #fccbb6"
+                    : "0 10px 24px -14px rgba(20,20,20,0.3)",
+                zIndex: active === i ? 10 : 1,
+              }}
+            >
+              <Image
+                src={r.src}
+                alt={r.label}
+                fill
+                sizes="(min-width: 640px) 33vw, 33vw"
+                className="object-cover"
+              />
+            </div>
           ))}
         </div>
       </div>

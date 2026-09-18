@@ -114,7 +114,7 @@ export default function Hero() {
             style={{ background: "linear-gradient(90deg,#F3C4A4,#FBA062)" }}
           >
             <Calendar className="h-4 w-4" strokeWidth={2.2} />
-            Schedule a 1:1 Call
+            Consult Now
             <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
           </button>
 
@@ -221,7 +221,7 @@ export default function Hero() {
             style={{ background: "linear-gradient(90deg,#F3C4A4,#FBA062)" }}
           >
             <Calendar className="h-5 w-5" strokeWidth={2.2} />
-            Schedule a 1:1 Call
+            Consult Now
             <ArrowRight className="h-5 w-5" strokeWidth={2.2} />
           </button>
         </div>
@@ -329,7 +329,7 @@ export default function Hero() {
           }}
         >
           <Calendar className="h-[1.4cqw] w-[1.5cqw]" strokeWidth={2.2} />
-          Schedule a 1:1 Call
+          Consult Now
           <ArrowRight className="h-[1.5cqw] w-[1.5cqw]" strokeWidth={2.2} />
         </button>
 

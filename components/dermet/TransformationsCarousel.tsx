@@ -6,8 +6,8 @@ import { LuArrowRight } from "react-icons/lu"
 
 const RESULTS = [
   { id: 1, src: "/consult-1.jpeg", label: "Hair transplant — before and after result" },
-  { id: 2, src: "/consult-2.jpeg", label: "Hair transplant — before and after result" },
-  { id: 3, src: "/consult-3.png", label: "Hair restoration — before and after result" },
+  { id: 2, src: "/consult-3.png", label: "Hair transplant — before and after result" },
+  { id: 3, src: "/consult-2.jpeg", label: "Hair restoration — before and after result" },
   { id: 4, src: "/consult-4.png", label: "Hair restoration — before and after result" },
 ]
 
