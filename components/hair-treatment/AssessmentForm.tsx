@@ -5,7 +5,7 @@ import { track } from "@/components/reshape/track"
 
 /* Leads are saved to our database and pushed to TeleCRM via this API route. */
 const LEAD_ENDPOINT = "/api/leads"
-const BRANCH = "Skin Treatment Clinic"
+const BRANCH = "Hair Treatment Clinic"
 
 export default function AssessmentForm() {
   const formRef = useRef<HTMLFormElement>(null)
