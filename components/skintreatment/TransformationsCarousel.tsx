@@ -1,91 +1,146 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useEffect, useState } from "react"
-import { LuArrowRight } from "react-icons/lu"
+import Image from "next/image";
+import { useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, ChevronsLeftRight } from "lucide-react";
 
-const RESULTS = [
-  { id: 1, src: "/before-images-1.png", label: "Acne and pigmentation — before and after treatment" },
-  { id: 2, src: "/before-image-2.png", label: "Pigmentation and dark spots — before and after treatment" },
-  { id: 3, src: "/before-image-3.png", label: "Acne scarring — before and after treatment" },
-]
+const comparisons = [
+  { before: "/re-images-7.jpeg", after: "/re-images-3.jpeg", alt: "Treatment result 1" },
+  { before: "/re-images-5.jpeg", after: "/re-images-4.jpeg", alt: "Treatment result 2" },
+  { before: "/re-images-1.jpeg", after: "/re-images-6.jpeg", alt: "Treatment result 3" },
+  { before: "/re-images-8.jpeg", after: "/re-images-2.jpeg", alt: "Treatment result 4" },
+];
 
-export default function TransformationsCarousel() {
-  const [active, setActive] = useState(0)
-
-  // all 3 images sit in view together, in one row — auto-advance just moves
-  // the highlight from one to the next, no scrolling needed
-  useEffect(() => {
-    const id = setInterval(() => {
-      setActive((prev) => (prev + 1) % RESULTS.length)
-    }, 2000)
-    return () => clearInterval(id)
-  }, [])
+function BeforeAfterSlider({ before, after, alt }: { before: string; after: string; alt: string }) {
+  const [position, setPosition] = useState(50);
 
   return (
-    <section id="results" className="scroll-mt-[100px] bg-white px-5 py-8 sm:px-8 sm:py-10">
-      <div className="mx-auto max-w-[1280px] text-center">
-        <h2 className="m-0 flex items-center justify-center gap-3 text-[1.6rem] font-bold leading-[1.35] tracking-[-0.01em] text-[#5f6f88] sm:gap-4 sm:text-[2.1rem]">
-          <span>Before</span>
-          <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#fccbb6] text-[#22395f] sm:h-10 sm:w-10">
-            <LuArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-          </span>
-          <span className="text-[#22395f]">After</span>
-        </h2>
+    <div className="relative aspect-[5/7] overflow-hidden rounded-[18px] border border-[#fccbb6] bg-[#fef5ef]" aria-label={alt}>
+      <Image
+        src={after}
+        alt={`${alt}: after treatment`}
+        fill
+        quality={75}
+        sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 25vw"
+        className="pointer-events-none select-none object-cover object-center"
+        draggable={false}
+      />
+      <div
+        className="absolute inset-0 will-change-[clip-path]"
+        style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+      >
+        <Image
+          src={before}
+          alt={`${alt}: before treatment`}
+          fill
+          quality={75}
+          sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 25vw"
+          className="pointer-events-none select-none object-cover object-center"
+          draggable={false}
+        />
+      </div>
 
-        <div className="mx-auto mt-3 flex items-center justify-center gap-2" aria-hidden="true">
-          <span
-            className="h-[6px] w-[6px] rounded-full bg-[#fccbb6]"
-            style={{ animation: "tc-dot-pulse 1.6s ease-in-out infinite" }}
+      <div
+        className="pointer-events-none absolute inset-y-0 z-10 w-[3px] -translate-x-1/2 bg-white"
+        style={{ left: `${position}%` }}
+      >
+        <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-1 rounded-full bg-white text-[18px] font-bold text-[#22395f] shadow-md">
+          <ChevronsLeftRight className="h-6 w-6" aria-hidden="true" />
+        </span>
+      </div>
+
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={position}
+        onChange={(event) => setPosition(Number(event.target.value))}
+        aria-label={`Adjust ${alt} comparison`}
+        className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+      />
+    </div>
+  );
+}
+
+export default function BeforeAfter() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const moveCarousel = (direction: -1 | 1) => {
+    const carousel = carouselRef.current;
+    const firstCard = carousel?.firstElementChild as HTMLElement | null;
+    if (!carousel || !firstCard) return;
+
+    const gap = Number.parseFloat(window.getComputedStyle(carousel).gap) || 0;
+    carousel.scrollBy({ left: direction * (firstCard.offsetWidth + gap), behavior: "smooth" });
+  };
+
+  return (
+    <section className="relative w-full scroll-mt-28 overflow-hidden bg-[#fbf8f5] px-4 py-8 [font-family:'Inter',sans-serif] sm:px-6 sm:py-12 lg:px-8" id="results">
+      <div className="pointer-events-none absolute -right-24 -top-32 h-[420px] w-[420px] rounded-full bg-[#f78954]/[0.10] blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 -left-16 h-[360px] w-[360px] rounded-full bg-[#fccbb6]/[0.08] blur-3xl" />
+
+      {/* Faint strand linework echoing the CTA section texture */}
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.05]"
+        preserveAspectRatio="none"
+        viewBox="0 0 1200 800"
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <path
+            key={i}
+            d={`M ${1300 - i * 70} -50 C ${1050 - i * 70} 250, ${1150 - i * 70} 540, ${900 - i * 90} 850`}
+            stroke={i % 2 === 0 ? "#f78954" : "#fccbb6"}
+            strokeWidth="1.5"
+            fill="none"
           />
-          <span className="relative h-[3px] w-[56px] overflow-hidden rounded-full bg-[#fccbb6]/25">
-            <span
-              className="absolute inset-y-0 w-1/3 rounded-full bg-[#fccbb6]"
-              style={{ animation: "tc-line-sweep 2.2s ease-in-out infinite" }}
-            />
-          </span>
-          <span
-            className="h-[6px] w-[6px] rounded-full bg-[#fccbb6]"
-            style={{ animation: "tc-dot-pulse 1.6s ease-in-out infinite", animationDelay: "0.7s" }}
-          />
+        ))}
+      </svg>
+
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="mx-auto max-sm:mb-4 max-w-3xl text-center sm:mb-5">
+        <div className="text-center">
+          <h2 id="transformations-heading" className="mt-3 flex items-center justify-center gap-3 text-[1.8rem] font-bold tracking-tight text-[#5f6f88] sm:gap-4 sm:text-[2.5rem]">
+            <span>Before</span>
+            <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fccbb6] text-[#22395f] sm:h-11 sm:w-11"><ArrowRight className="h-5 w-5" /></span>
+            <span className="text-[#22395f]">After</span>
+          </h2>
         </div>
-        <style>{`
-          @keyframes tc-dot-pulse {
-            0%, 100% { opacity: 0.35; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1); }
-          }
-          @keyframes tc-line-sweep {
-            0% { left: -35%; }
-            100% { left: 100%; }
-          }
-        `}</style>
+        </div>
 
-        {/* all 3 images, one row at every screen size; the active one highlights in turn */}
-        <div className="mx-auto mt-8 grid grid-cols-3 gap-3 sm:gap-5">
-          {RESULTS.map((r, i) => (
-            <div
-              key={r.id}
-              className="relative aspect-square overflow-hidden rounded-2xl bg-[#f2f2f2] transition-all duration-700 ease-out"
-              style={{
-                transform: active === i ? "scale(1.05)" : "scale(1)",
-                boxShadow:
-                  active === i
-                    ? "0 20px 40px -16px rgba(34,57,95,0.45), 0 0 0 3px #fccbb6"
-                    : "0 10px 24px -14px rgba(20,20,20,0.3)",
-                zIndex: active === i ? 10 : 1,
-              }}
+        <div
+          className="animate-pop animation-delay-300 relative"
+          role="region"
+          aria-label="Before and after treatment results gallery"
+        >
+          <p className="mb-4 max-sm:mb-2 text-center text-xs font-medium uppercase tracking-[0.2em] text-[#f78954]">Before &amp; After Gallery</p>
+          <div className="relative left-1/2 w-screen -translate-x-1/2 px-5 py-2 sm:px-14 lg:px-20 lg:py-2">
+            <button
+              type="button"
+              onClick={() => moveCarousel(-1)}
+              aria-label="Previous results"
+              className="absolute left-2 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-[#22395f] shadow-lg transition hover:bg-[#fccbb6] hover:text-[#22395f] sm:left-4"
             >
-              <Image
-                src={r.src}
-                alt={r.label}
-                fill
-                sizes="(min-width: 640px) 33vw, 33vw"
-                className="object-cover"
-              />
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <div ref={carouselRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-6">
+              {comparisons.map((comparison) => (
+                <div key={comparison.before} className="w-full shrink-0 snap-start [content-visibility:auto] [contain-intrinsic-size:auto_520px] sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-1.125rem)]">
+                  <BeforeAfterSlider before={comparison.before} after={comparison.after} alt={comparison.alt} />
+                </div>
+              ))}
             </div>
-          ))}
+            <button
+              type="button"
+              onClick={() => moveCarousel(1)}
+              aria-label="Next results"
+              className="absolute right-2 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-[#22395f] shadow-lg transition hover:bg-[#fccbb6] hover:text-[#22395f] sm:right-4"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+
         </div>
       </div>
     </section>
-  )
+  );
 }
