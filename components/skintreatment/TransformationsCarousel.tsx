@@ -1,64 +1,42 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, ChevronsLeftRight } from "lucide-react";
+import { useRef } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const comparisons = [
   { before: "/re-images-7.jpeg", after: "/re-images-3.jpeg", alt: "Treatment result 1" },
   { before: "/re-images-5.jpeg", after: "/re-images-4.jpeg", alt: "Treatment result 2" },
-  { before: "/re-images-1.jpeg", after: "/re-images-6.jpeg", alt: "Treatment result 3" },
+  { before: "/re-images-1.jpeg", after: "/re-images-9.jpeg", alt: "Treatment result 3" },
   { before: "/re-images-8.jpeg", after: "/re-images-2.jpeg", alt: "Treatment result 4" },
 ];
 
-function BeforeAfterSlider({ before, after, alt }: { before: string; after: string; alt: string }) {
-  const [position, setPosition] = useState(50);
-
+function BeforeAfterCard({ before, after, alt }: { before: string; after: string; alt: string }) {
   return (
-    <div className="relative aspect-[5/7] overflow-hidden rounded-[18px] border border-[#fccbb6] bg-[#fef5ef]" aria-label={alt}>
-      <Image
-        src={after}
-        alt={`${alt}: after treatment`}
-        fill
-        quality={75}
-        sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 25vw"
-        className="pointer-events-none select-none object-cover object-center"
-        draggable={false}
-      />
-      <div
-        className="absolute inset-0 will-change-[clip-path]"
-        style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
-      >
-        <Image
-          src={before}
-          alt={`${alt}: before treatment`}
-          fill
-          quality={75}
-          sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 25vw"
-          className="pointer-events-none select-none object-cover object-center"
-          draggable={false}
-        />
+    <figure className="overflow-hidden rounded-3xl border border-[#fccbb6]/70 bg-white p-2.5 shadow-[0_8px_30px_-18px_rgba(34,57,95,0.25)] sm:p-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+        {[
+          { src: before, label: "Before" },
+          { src: after, label: "After" },
+        ].map(({ src, label }) => (
+          <div key={label} className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#fef5ef]">
+            <Image
+              src={src}
+              alt={`${alt}: ${label.toLowerCase()} treatment`}
+              fill
+              quality={75}
+              sizes="(max-width: 767px) 45vw, 23vw"
+              className="pointer-events-none select-none object-cover object-center"
+              draggable={false}
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#22395f]/50 to-transparent" />
+            <span className={`absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] shadow-sm ${label === "Before" ? "bg-white text-[#22395f]" : "bg-[#fccbb6] text-[#22395f]"}`}>
+              {label}
+            </span>
+          </div>
+        ))}
       </div>
-
-      <div
-        className="pointer-events-none absolute inset-y-0 z-10 w-[3px] -translate-x-1/2 bg-white"
-        style={{ left: `${position}%` }}
-      >
-        <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-1 rounded-full bg-white text-[18px] font-bold text-[#22395f] shadow-md">
-          <ChevronsLeftRight className="h-6 w-6" aria-hidden="true" />
-        </span>
-      </div>
-
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={position}
-        onChange={(event) => setPosition(Number(event.target.value))}
-        aria-label={`Adjust ${alt} comparison`}
-        className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
-      />
-    </div>
+    </figure>
   );
 }
 
@@ -112,7 +90,7 @@ export default function BeforeAfter() {
           role="region"
           aria-label="Before and after treatment results gallery"
         >
-          <p className="mb-4 max-sm:mb-2 text-center text-xs font-medium uppercase tracking-[0.2em] text-[#f78954]">Before &amp; After Gallery</p>
+          <p className="mb-4 max-sm:mb-2 text-center text-xs font-medium uppercase tracking-[0.2em] text-[#f78954]">Skin Treatment Before and After Results</p>
           <div className="relative left-1/2 w-screen -translate-x-1/2 px-5 py-2 sm:px-14 lg:px-20 lg:py-2">
             <button
               type="button"
@@ -124,8 +102,8 @@ export default function BeforeAfter() {
             </button>
             <div ref={carouselRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-6">
               {comparisons.map((comparison) => (
-                <div key={comparison.before} className="w-full shrink-0 snap-start [content-visibility:auto] [contain-intrinsic-size:auto_520px] sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-1.125rem)]">
-                  <BeforeAfterSlider before={comparison.before} after={comparison.after} alt={comparison.alt} />
+                <div key={comparison.before} className="w-full shrink-0 snap-start [content-visibility:auto] [contain-intrinsic-size:auto_420px] md:w-[calc(50%-0.625rem)] lg:w-[calc(50%-0.75rem)]">
+                  <BeforeAfterCard before={comparison.before} after={comparison.after} alt={comparison.alt} />
                 </div>
               ))}
             </div>
